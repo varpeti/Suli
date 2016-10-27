@@ -1,0 +1,26 @@
+PROGRAM f
+  VÁLTOZÓK:
+    x, i: EGÉSZ,
+    gy: VALÓS
+ 
+  BE: x
+  CIKLUS AMÍG (x MOD 2 = 0)
+    KI: 2, " "
+    x := x DIV 2
+  CIKLUS_VÉGE
+  gy := x ^ (0.5)
+  i := 3
+  CIKLUS
+    HA (x MOD i = 0) AKKOR
+      KI: i, " "
+      x := x DIV i
+      gy := x ^ (0.5)
+    KÜLÖNBEN
+      i := i + 2
+      HA (i > gy) AKKOR
+        KI: x
+        x := 1
+      HA_VÉGE
+    HA_VÉGE
+  AMÍG x > 1
+PROGRAM_VÉGE
