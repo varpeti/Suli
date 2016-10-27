@@ -320,4 +320,277 @@ Kereskedelem politikai eszközök:
 		átmeneti megoldás
 	5) Exportőr támogatás (szubvenció)
 
+--[[ 10.05
+]]
 
+A neoklassikus Közgazdaságtan
+	Egyensúlyi elméletek
+		Határhaszon  (M.U.)
+			MU(zsömle) >= Price(Zsömle) * MU(pénz)
+				Eddig vásárolok míg többet ér a zsömle mint az ára és a pénzem szorzata
+			Pl.: A utolsó kétfillér (Biblia)
+			MU(szabadidő) <= Price(munkabér) * MU(pénz)
+				Munka 
+
+			ár 						
+			|\   /Kínálat 			
+			| \ /					
+			|  X 					
+			| /	\Kereslet 			
+			|/___\______mennyiség 
+
+		Paradox árhatás
+			Csökken az ár és nem veszik
+			Nő az ár és kapkodják
+
+		EDP= (kerselet / %-osárváltozás) / (kínálat / %-osárváltozás)
+
+			Árrugalmasság
+
+			X termék hogy hat Y -ra 
+				Helyettesítő (+)
+				Kiegészítő (-)
+		Kereslet-kínálat
+			visszajelez
+
+		egy vevő - monopszónia
+
+	Az állam feladata hogy fentartsa a versenyt
+		mert monopolizálódás
+
+	Monopolhelyzet
+		Nem az árat maximalizálja
+			hanem az árbevátelt: ár*eladott mennyiség
+	Árdiferenciálás
+		árbevétel maximalizálás
+		típus
+			Földrajzi alapon (Balton-Pest)
+			Időbeli alapon (szezonális)
+			Társadalmi réteg szerint (diákbérlet)
+	Állami beavatkozás
+		Túlkínálat: 
+			Árminnimum - egyensúly felett
+		túlkereslet:
+			Ármaximum - egyensúly alatt
+			Kínálat növelés 
+--[[10.12
+]]
+
+GDP - össz
+GNP - össz hazai
+	Csak azt mérik ami keresztül megy a piacon +
+	jólétet nem mér
+		= Piacosítás
+
+A felzárkozás bűvöletében
+	"Milton Friedman"
+		USA 
+		Újító
+		Alkalmazó
+
+		Stabil trend
+			rövid távon nem lehet
+	"Jánossy Ferenc"
+		MO-n maradt
+		Helyreállítási periódus
+			Összeomlás után van egy helyreállítási szakasz
+				gyorsabban növekszik, addig míg utol nem éri a fejlődési trendvonalat
+			A politikát nagyon befolyásolja
+				-> Tovább eröltetik
+					-> Egyensúlybomlás
+						-> fékbehúzás
+						-> visszaesés, összeomlás (akár a növekedési trendvonal alá)
+	Tevekaraván:
+		A leglassabb teve határozza meg a karaván sebességét. ~
+
+	2003-ig A rendszer váltás utántól, Orbán kormány alatt helyreállítási periódus (~4% növekedés)
+	2003-tól politikai (gyurcsány kormány) utolértük a fejlődési trendvonalat, és tovább stimulálták, egyensúly bomlás árán
+		Deviza hitel, eladósodás
+		Összeomlás
+			eladósodás
+	--	
+	Rákosy (helyreállítás, túltolás, eröltetett növekedés)
+	Nagy Imre (fék)
+
+	Fékek:
+		Bud János, 1927-28
+		Nagy Imre 1953-55
+		gyuri 2006-8 (Öszöd)
+
+	Összeomlások:
+		Politikai
+		Gazdasági
+
+	Terápiák
+		Konvencionális | felszíni válságkezelés -> mélyebre kerül a válság
+		Nem Konvencionális eszközök | Mélyebb válságkezelés, új piacok keresés, belső rendszer módosítás
+
+	A magyar gazdaság növekedése:
+		y=sin(x)+x
+	Ha az optimális:
+		y=x
+
+	Gazdaságot csak hosszútávú gondolkodással lehet fellendíteni,
+	a Rövidtávú csak összeomlást okoz
+--[[11.19
+]]
+
+Munkanélküliség, foglalkoztatottság, infláció
+	Munkanélküliség
+		Személy szempontjából
+			Létbizonytalanság
+			Antiszocializáció
+			Ha felismert veszély, akkor már késő 
+		Ország szempontjából
+			Összkereslet csökken
+				+Eltartottak száma nő
+					->Defficit (eladósodás) --Szufficit: (több a bevétel mint a kiadás)
+			Erodálja a politikai rendszert
+				Szélsőségek megerősödése
+		Egyensúlyi munkabér
+			Önkéntes munkanélküliség ha nincs kereslet
+		Kényszerű munkanélküliség
+			Lefele rugalmatlan munkabér
+
+		Munkanélküli:
+			Akinek nincs munkája, de keres.
+
+		Foglalkoztatási ráta:
+			50-60% MO-n
+			Aktív koruak akik dolgoznak.
+
+		Fajtái: --[[                          EZ KELL ZH-BA!!!!!!!!!!                                     ]]
+			1) Frikciós: 
+				társadalmi mozgás
+			2) Struktúrális: 
+				A munkaerő piacon a kereslet és a kínálat eltér, és idő míg kiegyenlítődik
+				Pl 150 bányász munkanélküli, 150 informatikus kell. 
+			3) Technológiai:
+				Gép veszi át a munkát
+				Megoldás: átképzés
+			4) Ciklikus:
+				recesszió idején megnő
+				pl: kimegy a Nokia
+			5) Szezonális:
+				pl: lángossütő, mezőgazdaság
+	Foglalkoztatás
+		Munkaerőpiaci eszközök --[[FONTOS!!! Aktív Passzív]]
+			1) Passzív
+				Munkaerőkínálat csökkentés
+					pl a segély, de ellenösztönző is lehet
+					a segélyt feltételekhez kötik 
+				1.1) Segély
+				1.2) Rokkant-, korai- nyugdíj
+			2) Aktív
+				A munkaerő piacon megtartás
+				A munkaerő piacra gyors visszatérést
+				Veszélyesztetettek:
+					Pályakezdők
+						gyakorlat hiány
+					Fiatal nők 
+						cslád / gyerek
+					50 felettiek
+						innovációkra nem nyitottak annyira
+
+				Folyamatos tanítás
+				Támogatások
+				Járulákkedvezmények
+					pl gyesről visszatérő nők foglalkoztatása
+				Határozott munkaidő
+				Otthoni munka
+				Részmunkaidő
+				Nyugdíjjárulék csökkentés
+					nem megy el a multi
+			Fekete munka csökkentés
+				azért mert nem rughatja ki a munkaadó, nem fogja fehéren felvenni
+
+		Arányai képzetségbe
+			Egyetem 80
+			Éretségi 50
+			Általános 30
+
+		Közmunka, közfoglalkoztatás
+			Valamit adjanak azért hogy eltarják őket
+			Szocializál
+
+		Cigányság alulfoglalkoztatottság
+			előítélet
+			alulképzetség
+
+		Mezőgazdaság: 
+			Megoldás a vidék, kisebbség helyzetére
+			Magas élőmunkaerő igény (zöldség, nyümölcs)
+
+--[[10.26
+]]
+
+Válságok 
+	"Kondratyjev"
+		Kondratyjev-ciklus
+			a kaptitalizmus válságokon keresztül újul meg
+
+	Túltermelési válság
+		Lefele tartó spirál
+			Sok termék -> kicsi kereslet -> elbocsátások -> kisebb kereslet
+		Fordizmus
+			Kínálat növekedés, kereslet nélkül.
+
+		"John Maynard Keynes"
+			Állam avatkozzon közbe
+				infrastrutúra építés
+				szolgáltatások
+			A jövedelem növekedésével nem nő a kereslet.
+				Puritánság
+			Ha nő a jövedelem poliarizáció, csökken a kereslet.
+
+			Tömeges kínálathoz tömeges kereslet kell.
+
+				Pl Kína termel, USA fogyaszt (hitelre)
+
+			Anticiklikus
+				Kilengési amplitúdút csökkenti
+
+				(M) Prociklikus
+						Kilengési amplitúdút növeli 
+						Pl MO 2005-2010
+
+	Paradigma váltás
+		a gazdaságba agyakorlatban elöbb történik meg.
+
+Infláció
+	termékek árának növekedése
+
+	Hyperinfláció: Amikor új pénzrendszer kell. 
+		Pengő -> Forint
+
+	--[[                                   KELLL!!!!!!!!!             ]]
+
+	1) Keresleti infláció
+		Megnő a kereslet, de a kínálat nem
+			-> megnő az ára
+
+	Inport infláció
+		Kimegy a termék bejön a pénz.
+			-> A bent megnő az ára.
+
+	2) Költég Infláció
+		Csökken a termelés
+			-> menő az ár
+
+		Inflációsspirál
+			Bér-ár spirál, Ár-bér spirál
+
+	3) Tehetetlenségi infláció
+		Megszűnt az oka, de a várakozás ott van.
+			Tavaly 10% volt ezért idén is ezzel számol.
+
+	infláció
+	|\
+	| \
+	|   \
+	|     \
+	|	     \____
+	|______________munkanélküliség
+
+
+	ÁFA -> termékek árának hirteln megnövelése

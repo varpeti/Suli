@@ -1,3 +1,5 @@
+1781 Simonyi PW
+
 Beadandó:
 	Könyvlista - ebből kell írni olvasónaplót
 
@@ -213,3 +215,122 @@ Szent
 Jézus 
 	Istennek valja magát, egyértelmüen.
 	
+--[[10.05
+]]
+
+Jézus --= Mithrász?
+	Fenmaradt iratok
+		Caesar 10
+		Platón 7
+		Arisztotelész 5
+		Tacitus 1
+	Újszöv
+		kr u 40-90
+		kr u 130-tól másolatok
+	Beljesedett próféciák
+		~300
+		-- Mithrász?
+		-- A jelenések könyvéből vett részek is számtalanszor ''bekövetkeztek''
+	Biblián kívüli bizonyítékok
+		Jozefusz Fláviusz
+			Jakab testvére Jézus akit Krisztusnak neveznek
+		Tacitusz
+			Krosztosz nevű rabszolgát keresztre feszítettek
+		Plinius
+			Meghallnak a hitükért
+	Feltámadt-e?
+		Meghalt-e?
+			Igen, nem eljult, mert víz volt a tüdejében
+		Feltámadt-e?
+			Nem találták a Farizeusok sem.
+				Ellopták
+					Nem lopthatták el mert nem halnának meg egy hazugságért.
+					--Ellopták, a hitük és világképük megörzéséhez.
+					-- és ebből a hiből merítve haltak vértanu halált
+				Feltámadt
+--[[10.12.
+]]
+
+Az Istenről alkotott képünk kialakulása
+	szülői kapcsolat
+
+		Családi otthon:
+				  rideg
+					|
+					|
+		nyílt ______|_______ zárt
+					|
+					|
+				bensőséges
+
+		nyílt-zárt: Pl családi ebéd kötelező, nincs ottalvás, bejöhetnek e idegenek a családban
+		rideg-bensőséges: Pl Mennyire érdeklődtek utánad, szeretete mennyire nyílvánítanak ki.
+
+		Apa-Anya
+			Apa 
+				Képes vagy. (versenykedv)
+				Értékes vagy. (önörtékelés)
+				Tartozol valahová
+				vitalitás, kreativitás
+				helyed van a világban
+			Anya 
+				Világ jó, bizalom benne
+				Bizalom az emberekben -- Féltékenység: önbizalom hiány
+				Kapcsolat teremtés
+				Kapcsolat megmaradás
+				Szeretet kifejezni és elfogadni
+				Intimitás / szexualitás
+
+			Apatípus
+				árnypék
+				infantilis (egy a gyermekek közül)
+				tekintélyelvű
+				humanista (békén hagyott gyerekek)
+				keresztény
+			Anyatípus
+				kakukk (más majd neveli)
+				pók (uralkodó a gyerekei felett)
+				kotlós (túlgondoskodó)
+				pelikán (mártírkodik a gyermekeiért, és ezt közli is)
+				keresztény 
+
+Beszélgetés a buzikról.
+
+--[[ 10.26
+]]
+
+Fogadjuk el axiómaként hogy van Isten.
+
+Ki az Isten?
+	II Mózes (Egyiptomi fogság -> Kivezetés)
+		Égő csipkebokor
+		Vagyok aki vagyok
+	Jehova
+	Elohim (Istenek + az igék egyes számban utána)
+	Isten, Tulajdonos, Király, Pásztor, Hitves, Úr, Atya, stb
+
+Monoteizmus
+	
+A világ más mint az Isten.
+	Transzendens, világon kívüli
+
+Monolatria
+	Több Isten
+	De egyet imádnak
+
+Isten tulajdonságai
+	Személy
+	Szabad, szabadakarattal rendelkező személy
+	Vannak érzelmei
+	Transzendens -> világon kívüli
+	(Immanens) -> világon belüli (hiszen cselekszik benne)
+	-- Ha a Simsbe karakter irányitunk, attól még transzendensek vagyunk a Simek szemszögéből...
+	Mindenható
+	Tér-idő feletti
+
+Szabadakarat
+	???
+
+Isten tud-e olyan követ teremteni amit nem tud felemelni?
+
+[[Filmek: Északa a földön | Az élet szép]]
