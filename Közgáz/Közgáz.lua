@@ -594,3 +594,35 @@ Infláció
 
 
 	ÁFA -> termékek árának hirteln megnövelése
+
+--[[ 11.16
+]]
+
+Dollár-Arany standard (kötött árfolyam rendszer)
+	a dollárt kötik az aranyhoz
+		dollárért ad aranyat
+
+	Visszavonták
+		Lebegtetett árfolyam rendszer
+			Kereslet kínálat határozza meg az árfolyamokat
+
+
+Gazdaságpolitika
+	Fő Céljai:
+		gazdasági növekedés
+		foglakoztatottság növelés
+		infláció leszorítás
+		árstabilitás
+		külső egyensúly
+		Környezetvédelem
+		Infrastruktőra építés
+
+	Ellentétek:
+		munkanélküliség vs infláció
+		gazdasági növekedés vs Környezetvédelem
+
+	Alcélok:
+		Tőkeadóztatás
+			Multicégek, szent tehenek
+		Stratégia megálapodások
+

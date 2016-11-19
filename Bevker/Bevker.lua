@@ -324,7 +324,7 @@ Isten tulajdonságai
 	Vannak érzelmei
 	Transzendens -> világon kívüli
 	(Immanens) -> világon belüli (hiszen cselekszik benne)
-	-- Ha a Simsbe karakter irányitunk, attól még transzendensek vagyunk a Simek szemszögéből...
+	-- ellen Pl Ha a Simsbe karakter irányitunk, attól még transzendensek vagyunk a Simek szemszögéből...
 	Mindenható
 	Tér-idő feletti
 
@@ -334,3 +334,43 @@ Szabadakarat
 Isten tud-e olyan követ teremteni amit nem tud felemelni?
 
 [[Filmek: Északa a földön | Az élet szép]]
+
+--[[11.16
+]]
+
+Szükség van-e a pápaság / papságra?
+	4 alapérték:
+		igaz, jó, szép, szent
+	''szentemberek'' mindig voltak
+	közvetítő segít közeleb kerülni tévhittel ellentétben.
+
+
+Cölibátus
+	Nem praktikus funkció (öröklés, nem kell mással foglakozni)
+	Nem szexualitás tagadása
+
+	Teljes átadottság
+
+	Páldák: Kr János, Jézus, Pál
+		Ószöv:
+			Ezékiel (elveszi a feleségét, prófétai jel)
+			Illés
+			Mózes (elhagyja a feleségét)
+			harcosok időszaki, papok önmegtartóztatása
+
+	Hét testvér egy nő kérdése: kié lesz a menyben a nő?
+		Nincs házasság, a mennyben
+
+	''A cölibátusban élő ember, mint egy földön lévő mennyei nagykövetség lenne.''
+
+	Nem Isteni törvény, hanem egyházi.
+
+Etikai, erkölcsi dilemmák
+	Súlyok
+
+	Rossz cselekedet jó véggel, bűn 
+	Jó cselekedet rossz véggel, bűn
+
+	Körülmények
+	Tudatlanság, mennyire.
+	Beszámíthatóság.
