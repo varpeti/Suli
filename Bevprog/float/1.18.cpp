@@ -2,22 +2,29 @@
 #include "fstream"
 #include "math.h"
 #include "vector"
-#include "string"
 #include "iomanip"
+#include "string.h"
 
 using namespace std;
 
-int egyezik(char a, char b)
-{
-	return a==b;
-}
-
-
 int main()
 {
-	string s1,s2;
-	cin >> s1 >> s2;
-	if ( s1.length()>4 and s1.length()>4 and egyezik(s1.at(0),s2.at(0)) and egyezik(s1.at(1),s2.at(1)) and egyezik(s1.at(2),s2.at(2)) and egyezik(s1.at(3),s2.at(3)) and egyezik(s1.at(4),s2.at(4)) )
-		cout << "igaz"; else cout << "hamis";
-	//getchar();getchar(); //nem volt kedvem ciklust írni :p
+	string a,b;
+	getline(cin,a);
+	getline(cin,b);
+	if (a.length()<5 or b.length()<5) {
+		cout << "hamis";
+		return 0;
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		if (a.at(i)!=b.at(i)){
+			cout << "hamis";
+			return 0;
+		}
+	}
+	cout << "igaz";
+	return 0;
 } 
+
+a = a/i

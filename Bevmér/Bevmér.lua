@@ -104,6 +104,8 @@ Toborzáááás
 	Svédország
 	Mexikó cement
 	Philips Healthcare és mellette PPKE előadó
---[[
+
+--[[ 11.28
 ]]
+	Innovációtól a termékig
 

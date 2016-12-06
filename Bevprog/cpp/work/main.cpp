@@ -1,4 +1,4 @@
-#include "graphics.hpp"
+#include "../graphics.hpp"
 
 using namespace genv;
 
