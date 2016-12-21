@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.11.22)  6 DEC 2016 11:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.11.22)  6 DEC 2016 11:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -557,158 +557,26 @@ File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 \Gin@req@width=\dimen117
 )
 
-LaTeX Warning: Unused global option(s):
-    [a4papper].
+! LaTeX Error: File `algorithx.sty' not found.
 
-(./o2.aux)
-\openout1 = `o2.aux'.
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-\AtBeginShipoutBox=\box28
-Package hyperref Info: Link coloring OFF on input line 17.
- (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
-Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.11 ^^M
+        
+*** (cannot \read from terminal in nonstop modes)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
-Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
-)
-\c@section@level=\count111
-)
-LaTeX Info: Redefining \ref on input line 17.
-LaTeX Info: Redefining \pageref on input line 17.
-LaTeX Info: Redefining \nameref on input line 17.
-
-(./o2.out) (./o2.out)
-\@outlinefile=\write3
-\openout3 = `o2.out'.
-
-
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count112
-\scratchdimen=\dimen118
-\scratchbox=\box29
-\nofMPsegments=\count113
-\nofMParguments=\count114
-\everyMPshowfont=\toks23
-\MPscratchCnt=\count115
-\MPscratchDim=\dimen119
-\MPnumerator=\count116
-\makeMPintoPDFobject=\count117
-\everyMPtoPDFconversion=\toks24
-) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
-)
-Package grfext Info: Graphics extension search list:
-(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
-LaTeX Font Info:    Try loading font information for U+msa on input line 19.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 19.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./o2.toc)
-\tf@toc=\write4
-\openout4 = `o2.toc'.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.20 	\chapter
-              {Első óra} [1
-
-]
-Chapter 1.
-[2
-
-]
-Chapter 2.
-[3
-
-]
-Chapter 3.
-(./harmadik.tex
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[4
-
-]
-
-LaTeX Warning: Citation `nika2016strong' on page 5 undefined on input line 75.
-
-No file o2.bbl.
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 28.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 28.
- (./o2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 28.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 28.
-Package rerunfilecheck Info: File `o2.out' has not changed.
-(rerunfilecheck)             Checksum: 46D4A3FA969131D5B045B3D633CEC366;965.
-
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 28.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 9441 strings out of 494953
- 128183 string characters out of 6180976
- 193048 words of memory out of 5000000
- 12627 multiletter control sequences out of 15000+600000
- 21536 words of font info for 59 fonts, out of 8000000 for 9000
+ 8765 strings out of 494953
+ 118410 string characters out of 6180976
+ 182714 words of memory out of 5000000
+ 12039 multiletter control sequences out of 15000+600000
+ 4702 words of font info for 16 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 29i,9n,28p,219b,354s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/itep/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/it
-ep/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0700.600pk> </home/itep/.texmf-va
-r/fonts/pk/ljfour/jknappen/ec/ecrm0800.600pk> </home/itep/.texmf-var/fonts/pk/l
-jfour/jknappen/ec/ecbx1440.600pk> </home/itep/.texmf-var/fonts/pk/ljfour/jknapp
-en/ec/ecbx1728.600pk> </home/itep/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm12
-00.600pk> </home/itep/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </
-home/itep/.texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2488.600pk> </home/itep/.t
-exmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </home/itep/.texmf-var/fon
-ts/pk/ljfour/jknappen/ec/ecrm2074.600pk></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmsy10.pfb>
-Output written on o2.pdf (6 pages, 98552 bytes).
-PDF statistics:
- 325 PDF objects out of 1000 (max. 8388607)
- 124 compressed objects within 2 object streams
- 18 named destinations out of 1000 (max. 500000)
- 65 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 29i,0n,24p,219b,38s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!
