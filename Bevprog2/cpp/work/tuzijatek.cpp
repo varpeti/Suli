@@ -1,4 +1,4 @@
-//CODEIMGAME
+//CODEINGAME
 #include "../graphics.hpp"
 #include "sstream"
 #include "vector"
