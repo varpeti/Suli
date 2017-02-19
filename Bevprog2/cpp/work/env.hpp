@@ -8,58 +8,76 @@
 #include "time.h"
 #include "math.h"
 
+using namespace genv;
+
 /* DEKRALÁCIÓK	*/
 
 /* STRUCTOK */
 
-struct SP
-{
-	private:
-		int		SP_X;		//sprite	x helyzete a képernyõn
-		int		SP_Y;		//			y helyzet
-		int		SP_SZ;		//			szélesség pixelekben
-		int		SP_M;		//			magasság pixelekben
-		char	SP_AN;		//			aktuális képpozíció
-		char	SP_ANMAX;	//			maximum ennyi képpozíció van
-		char	SP_SEB_X;	//			x irányú mozgás sebessége
-		char	SP_SEB_Y;	//			y
-		int		SP_KEPE;	//			melyik betöltött képen van a sprite rajza
-		int		SP_KEP_X;	//			a képen az x helyzet kiralyzoláshoz
-		int		SP_KEP_Y;	//			a képen az y helyzet kiralyzoláshoz
-		ini		SP_AL_X;	//          a képen az x helyzet 
-		int		SP_AL_Y;	//          a képen az y helyzet 
-		int		SP_FX;		//			forrópont x
-		int		SP_FY;		//			forrópont y
-		int		SP_XVY;		//          x vagy y irányba van az animáció folytatása a betöltött képen
 
-	public:
-		//SP();
-		//~SP();
-		//void rajzol();
-
-};
 
 /* CLASS 	*/
 
 class ENV
 {
 public:
+	ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag, bool teljeskepernyo);
+	ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag);
 	ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo);
+	ENV(unsigned int szelesseg, unsigned int magassag);
 	~ENV();
-	void frissit();
-	void rajzol();
-	
+	void init();
 	
 protected:
-	std::vector<SP> spritok;
-
+	unsigned int KEPERNYOSZELESSEG;
+	unsigned int KEPERNYOMAGASSAG;
+	unsigned int TERULETSZELESSEG;
+	unsigned int TERULETMAGASSAG;
+	canvas TERULET;
 };
 
 /* MEGVALÓSÍTÁS */
 
-ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo) //konst
-{
+//konst
 
+ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag, bool teljeskepernyo)
+{
+	KEPERNYOMAGASSAG=kepernyomagassag;
+	KEPERNYOSZELESSEG=kepernyoszelesseg;
+	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
+	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
+	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
+	//TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+}
+
+ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag)
+{
+	KEPERNYOMAGASSAG=kepernyomagassag;
+	KEPERNYOSZELESSEG=kepernyoszelesseg;
+	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
+	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
+	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
+	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+}
+
+ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
+{
+	KEPERNYOMAGASSAG=magassag;
+	KEPERNYOSZELESSEG=szelesseg;
+	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
+	TERULETMAGASSAG=magassag;
+	TERULETSZELESSEG=szelesseg;
+	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+}
+
+ENV::ENV(unsigned int szelesseg, unsigned int magassag)
+{
+	KEPERNYOMAGASSAG=magassag;
+	KEPERNYOSZELESSEG=szelesseg;
+	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
+	TERULETMAGASSAG=magassag;
+	TERULETSZELESSEG=szelesseg;
+	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::~ENV() //dest
