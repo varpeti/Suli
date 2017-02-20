@@ -47,7 +47,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
 	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
 	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
-	//TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag)
