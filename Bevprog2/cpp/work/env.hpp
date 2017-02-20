@@ -9,6 +9,7 @@
 #include "math.h"
 
 using namespace genv;
+using namespace std;
 
 /* DEKRALÁCIÓK	*/
 
@@ -26,7 +27,14 @@ public:
 	ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo);
 	ENV(unsigned int szelesseg, unsigned int magassag);
 	~ENV();
-	void init();
+
+	struct SPRITE
+	{
+		int x;
+		int y;
+	};
+	vector<SPRITE> SPRITEOK;
+	void newsprite(int x, int y);
 	
 protected:
 	unsigned int KEPERNYOSZELESSEG;
@@ -42,6 +50,7 @@ protected:
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag, bool teljeskepernyo)
 {
+	srand(time(NULL));		//seed időalapján
 	KEPERNYOMAGASSAG=kepernyomagassag;
 	KEPERNYOSZELESSEG=kepernyoszelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
@@ -52,6 +61,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag)
 {
+	srand(time(NULL));
 	KEPERNYOMAGASSAG=kepernyomagassag;
 	KEPERNYOSZELESSEG=kepernyoszelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
@@ -62,6 +72,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 {
+	srand(time(NULL));
 	KEPERNYOMAGASSAG=magassag;
 	KEPERNYOSZELESSEG=szelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
@@ -72,6 +83,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 {
+	srand(time(NULL));
 	KEPERNYOMAGASSAG=magassag;
 	KEPERNYOSZELESSEG=szelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
@@ -85,11 +97,12 @@ ENV::~ENV() //dest
 
 }
 
-
-void ENV::init()
+void ENV::newsprite(int x, int y)
 {
-	srand (time(NULL));		//seed időalapján
-	
+	SPRITE sp;
+	sp.x=x;
+	sp.y=y;
+	SPRITEOK.push_back(sp);
 }
 
 
