@@ -32,16 +32,18 @@ public:
 	{
 		int x;
 		int y;
+		unsigned char allapot;
+		void srajzol();
 	};
 	vector<SPRITE> SPRITEOK;
 	void newsprite(int x, int y);
+	void kirajzol();
 	
 protected:
 	unsigned int KEPERNYOSZELESSEG;
 	unsigned int KEPERNYOMAGASSAG;
 	unsigned int TERULETSZELESSEG;
 	unsigned int TERULETMAGASSAG;
-	canvas TERULET;
 };
 
 /* MEGVALÓSÍTÁS */
@@ -56,7 +58,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
 	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
 	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
-	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag)
@@ -67,7 +68,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
 	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
 	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
-	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
@@ -78,7 +78,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
 	TERULETMAGASSAG=magassag;
 	TERULETSZELESSEG=szelesseg;
-	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
@@ -89,7 +88,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
 	TERULETMAGASSAG=magassag;
 	TERULETSZELESSEG=szelesseg;
-	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
 }
 
 ENV::~ENV() //dest
@@ -103,6 +101,25 @@ void ENV::newsprite(int x, int y)
 	sp.x=x;
 	sp.y=y;
 	SPRITEOK.push_back(sp);
+}
+
+void ENV::kirajzol()
+{
+	for (vector<SPRITE>::iterator i=SPRITEOK.begin(); i!=SPRITEOK.end();)
+	{
+		//i->supdate();
+		i->srajzol();
+		if(i->allapot==-1) i = SPRITEOK.erase(i);
+		else ++i;
+	}
+	gout << refresh;
+}
+
+void ENV::SPRITE::srajzol()
+{
+	gout << color(000,255,000)
+		<< move_to(x,y)
+		<< box(10,10);
 }
 
 
