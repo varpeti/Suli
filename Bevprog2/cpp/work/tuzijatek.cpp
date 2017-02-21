@@ -95,8 +95,7 @@ int main()
 
 			gout << refresh;
 		}
-
-		if (ev.type==ev_mouse)
+		else if (ev.type==ev_mouse)
 		{
 			Sboxok b(ev.pos_x,ev.pos_y,szin);
 			szin++; if (szin>3*255) szin=0;

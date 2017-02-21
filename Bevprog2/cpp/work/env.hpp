@@ -57,6 +57,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
 	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
 	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+	TERULET.load_font("font.ttf",12,true);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyoszelesseg, unsigned int kepernyomagassag)
@@ -68,6 +69,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, unsigned int kepernyosze
 	if (magassag>kepernyomagassag) TERULETMAGASSAG=magassag; else TERULETMAGASSAG=kepernyomagassag;
 	if (szelesseg>kepernyoszelesseg) TERULETMAGASSAG=szelesseg; else TERULETMAGASSAG=kepernyoszelesseg;
 	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+	TERULET.load_font("font.ttf",12,true);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
@@ -79,6 +81,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 	TERULETMAGASSAG=magassag;
 	TERULETSZELESSEG=szelesseg;
 	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+	TERULET.load_font("font.ttf",12,true);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
@@ -90,6 +93,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 	TERULETMAGASSAG=magassag;
 	TERULETSZELESSEG=szelesseg;
 	TERULET.open(TERULETSZELESSEG,TERULETMAGASSAG);
+	TERULET.load_font("font.ttf",12,true);
 }
 
 ENV::~ENV() //dest
