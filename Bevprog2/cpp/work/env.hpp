@@ -32,16 +32,18 @@ public:
 	{
 		int x;
 		int y;
+		unsigned char allapot;
+		void srajzol();
 	};
 	vector<SPRITE> SPRITEOK;
 	void newsprite(int x, int y);
+	void kirajzol();
 	
 protected:
 	unsigned int KEPERNYOSZELESSEG;
 	unsigned int KEPERNYOMAGASSAG;
 	unsigned int TERULETSZELESSEG;
 	unsigned int TERULETMAGASSAG;
-	canvas TERULET;
 };
 
 /* MEGVALÓSÍTÁS */
@@ -107,6 +109,25 @@ void ENV::newsprite(int x, int y)
 	sp.x=x;
 	sp.y=y;
 	SPRITEOK.push_back(sp);
+}
+
+void ENV::kirajzol()
+{
+	for (vector<SPRITE>::iterator i=SPRITEOK.begin(); i!=SPRITEOK.end();)
+	{
+		//i->supdate();
+		i->srajzol();
+		if(i->allapot==-1) i = SPRITEOK.erase(i);
+		else ++i;
+	}
+	gout << refresh;
+}
+
+void ENV::SPRITE::srajzol()
+{
+	gout << color(000,255,000)
+		<< move_to(x,y)
+		<< box(10,10);
 }
 
 
