@@ -3,6 +3,7 @@
 
 #include "../graphics.hpp"
 #include "sstream"
+#include "fstream"
 #include "vector"
 #include "stdlib.h"
 #include "time.h"
@@ -32,14 +33,24 @@ public:
 	{
 		int x;
 		int y;
-		unsigned char allapot;
+		unsigned char allapot; // -1 törölhető, 0 látszik updetelődik, 1 lát, 2 update, 3 semmi
+		//canvas kep;
+		int kx,ky;
+
+		void setallapot(unsigned char al);
+		unsigned char getallapot();
 		void srajzol();
+		void supdate();
+		void beolvas(string filename);
 	};
 	vector<SPRITE> SPRITEOK;
 	void newsprite(int x, int y);
 	void kirajzol();
+
+	event ev;
 	
 protected:
+	canvas TERULET;
 	unsigned int KEPERNYOSZELESSEG;
 	unsigned int KEPERNYOMAGASSAG;
 	unsigned int TERULETSZELESSEG;
@@ -115,8 +126,8 @@ void ENV::kirajzol()
 {
 	for (vector<SPRITE>::iterator i=SPRITEOK.begin(); i!=SPRITEOK.end();)
 	{
-		//i->supdate();
-		i->srajzol();
+		//if (i->allapot==0 or i->allapot==2) i->supdate();
+		if (i->allapot==0 or i->allapot==1) i->srajzol();
 		if(i->allapot==-1) i = SPRITEOK.erase(i);
 		else ++i;
 	}
@@ -128,6 +139,40 @@ void ENV::SPRITE::srajzol()
 	gout << color(000,255,000)
 		<< move_to(x,y)
 		<< box(10,10);
+}
+
+void ENV::SPRITE::setallapot(unsigned char al)
+{
+	allapot=al;
+}
+
+unsigned char ENV::SPRITE::getallapot()
+{
+	return allapot;
+}
+
+void ENV::SPRITE::supdate()
+{
+
+}
+
+void ENV::SPRITE::beolvas(string filename)
+{
+	ifstream be(filename);
+	if (!be.is_open()) return;
+	be >> kx;
+	be >> ky;
+	kep.open(kx,ky); kep.load_font("font.ttf",12,true);
+	for (int i = 0; i < kx; ++i)
+	{
+		for (int j = 0; i < ky; ++j)
+		{
+			int rr; be >> rr;
+			int gg; be >> gg;
+			int bb; be >> bb;
+			kep << move_to(i,j) << color(rr,gg,bb) << dot;
+		}
+	}
 }
 
 

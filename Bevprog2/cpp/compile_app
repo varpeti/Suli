@@ -1,1 +1,0 @@
-g++ main.cpp -Wall -g -lgraphics -lSDL -lSDL_ttf -L.

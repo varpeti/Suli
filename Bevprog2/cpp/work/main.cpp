@@ -10,8 +10,7 @@ int main()
 	env.newsprite(100,100);
 	gout << text("hello world") << refresh;
 	env.kirajzol();
-	event ev;
-	while(gin >> ev and ev.keycode!=key_escape) {
+	while(gin >> env.ev and env.ev.keycode!=key_escape) {
 	}
 	return 0;
 }

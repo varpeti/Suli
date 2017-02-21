@@ -85,7 +85,8 @@ int main()
 
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
-		if (ev.type==ev_timer) {
+		if (ev.type==ev_timer) 
+		{
 
 			gout << color(000,000,000) 
 				<< move_to(0,0) 
