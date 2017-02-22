@@ -17,6 +17,7 @@ public:
     canvas();
     virtual ~canvas();
     canvas(int w, int h);
+    canvas(const canvas & c);
     bool open(unsigned width, unsigned height);
     bool save(const std::string& file) const;
     void transparent(bool t) {transp=t;}
@@ -64,6 +65,8 @@ protected:
     bool transp;
     _TTF_Font* font;
     bool antialiastext;
+    std::string loaded_font_file_name;
+    int font_size;
 
 };
 
@@ -81,6 +84,7 @@ public:
     void movemouse(int x, int y);
     bool open(unsigned width, unsigned height, bool fullscreen=false);
     virtual void refresh();
+	void set_title(const std::string& title);
 
 private:
     groutput();
@@ -126,7 +130,7 @@ struct move
     int vec_x, vec_y;
     move(int x, int y) : vec_x(x), vec_y(y) {}
     void operator () (canvas& out)
-    { out.call_with_rel(&canvas::move_point,vec_x, vec_y); }
+    { out.move_point(vec_x, vec_y); }
 };
 
 struct move_to
@@ -177,6 +181,26 @@ struct text
     void operator () (canvas& out)
     { out.draw_text(str); }
 };
+/*
+struct title
+{
+    std::string str;
+    title(const std::string& s) : str(s) {}
+    void operator () (canvas& out)
+    { out.set_title(str); }
+};
+*/
+
+struct font
+{
+    std::string font_name;
+    int font_size;
+    bool antialias;
+    font(const std::string& s, int fs, bool a=true) : font_name(s), font_size(fs), antialias(a) {}
+    void operator () (canvas& out)
+    { out.load_font(font_name, font_size, antialias); }
+};
+
 
 /*********** Input device definition **********/
 

@@ -41,7 +41,7 @@ public:
 		unsigned char getallapot();
 		void srajzol();
 		void supdate();
-		void beolvas(string filename);
+		//void beolvas(string filename);
 	};
 	vector<SPRITE> SPRITEOK;
 	void newsprite(int x, int y);
@@ -156,6 +156,7 @@ void ENV::SPRITE::supdate()
 
 }
 
+/*
 void ENV::SPRITE::beolvas(string filename)
 {
 	ifstream be(filename);
@@ -173,7 +174,7 @@ void ENV::SPRITE::beolvas(string filename)
 			kep << move_to(i,j) << color(rr,gg,bb) << dot;
 		}
 	}
-}
+}*/
 
 
 #endif

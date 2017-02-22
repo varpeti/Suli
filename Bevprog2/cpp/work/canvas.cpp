@@ -20,6 +20,7 @@ struct Sboxok
 	int vy;
 	unsigned char rr,gg,bb;
 	int elet;
+	canvas TA;
 
 	Sboxok (int ex, int ey, int szin)
 	{
@@ -28,6 +29,8 @@ struct Sboxok
 		vx=rand() % 10 -5;
 		vy=-(rand() % 10 +5);
 		elet = 100;
+
+		TA.open(100,100);
 		
 		if (szin<255) 					{rr=255-(szin-0*255); 	gg=(szin-0*255); 		bb=000;} 				else
 		if (szin>255 and szin<2*255) 	{rr=000; 				gg=255-(szin-1*255); 	bb=(szin-1*255);} 		else
