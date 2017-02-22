@@ -34,7 +34,7 @@ public:
 		int x;
 		int y;
 		unsigned char allapot; // -1 törölhető, 0 látszik updetelődik, 1 lát, 2 update, 3 semmi
-		//canvas kep;
+		canvas kep;
 		int kx,ky;
 
 		void setallapot(unsigned char al);
