@@ -1,6 +1,8 @@
 #include "../graphics.hpp"
 #include "sstream"
-#include "vector"
+#include "stdlib.h"
+#include "time.h"
+#include "math.h"
 
 using namespace genv;
 using namespace std;
@@ -9,6 +11,7 @@ struct A
 {
 	int x,y;
 	canvas T;
+	A *next;
 	A(int a, int b)
 	{
 		x = a;
@@ -19,25 +22,25 @@ struct A
 
 int main()
 {
+	srand (time(NULL));
 	gout.open(400,400);
 
+	A *kezdo;
+	kezdo = new A(rand()%450,rand()%450);
+	kezdo->next = NULL;
 
-
-
-	//------------------------------
-	std::vector<A> v;
-	A alma(10,10);
-	for (int i = 0; i < 100; ++i)
+	A *vegzo;
+	vegzo = kezdo;
+	for (int i = 0; i < 1000; ++i)
 	{
-		v.push_back(alma);
+		vegzo->next = new A(rand()%350,rand()%350);
+		vegzo = vegzo->next;
+		vegzo->next = NULL;
 	}
-	//---------------------------------
-
-
 
 
 	event ev;
-	while(gin >> ev) {
+	while(gin >> ev and ev.keycode!=key_escape) {
 		gout << color(000,000,000) 
 			<< move_to(0,0) 
 			<< box_to(399,399);
@@ -54,12 +57,23 @@ int main()
 
 		gout << move_to(22,22) << line(gout.twidth(s),0);
 
+		A *it = kezdo;
+		if ( it != NULL ) {
+			while ( it->next != NULL)
+			{
+				gout << move_to(it->x,it->y)
+					<< box(10,10);
+				it = it->next;
+			}
+			A *d = kezdo->next->next;
+			if (d) {
+				kezdo->next->next = kezdo->next->next->next;
+				delete d;
+			}
+			
+		}
+
 		gout << refresh;
-
-
-		//--------------------------------------
-		if (v.size()>0) v.erase(v.begin());
-		//---------------------------------------
 
 	}
 	return 0;
