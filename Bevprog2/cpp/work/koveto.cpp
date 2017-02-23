@@ -38,9 +38,10 @@ void Sboxok::supdate(int cx, int cy)
 	int a = cx-x;
 	int b = cy-y;
 	int h = floor( (abs(a)+abs(b))/(rand()%10+3) ); if (h==0) h=1;
-	x+=ceil(a/h);
-	y+=ceil(b/h);
+	x+=ceil(a/h)+rand()%5-2;
+	y+=ceil(b/h)+rand()%4-1;
 
+	if ((x>=kx or x<0) or (y>=ky or y<0) ) {x=rand()%(kx-100)+50; y=rand()%(ky-100)+50;}
 
 }
 
@@ -77,14 +78,14 @@ int main()
 
 	gout.showmouse(false); 
 
-	for (int i = 0; i < (3*255*3); ++i)
+	for (int i = 0; i < (3*255*5); ++i)
 	{
 		Sboxok b(rand()%(kx-100)+50,rand()%(ky-100)+50,szin);
 		szin++; if (szin>3*255) szin=0;
 		v.push_back(b);
 	}
 
-	gin.timer(200);
+	gin.timer(20);
 
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
