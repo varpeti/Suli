@@ -1,4 +1,4 @@
-#include "../graphics.hpp"
+#include "graphics.hpp"
 #include "sstream"
 
 using namespace genv;

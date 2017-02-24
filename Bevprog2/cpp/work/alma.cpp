@@ -1,4 +1,4 @@
-#include "../graphics.hpp"
+#include "graphics.hpp"
 #include "sstream"
 #include "stdlib.h"
 #include "time.h"

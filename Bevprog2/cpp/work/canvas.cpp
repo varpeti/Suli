@@ -1,5 +1,5 @@
 //CODEINGAME
-#include "../graphics.hpp"
+#include "graphics.hpp"
 #include "sstream"
 #include "vector"
 #include "stdlib.h"
