@@ -11,6 +11,13 @@ using namespace std;
 
 const int kx = 1330;
 const int ky = 600;
+const bool teljes = false;
+
+int ex = 0;
+int ey = 0;
+
+int ox = 0;
+int oy = 0;
 
 struct Sboxok
 {
@@ -38,8 +45,8 @@ void Sboxok::supdate(int cx, int cy)
 	int a = cx-x;
 	int b = cy-y;
 	int h = floor( (abs(a)+abs(b))/(rand()%10+3) ); if (h==0) h=1;
-	x+=ceil(a/h)+rand()%5-2;
-	y+=ceil(b/h)+rand()%4-1;
+	x+=ceil(a/h)+ex;
+	y+=ceil(b/h)+ey;
 
 	if ((x>=kx or x<0) or (y>=ky or y<0) ) {x=rand()%(kx-100)+50; y=rand()%(ky-100)+50;}
 
@@ -68,17 +75,19 @@ void updatedraw()
 		i->srajzol();
 		i++;
 	}
+	v[0].x+=ox;
+	v[0].y+=oy;
 }
 
 
 int main()
 {
 	srand (time(NULL));
-	gout.open(kx,ky,true);
+	gout.open(kx,ky,teljes);
 
 	gout.showmouse(false); 
 
-	for (int i = 0; i < (3*255*5); ++i)
+	for (int i = 0; i < (3*255*2); ++i)
 	{
 		Sboxok b(rand()%(kx-100)+50,rand()%(ky-100)+50,szin);
 		szin++; if (szin>3*255) szin=0;
@@ -99,6 +108,19 @@ int main()
 			updatedraw();
 
 			gout << refresh;
+		}
+		if (ev.type==ev_key)
+		{
+			if (ev.keycode==key_up 		) ey--;
+			if (ev.keycode==key_down 	) ey++;
+			if (ev.keycode==key_right 	) ex++;
+			if (ev.keycode==key_left 	) ex--;
+
+			if (ev.keycode=='w') oy--;			
+			if (ev.keycode=='s') oy++;
+			if (ev.keycode=='d') ox++;
+			if (ev.keycode=='a') ox--;
+
 		}
 		
 	}
