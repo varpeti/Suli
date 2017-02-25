@@ -4,13 +4,13 @@ function [c,d,e,f,g,h,k,i,m,n,o,p,q,r,s]=gyak2_BUGE0Q(a,b,x)
   e = find(a<x & x<b);
   f = mean(x);
   g = f<=x & x<a;
-  %h = x(g);
+  h = x(g);
   k = a<x & x<b;
   i = x(k);
   [m n] = max(i);
   o = length(i);
   t = linspace(eps,pi,100);
-  fv = sin(t)/(4.7*t+3)+0.1*cos(t.^2)
+  fv = sin(t)./(4.7*t+3)+0.1*cos(t.^2);
   [q id] = max(fv);
   p = t(id);
   
