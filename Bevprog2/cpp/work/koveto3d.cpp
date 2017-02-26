@@ -1,28 +1,32 @@
-//CODEINGAME
 #include "graphics.hpp"
 #include "sstream"
 #include "vector"
 #include "stdlib.h"
 #include "time.h"
 #include "math.h"
+#include "algorithm"
+
+#define PI 3.141592
 
 using namespace genv;
 using namespace std;
 
-const int kx = 1330;
-const int ky = 600;
+const int kx = 1900;
+const int ky = 1060;
 const int kz = round((kx+ky)/2);
 const bool teljes = false;
+int elemszam = 5; //*3*255
 
-double alfa = 0.0;
-int ex = 0;
 
 struct Sboxok
 {
-	double x;
+	double x; //és azért tarton meg a forgatás nélküli koordinátákat is mert a forgatás torzít
 	double y;
 	double z;
 	unsigned char rr,gg,bb;
+	double fx; //elforgatott koordináták, azért tárolom külön hogy sortolni lehessen ezek alapján
+	double fy; 
+	double fz; 
 
 	Sboxok (double ex, double ey, double ez, int szin)
 	{
@@ -40,6 +44,13 @@ struct Sboxok
 
 };
 
+double px = PI; double rpx = 0.0;
+double py = PI; double rpy = 0.0;
+double pz = PI; double rpz = 0.0;
+
+std::vector<Sboxok> v;
+int szin = 0;
+
 void Sboxok::supdate(double cx, double cy, double cz) 
 {
 	double a = cx-x;
@@ -50,43 +61,58 @@ void Sboxok::supdate(double cx, double cy, double cz)
 	y+=b/h;
 	z+=c/h;
 
+	//y tengely körüli forgatás (2d-s forgatási mátrixból tippeltem a 3d-st)
+	fx= x*cos(px)+z*sin(px);
+	fz= -x*sin(px)+z*cos(px);
+
+	//x tengely körüli forgatás
+	fy= y*cos(py)-fz*sin(py);
+	fz= y*sin(py)+fz*cos(py);
+
+	/*/z tengely körüli forgatás //nem kell z-re mert zavaró
+	fx= fx*cos(pz)-fy*sin(pz);
+	fy= fy*sin(pz)+fx*cos(pz);*/
+
 }
 
 void Sboxok::srajzol()
 {
 
-	//y tengely körüli forgatás (2d-s forgatási mátrix csak y helyett z)
-	double nx= x*cos(alfa)-z*sin(alfa);
-	double ny= y;
-	double nz= x*sin(alfa)+z*cos(alfa);
-
 	//2d leképzés (Leggagyibb ami létezik, de legalább saját)
-	int ax = round(nx + nz/2) +floor(kx/2);
-	int ay = round(ny + nz/2) +floor(ky/2);
+	int ax = round(fx + fz/2) +floor(kx/2);
+	int ay = round(fy + fz/2) +floor(ky/2);
 
 	if (ax>=kx-10 or ax<0) return; // ne jelenjen meg ha ki megy a képernyőről
 	if (ay>=ky-10 or ay<0) return;
 
+	/*stringstream str;
+	str << int(nx) << " " << int(ny) << " " << int(nz);
+	string s = str.str();*/
 
 	gout << color(rr,gg,bb)
 		<< move_to(ax,ay)
-		<< box(10,10);
+		<< box(-(kz/2+fz)/(kz/2)*10,-(kz/2+fz)/(kz/2)*10); // a Z távolság függvényében változik a méret
 }
 
-std::vector<Sboxok> v;
-int szin = 0;
+
+bool sortZ (const Sboxok &a, const Sboxok &b) { return (a.fz<b.fz); } // Ez felel azért hogy a hátul lévőt elöbb rajzolja ki
 
 void updatedraw()
 {
+	std::vector<Sboxok> rajZ = v; // új vektor
+	std::sort(rajZ.begin(), rajZ.end(), sortZ); // sorba rendezés
 
 	int id = 0;
 	for (vector<Sboxok>::iterator i=v.begin(); i!=v.end();)
 	{
+		int sid=id;
 		if (id<v.size()-1) id++; else id=0; 
 		i->supdate(v[id].x,v[id].y,v[id].z);
-		i->srajzol();
+		//i->srajzol();
+		rajZ[sid].srajzol(); //az új sorba rendezett vektor alapján rajzolok
 		i++;
 	}
+
 }
 
 
@@ -97,26 +123,12 @@ int main()
 
 	//gout.showmouse(false); 
 	//*
-	for (int i = 0; i < (3*255*3); ++i)
+	for (int i = 0; i < (3*255*elemszam); ++i)
 	{
 		Sboxok b(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2,szin);
 		szin++; if (szin>3*255) szin=0;
 		v.push_back(b);
-	}/*
-	int fx = 0;
-	int fy = 0;
-	int m = 50;
-	Sboxok b1(fx+m,fy+m,m,0); v.push_back(b1);
-	Sboxok b2(fx-m,fy-m,m,0); v.push_back(b2);
-	Sboxok b3(fx-m,fy+m,m,0); v.push_back(b3);
-	Sboxok b4(fx+m,fy-m,m,0); v.push_back(b4);
-
-	Sboxok b5(fx+m,fy+m,-m,200); v.push_back(b5);
-	Sboxok b6(fx-m,fy-m,-m,200); v.push_back(b6);
-	Sboxok b7(fx-m,fy+m,-m,200); v.push_back(b7);
-	Sboxok b8(fx+m,fy-m,-m,200); v.push_back(b8); // */
-
-
+	}
 
 	gin.timer(20);
 
@@ -127,20 +139,30 @@ int main()
 
 			gout << color(000,000,000) 
 				<< move_to(0,0) 
-				<< box_to(1329,599);
+				<< box(kx,ky);
 
 			updatedraw();
 
 			gout << refresh;
+			py+=rpy;
+			px+=rpx;
+		}
+		else if (ev.type==ev_key)
+		{
+			double mertek = 0.03;
+			if (ev.keycode==key_up 		or ev.keycode=='w') rpy=mertek;
+			if (ev.keycode==key_down 	or ev.keycode=='s') rpy=-mertek;
+			if (ev.keycode==key_right 	or ev.keycode=='d') rpx=-mertek;
+			if (ev.keycode==key_left 	or ev.keycode=='a') rpx=mertek;
+
+			if (-ev.keycode==key_up 	or -ev.keycode=='w') rpy=0;
+			if (-ev.keycode==key_down 	or -ev.keycode=='s') rpy=0;
+			if (-ev.keycode==key_right 	or -ev.keycode=='d') rpx=0;
+			if (-ev.keycode==key_left 	or -ev.keycode=='a') rpx=0;
 		}
 		else if (ev.type==ev_mouse)
 		{
-			
-			if (ex-ev.pos_x<0) alfa+=0.03; else alfa-=0.03; // forgatási szög
-			ex=ev.pos_x;
-
 			if (ev.button==btn_right) for(Sboxok &i:v) if (rand()%30==3) {i.x=rand()%kx-kx/2;i.y=rand()%ky-ky/2;i.z=rand()%kz-kz/2;} //egy pár random pozícióba
-
 			if (ev.button==btn_left) {v[0].x=rand()%kx-kx/2;v[0].y=rand()%ky-ky/2;v[0].z=rand()%kz-kz/2;} // az első random pozícióba
 		}
 	}

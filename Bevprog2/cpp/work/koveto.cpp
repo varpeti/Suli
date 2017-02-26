@@ -1,4 +1,3 @@
-//CODEINGAME
 #include "graphics.hpp"
 #include "sstream"
 #include "vector"
@@ -103,7 +102,7 @@ int main()
 
 			gout << color(000,000,000) 
 				<< move_to(0,0) 
-				<< box_to(1329,599);
+				<< box(kx,ky);
 
 			updatedraw();
 
