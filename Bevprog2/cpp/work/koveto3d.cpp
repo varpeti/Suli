@@ -11,10 +11,10 @@
 using namespace genv;
 using namespace std;
 
-const int kx = 1900;
-const int ky = 1060;
+const int kx = 1330;
+const int ky = 600;
 const int kz = round((kx+ky)/2);
-const bool teljes = false;
+const bool teljes = true;
 int elemszam = 5; //*3*255
 
 
@@ -46,10 +46,10 @@ struct Sboxok
 
 double px = PI; double rpx = 0.0;
 double py = PI; double rpy = 0.0;
-double pz = PI; double rpz = 0.0;
 
 std::vector<Sboxok> v;
 int szin = 0;
+canvas Vp;
 
 void Sboxok::supdate(double cx, double cy, double cz) 
 {
@@ -69,18 +69,14 @@ void Sboxok::supdate(double cx, double cy, double cz)
 	fy= y*cos(py)-fz*sin(py);
 	fz= y*sin(py)+fz*cos(py);
 
-	/*/z tengely körüli forgatás //nem kell z-re mert zavaró
-	fx= fx*cos(pz)-fy*sin(pz);
-	fy= fy*sin(pz)+fx*cos(pz);*/
-
 }
 
 void Sboxok::srajzol()
 {
 
 	//2d leképzés (Leggagyibb ami létezik, de legalább saját)
-	int ax = round(fx + fz/2) +floor(kx/2);
-	int ay = round(fy + fz/2) +floor(ky/2);
+	int ax = round(fx + fz/2 + kx/2);
+	int ay = round(fy + fz/2 + ky/2);
 
 	if (ax>=kx-10 or ax<0) return; // ne jelenjen meg ha ki megy a képernyőről
 	if (ay>=ky-10 or ay<0) return;
@@ -99,6 +95,11 @@ bool sortZ (const Sboxok &a, const Sboxok &b) { return (a.fz<b.fz); } // Ez fele
 
 void updatedraw()
 {
+	gout << color(000,000,000) 
+			<< move_to(0,0) 
+			<< box(kx,ky);
+
+
 	std::vector<Sboxok> rajZ = v; // új vektor
 	std::sort(rajZ.begin(), rajZ.end(), sortZ); // sorba rendezés
 
@@ -113,16 +114,22 @@ void updatedraw()
 		i++;
 	}
 
+	gout << stamp(Vp,kx-48,ky-48); // kirajzolom az ikonomat a bal alsó sarokba
+
+	gout << refresh;
+
 }
 
+void BMP(const char *fname,canvas &C); // BMP-ből beolvasás
 
 int main()
 {
 	srand (time(NULL));
 	gout.open(kx,ky,teljes);
 
+	BMP("Vp.bmp",Vp);
+
 	//gout.showmouse(false); 
-	//*
 	for (int i = 0; i < (3*255*elemszam); ++i)
 	{
 		Sboxok b(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2,szin);
@@ -137,13 +144,8 @@ int main()
 		if (ev.type==ev_timer) 
 		{
 
-			gout << color(000,000,000) 
-				<< move_to(0,0) 
-				<< box(kx,ky);
-
 			updatedraw();
 
-			gout << refresh;
 			py+=rpy;
 			px+=rpx;
 		}
@@ -167,4 +169,34 @@ int main()
 		}
 	}
 	return 0;
+}
+
+void BMP(const char *fname,canvas &C) // CSAK azért is BMPből.
+{
+
+	FILE* f = fopen(fname, "rb"); if (!f) return;
+	unsigned char info[54] = {0}; // 54 byte: az infók
+	fread(info, sizeof(unsigned char), 54, f); 
+
+	unsigned int width = *(int*)&info[18]; //18. szélesség
+	unsigned int height = *(int*)&info[22]; //22. magasság
+
+	unsigned int size = 3 * width * height; // 3 byte pixelenként
+	unsigned char* data = new unsigned char[size]; // lefoglalás
+	fread(data, sizeof(unsigned char), size, f); // beolvasás egyszerre / csak ha nincsenek színtérinformációk, különben csúszik
+	fclose(f);
+
+	C.open(width,height); // canvas megnyitása
+	unsigned int k = 0;
+	for (unsigned int i = 0; i < height; i++) //y
+	{
+		for (unsigned int j = 0; j < width; j++) //x
+		{
+			unsigned int bb = data[k]; k++; // Igen a mikrofos BBGGRR formátumot használ
+			unsigned int gg = data[k]; k++;
+			unsigned int rr = data[k]; k++;
+			C << move_to(j,height-i) << color(rr,gg,bb) << dot; // ja és fejjel lefele (MIÉRT???)
+		}
+	}
+	delete data; //Nem használt memória felszabadítása
 }

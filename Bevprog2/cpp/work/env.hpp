@@ -27,7 +27,7 @@ public:
 	ENV(unsigned int szelesseg, unsigned int magassag);
 	~ENV();
 
-	bool sprite(string id, int x, int y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // látható és updetelődik
+	bool newsprite(string id, int x, int y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // látható és updetelődik
 	bool newsprite(string id, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // nem látható és nem updatelődik
 	void kirajzol();
 	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
