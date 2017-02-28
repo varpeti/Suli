@@ -46,6 +46,7 @@ struct Sboxok
 
 double px = PI; double rpx = 0.0;
 double py = PI; double rpy = 0.0;
+double pz = PI;
 
 std::vector<Sboxok> v;
 int szin = 0;
@@ -61,13 +62,23 @@ void Sboxok::supdate(double cx, double cy, double cz)
 	y+=b/h;
 	z+=c/h;
 
+	fx=x; fy=y; fz=z;
+	double se;
+
 	//y tengely körüli forgatás (2d-s forgatási mátrixból tippeltem a 3d-st)
-	fx= x*cos(px)+z*sin(px);
-	fz= -x*sin(px)+z*cos(px);
+	se= fx*cos(px)+fz*sin(px);
+	fz= -fx*sin(px)+fz*cos(px);
+	fx= se;
 
 	//x tengely körüli forgatás
-	fy= y*cos(py)-fz*sin(py);
-	fz= y*sin(py)+fz*cos(py);
+	se= fy*cos(py)-fz*sin(py);
+	fz= fy*sin(py)+fz*cos(py);
+	fy= se;
+
+	//z tengely körüli forgatás
+	se= fx*cos(pz)-fy*sin(pz);
+	fy= fx*sin(pz)+fy*cos(pz);
+	fx= se;
 
 }
 
@@ -152,10 +163,10 @@ int main()
 		else if (ev.type==ev_key)
 		{
 			double mertek = 0.03;
-			if (ev.keycode==key_up 		or ev.keycode=='w') rpy=mertek;
-			if (ev.keycode==key_down 	or ev.keycode=='s') rpy=-mertek;
-			if (ev.keycode==key_right 	or ev.keycode=='d') rpx=-mertek;
-			if (ev.keycode==key_left 	or ev.keycode=='a') rpx=mertek;
+			if (ev.keycode==key_up 		or ev.keycode=='w') rpy=-mertek;
+			if (ev.keycode==key_down 	or ev.keycode=='s') rpy=mertek;
+			if (ev.keycode==key_right 	or ev.keycode=='d') rpx=mertek;
+			if (ev.keycode==key_left 	or ev.keycode=='a') rpx=-mertek;
 
 			if (-ev.keycode==key_up 	or -ev.keycode=='w') rpy=0;
 			if (-ev.keycode==key_down 	or -ev.keycode=='s') rpy=0;
