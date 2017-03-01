@@ -7,7 +7,7 @@
 #include "vector"
 #include "stdlib.h"
 #include "time.h"
-#include "math.h"
+#include "kamera.hpp"
 
 using namespace genv;
 using namespace std;
@@ -127,6 +127,7 @@ void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int
 	if (x<0) {sx+=x; kx-=x; x=0;}
 	if (y+sy>KEPERNYOMAGASSAG) {sy=KEPERNYOMAGASSAG-ky;}
 	if (y<0) {sy+=y; ky-=y; y=0;}
+	double ux,uy;
 	gout << stamp(TS,kx,ky,sx,sy,x,y); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
 }
 

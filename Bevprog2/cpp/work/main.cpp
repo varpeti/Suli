@@ -15,6 +15,7 @@ int main()
 	env.newsprite("6",1200,400,420,340,190,140);
 	gout << text("hello world");
 	env.kirajzol();
+
 	while(gin >> env.ev and env.ev.keycode!=key_escape) {
 	}
 	return 0;
