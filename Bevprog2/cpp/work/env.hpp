@@ -17,7 +17,6 @@ using namespace std;
 /* STRUCTOK */
 
 
-
 /* CLASS 	*/
 
 class ENV
@@ -33,6 +32,7 @@ public:
 	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
 
 	event ev;
+	KAMERA kamera;
 	
 protected:
 
@@ -43,7 +43,7 @@ protected:
 		unsigned char allapot; // -1 törölhető, 0 látszik updetelődik, 1 lát, 2 update, <3 semmi
 		unsigned int kx,ky,sx,sy; // sprite x,y és szélesség magasság
 
-		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG);
+		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
 		void supdate();
 		SPRITE(string uid,int ux,int uy,unsigned char uallapot, unsigned int ukx, unsigned int uky, unsigned int usx, unsigned int usy)
 		{
@@ -110,10 +110,12 @@ bool ENV::newsprite(string id, unsigned int kx, unsigned int ky, unsigned int sx
 
 void ENV::kirajzol()
 {
+	gout << color(0,0,0) << move_to(0,0) << box(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
+
 	for (vector<SPRITE>::iterator i=SPRITEOK.begin(); i!=SPRITEOK.end();)
 	{
 		if (i->allapot==0 or i->allapot==2) i->supdate();
-		if (i->allapot==0 or i->allapot==1) i->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
+		if (i->allapot==0 or i->allapot==1) i->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
 		if(i->allapot==-1) i = SPRITEOK.erase(i);
 		else ++i;
 	}
@@ -121,14 +123,17 @@ void ENV::kirajzol()
 	gout << refresh;
 }
 
-void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG)
+void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera)
 {
-	if (x+sx>KEPERNYOSZELESSEG) {sx=KEPERNYOSZELESSEG-kx;}
-	if (x<0) {sx+=x; kx-=x; x=0;}
-	if (y+sy>KEPERNYOMAGASSAG) {sy=KEPERNYOMAGASSAG-ky;}
-	if (y<0) {sy+=y; ky-=y; y=0;}
-	double ux,uy;
-	gout << stamp(TS,kx,ky,sx,sy,x,y); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
+	double ux,uy,usx,usy,ukx,uky;
+	ux=x;uy=y;usx=sx;usy=sy;ukx=kx;uky=ky;
+	kamera.getCoords(ux,uy);
+	if (ux+usx<0 or ux>KEPERNYOSZELESSEG or uy+usy<0 or uy>KEPERNYOMAGASSAG) return;
+	if (ux+usx>KEPERNYOSZELESSEG) {usx=KEPERNYOSZELESSEG-ukx;}
+	if (ux<0) {usx+=ux; ukx-=ux; ux=0;}
+	if (uy+usy>KEPERNYOMAGASSAG) {usy=KEPERNYOMAGASSAG-uky;}
+	if (uy<0) {usy+=uy; uky-=uy; uy=0;}
+	gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
 }
 
 void ENV::SPRITE::supdate()

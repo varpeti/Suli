@@ -13,14 +13,23 @@ private:
 
 public:
 	void aset(double bx, double by, double bs, double br);
+	void aset(double bx, double by);
 	void rset(double bx, double by, double bs, double br);
-	void get(double &bx, double &by, double bs, double br);
+	void rset(double bx, double by);
+	void get(double &bx, double &by, double &bs, double &br);
+	void get(double &bx, double &by);
 
 	void getKamCoords(double &x, double &y);
 	void getCoords(double &x, double &y);
 
-	KAMERA();
-	~KAMERA();
+	KAMERA()
+	{
+		kx=0;
+		ky=0;
+		ks=1;
+		kr=0;
+	};
+	~KAMERA(){};
 };
 
 void KAMERA::getKamCoords(double &x,double &y)
@@ -59,12 +68,38 @@ void KAMERA::aset(double bx, double by, double bs, double br)
 	kr=br;
 }
 
+void KAMERA::aset(double bx, double by)
+{
+	kx=bx;
+	ky=by;
+}
+
 void KAMERA::rset(double bx, double by, double bs, double br)
 {
 	kx+=bx;
 	ky+=by;
 	ks*=bs;
 	kr+=br;
+}
+
+void KAMERA::rset(double bx, double by)
+{
+	kx+=bx;
+	ky+=by;
+}
+
+void KAMERA::get(double &bx, double &by, double &bs, double &br)
+{
+	bx=kx;
+	by=ky;
+	bs=ks;
+	br=kr;
+}
+
+void KAMERA::get(double &bx, double &by)
+{
+	bx=kx;
+	by=ky;
 }
 
 #endif
