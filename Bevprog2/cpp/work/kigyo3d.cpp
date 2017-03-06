@@ -122,7 +122,7 @@ void Sboxok::getKoords(double &cx, double &cy, double &cz)
 }
 
 
-void updatedraw(std::vector<Sboxok> &v,double &px,double &py,double &pz,double alpha, double ex, double ey)
+void updatedraw(std::vector<Sboxok> &v,double &px,double &py,double &pz, int &target,double alpha, double ex, double ey)
 {
 	gout << color(000,000,000) 
 			<< move_to(0,0) 
@@ -133,17 +133,22 @@ void updatedraw(std::vector<Sboxok> &v,double &px,double &py,double &pz,double a
 	std::sort(rajZ.begin(), rajZ.end()); // sorba rendezés
 
 	int minid = -1;
-	double mint = 999999;
+	double mint = 99999;
 
 	for (int i = 0; i < v.size(); ++i)
 	{ 
 		double cx,cy,cz = 0;
-		if (i>0) v[i-1].getKoords(cx,cy,cz); else {cx=px,cy=py,cz=pz;}
+		if (i>0) v[i-1].getKoords(cx,cy,cz); 
+		else 
+		{
+			v[target].getKoords(cx,cy,cz); // target irányába
+			v[i].getKoords(px,py,pz); // fej koordinátái
+		}
 		double t = v[i].supdate(cx,cy,cz,alpha,ex,ey,px,py,pz);
 		if (t<mint) {mint=t;minid=i;}
 		rajZ[i].srajzol(); //az új sorba rendezett vektor alapján rajzolok
 	}
-	v[minid].getKoords(px,py,pz);
+	if (minid>0) target=minid;
 
 	gout << refresh;
 
@@ -164,11 +169,13 @@ int main()
 	szin++; if (szin>3*255) szin=0;
 	v.push_back(b);
 
-	double mertek = 2;
-	double rpx=0,rpy=0,rpz=0;
-	double px=0,py=0,pz=0;
+	double px=0,py=0,pz=0; //fej
+	int target=1;
 	
+	double mertek = 0.01;
+	double rpx = 0;
 	double alpha = PI;
+
 	double ex=0,ey=0;
 
 	int kaja = 0;
@@ -177,11 +184,11 @@ int main()
 	while(gin >> ev and ev.keycode!=key_escape) {
 		if (ev.type==ev_timer) 
 		{
-			px+=rpx;py+=rpy;pz+=rpz;
+			alpha+=rpx;
 			if (px>kx/2 or px<-kx/2) break;
 			if (py>ky/2 or py<-ky/2) break;
 			if (pz>kz/2 or pz<-kz/2) break;
-			updatedraw(v,px,py,pz,alpha,ex,ey);
+			updatedraw(v,px,py,pz,target,alpha,ex,ey);
 			while (kaja<mkaja)
 			{
 				Sboxok b(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2,szin,true);
@@ -190,9 +197,16 @@ int main()
 				kaja++;
 			}
 		}
+		else if (ev.type==ev_key)
+		{
+			if (ev.keycode==key_right 	or ev.keycode=='d') rpx=mertek;
+			if (ev.keycode==key_left 	or ev.keycode=='a') rpx=-mertek;
+
+			if (-ev.keycode==key_right 	or -ev.keycode=='d') rpx=0;
+			if (-ev.keycode==key_left 	or -ev.keycode=='a') rpx=0;
+		}
 		else if (ev.type==ev_mouse)
 		{
-			if (ex>ev.pos_x) alpha+=0.01; else if (ex<ev.pos_x) alpha-=0.01;
 			ex=ev.pos_x;
 			ey=ev.pos_y;
 		}
