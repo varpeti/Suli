@@ -3,17 +3,20 @@
 
 using namespace genv;
 
+void gutkozott(long long int aid, double &ax, double &ay, unsigned int &asx, unsigned int &asy, double &avx, double &avy,long long int bid, double &bx, double &by, unsigned int &bsx, unsigned int &bsy, double &bvx, double &bvy)
+{};
+
 
 int main()
 {
-	ENV env (1300,600,true);
+	ENV env (1300,600,false);
 	if(!env.spriteok_beolvas("hal.bmp")) gout << text("Nem talalhato a kep!");
-	env.newsprite("1",100,0,300,160,170,160);
-	env.newsprite("2",300,-50,300,160,170,160);
-	env.newsprite("3",500,500,300,160,170,160);
-	env.newsprite("4",0,200,420,340,190,140);
-	env.newsprite("5",-50,400,420,340,190,140);
-	env.newsprite("6",1200,200,300,210,200,150);
+	env.newSprite(1,100,0,300,160,170,160);
+	env.newSprite(2,300,-50,300,160,170,160);
+	env.newSprite(3,500,500,300,160,170,160);
+	env.newSprite(4,0,200,420,340,190,140);
+	env.newSprite(5,-50,400,420,340,190,140);
+	env.newSprite(6,1200,200,300,210,200,150);
 	gout << text("hello world");
 	env.kirajzol();
 
