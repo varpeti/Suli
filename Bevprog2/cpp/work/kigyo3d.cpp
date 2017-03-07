@@ -13,31 +13,34 @@ using namespace genv;
 using namespace std;
 
 const int kx = 1330;
-const int ky = 600;
+const int ky = 700;
 const int kz = round((kx+ky)/2);
 const bool teljes = false;
-const int mkaja = 10;
+const int nagyszam = kx+ky+kz+1; // A legnagyobb tav
 
+struct SRekord
+{	
+	// playerstat
+	int kaja;
+	int pont;
+	int hossz;
 
-void forgat(double &fx,double &fy, double &fz,double alpha)
-{
-	double se;
+	// gamestat
+	int maxkaja;
+	int szindifferencial;
+	int hosszszorzo;
 
-	//y tengely körüli forgatás (2d-s forgatási mátrixból tippeltem a 3d-st)
-	se= fx*cos(alpha)+fz*sin(alpha);
-	fz= -fx*sin(alpha)+fz*cos(alpha);
-	fx= se;
+	SRekord(int nehezseg) // Nehéz (3-30)
+	{
+		kaja=0;
+		pont=500;
+		hossz=1;
 
-	//x tengely körüli forgatás 
-	se= fy*cos(PI)-fz*sin(PI);
-	fz= fy*sin(PI)+fz*cos(PI);
-	fy= se;
-
-	//z tengely körüli forgatás
-	se= fx*cos(PI)-fy*sin(PI);
-	fy= fx*sin(PI)+fy*cos(PI);
-	fx= se;
-}
+		maxkaja = nehezseg;
+		szindifferencial = 2;
+		hosszszorzo = 10;
+	}
+};
 
 struct Skoord
 {	
@@ -63,6 +66,8 @@ struct Skoord
 	Skoord operator-(Skoord);
 	Skoord operator/(double);
 	double operator|(Skoord);
+
+	Skoord forgat(double alpha);
 };
 
 Skoord Skoord::operator+(Skoord b)
@@ -86,15 +91,37 @@ Skoord Skoord::operator-(Skoord b)
 Skoord Skoord::operator/(double b)
 {
 	Skoord c;
-	c.x = x+x/b;
-	c.y = x+y/b;
-	c.z = x+z/b;
+	c.x = x/b;
+	c.y = y/b;
+	c.z = z/b;
 	return(c);
 }
 
 double Skoord::operator|(Skoord b)
 {
-	return sqrt( (x-b.x)*(x-b.x)+(y-b.y)*(y-b.y)+(z-b.z)*(z-b.z) ); 
+	return sqrt( (x-b.x)*(x-b.x)+(y-b.y)*(y-b.y)+(z-b.z)*(z-b.z) );
+}
+
+Skoord Skoord::forgat(double alpha)
+{
+	double se;
+	Skoord f=*this;
+
+	//y tengely körüli forgatás (2d-s forgatási mátrixból tippeltem a 3d-st)
+	se= f.x*cos(alpha)+f.z*sin(alpha);
+	f.z= -f.x*sin(alpha)+f.z*cos(alpha);
+	f.x= se;
+
+	//x tengely körüli forgatás 
+	se= f.y*cos(PI)-f.z*sin(PI);
+	f.z= f.y*sin(PI)+f.z*cos(PI);
+	f.y= se;
+
+	//z tengely körüli forgatás
+	se= f.x*cos(PI)-f.y*sin(PI);
+	f.y= f.x*sin(PI)+f.y*cos(PI);
+	f.x= se;
+	return f;
 }
 
 
@@ -119,85 +146,99 @@ struct Sboxok
 
 	bool operator < (const Sboxok& str) const { return (f.z<str.f.z); } // Ez felel azért hogy a hátul lévőt elöbb rajzolja ki
 
-	double supdate(Skoord c, double alpha, double ex, double ey);
+	double supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id);
 	void srajzol();
-	void getKoords(Skoord &c);
+	Skoord getKoords();
 
 };
 
-double Sboxok::supdate(Skoord c, double alpha, double ex, double ey) 
+double Sboxok::supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id)
 {
 	if (!tipus) {
-		Skoord a = c-k;
-		double h = c|k; if (h==0) h=1; // normalizásás csak e = 3;
-		cout << "h: " << h << endl;
-		//k=a/h;
+		Skoord a = c-k; //vektor számolás
+		double h = c|k; if (h==0) h=1; else h/=(rand()%300)/100+1; //normalizálás || h/=3 miatt gyorsabban halad
+		k=k+a/h; //mozgatás
+	}
+	f = k.forgat(alpha); // forgatás rajzoláshoz
+
+	if (tipus) {
+		if ((fej|k)<10) {
+			tipus=false;
+			if (rekord.hossz+rekord.hosszszorzo>id) rekord.pont+=rand()%10+5; else rekord.pont-=rand()%10+6;
+			rekord.hossz++;
+			rekord.kaja--;
+			
+		} // Megette
+
+
+		double ax = round(f.x + f.z/2 + kx/2); // Az egérhez legközelebbi kiválasztáshoz
+		double ay = round(f.y + f.z/2 + ky/2);
+		return (sqrt((ax-ex)*(ax-ex)+(ay-ey)*(ay-ey)));
 	}
 
-	f=k;
-	forgat(f.x,f.y,f.z,alpha);
+	return nagyszam;
 
-	double ax = round(f.x + f.z/2 + kx/2);
-	double ay = round(f.y + f.z/2 + ky/2);
-	return (sqrt((ax-ex)*(ax-ex)+(ay-ey)*(ay-ey)));
 }
 
 void Sboxok::srajzol()
 {
 
-	//2d leképzés (Leggagyibb ami létezik, de legalább saját)
-	int ax = round(f.x + f.z/2 + kx/2);
+	//2d leképzés (Leggagyibb ami létezik, de legalább saját :D )
+	int ax = round(f.x + f.z/2 + kx/2); 
 	int ay = round(f.y + f.z/2 + ky/2);
+	if (ax==kx/2 and ay==ky/2) return; // Az új objektum ne villanjon fel
 
 	if (ax>=kx-10 or ax<0) return; // ne jelenjen meg ha ki megy a képernyőről
 	if (ay>=ky-10 or ay<0) return;
 
-	stringstream str;
+	/*stringstream str;
 	str << int(k.x) << " " << int(k.y) << " " << int(k.z);
-	string s = str.str();
+	string s = str.str(); //*/
 
+	double mx = (kz/2+f.z)/(kz/2)*10; if (mx<1) mx=2; // a Z távolság függvényében változik a méret
+	double my = (kz/2+f.z)/(kz/2)*10; if (my<1) my=2;
 	gout << color(rr,gg,bb)
 		<< move_to(ax,ay)
-		<< box(-(kz/2+f.z)/(kz/2)*10,-(kz/2+f.z)/(kz/2)*10) // a Z távolság függvényében változik a méret
-		<< text(s);
+		<< box(mx,my);
+		//<< text(s);
 }
 
-void Sboxok::getKoords(Skoord &c)
+Skoord Sboxok::getKoords()
 {
-	c=k;
+	return k;
 }
 
-void updatedraw(std::vector<Sboxok> &v, int &target,double alpha, double ex, double ey)
+void pontkiir(int pont);
+
+void updatedraw(std::vector<Sboxok> &v, int &target,double alpha, double ex, double ey,SRekord &rekord)
 {
 	gout << color(000,000,000) 
 			<< move_to(0,0) 
 			<< box(kx,ky);
 
+	gout << color(25,25,25);
+	pontkiir(rekord.pont);
 
-	std::vector<Sboxok> rajZ = v; // új vektor
+
+	std::vector<Sboxok> rajZ = v; // új vektor a sorba rajzoláshoz
 	std::sort(rajZ.begin(), rajZ.end()); // sorba rendezés
 
-	int minid = -1;
-	double mint = 99999;
+	int minid = -1; // Az egérhez leközelebbi // minimum kiválasztás
+	double mint = nagyszam;
+
+	Skoord fej = v[0].getKoords(); // fej koordinátái
 
 	for (int i = 0; i < v.size(); ++i)
 	{ 
 		Skoord c;
-		if (i>0) v[i-1].getKoords(c); 
-		else 
-		{
-			v[target].getKoords(c); // target irányába
-			//v[i].getKoords(px,py,pz); // fej koordinátái
-		}
-		double t = v[i].supdate(c,alpha,ex,ey);
+		if (i>0) c=v[i-1].getKoords(); // a kígyó irányába
+		else c=v[target].getKoords(); // target irányába
+		double t = v[i].supdate(c,alpha,ex,ey,fej,rekord,i);
 		if (t<mint) {mint=t;minid=i;}
 		rajZ[i].srajzol(); //az új sorba rendezett vektor alapján rajzolok
 	}
 
 	if (minid>0) target=minid;
-
-	Skoord k; v[target].getKoords(k);
-	//cout << int(k.x) << " " << int(k.y) << " " << int(k.z) << endl;
 	gout << refresh;
 
 }
@@ -223,22 +264,25 @@ int main()
 
 	double ex=0,ey=0;
 
-	int kaja = 0;
 	int target=1;
+	SRekord rekord(10);
 	
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
 		if (ev.type==ev_timer) 
 		{
 			alpha+=rpx;
-			updatedraw(v,target,alpha,ex,ey);
-			while (kaja<mkaja)
+			updatedraw(v,target,alpha,ex,ey,rekord);
+			while (rekord.kaja<rekord.maxkaja*rekord.hosszszorzo)
 			{
-				Skoord n(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2);
-				Sboxok b(n,szin,true);
-				szin+=5; if (szin>3*255) szin=0;
-				v.push_back(b);
-				kaja++;
+				Skoord n(rand()%(9*kx/10)-(9*kx/20),rand()%(9*ky/10)-(9*ky/20),rand()%(9*kz/10)-(9*kz/20)); // azért legyenenek bentebb a pontok
+				for (int i = 0; i < rekord.hosszszorzo; ++i)
+				{
+					Sboxok b(n,szin,true); v.push_back(b);
+					szin+=rekord.szindifferencial; if (szin>3*255) szin=0;
+				}
+		
+				rekord.kaja+=rekord.hosszszorzo;
 			}
 		}
 		else if (ev.type==ev_key)
@@ -256,4 +300,51 @@ int main()
 		}
 	}
 	return 0;
+}
+
+void pontkirajz(int x, int y, int sz)
+{
+	switch(sz)
+	{
+		case 0: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30) << box(30,90) << move_to(x,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
+		case 1: gout << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
+		case 2: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30,y+30+90) << box(90,30); break;
+		case 3: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90) << box(90,30); break;
+		case 4: gout << move_to(x,y+30) << box(30,90) << move_to(x+30,y+30+90) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
+		case 5: gout << move_to(x+30,y) << box(90,30) << move_to(x,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30,y+30+90) << box(90,30); break;
+		case 6: gout << move_to(x+30,y) << box(90,30) << move_to(x,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30,y+30+90) << box(90,30) << move_to(x,y+30+90+30) << box(30,90); break;
+		case 7: gout << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y) << box(90,30); break;
+		case 8: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90) << box(90,30) << move_to(x,y+30+90+30) << box(30,90); break;
+		case 9: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90) << box(90,30); break;
+	}
+}
+
+int gpont;
+
+void pontkiir(int pont)
+{
+	if (gpont!=pont) cout << "d pont: " << pont-gpont << endl;
+	gpont=pont;
+
+	int seged, s2;
+	s2=pont;
+
+	seged = s2/10000;
+	s2=s2-10000*seged;
+	pontkirajz(kx/2-2*160-75,ky/2-135,seged);
+
+	seged = s2/1000;
+	s2=s2-1000*seged;
+	pontkirajz(kx/2-1*160-75,ky/2-135,seged);
+
+	seged = s2/100;
+	s2=s2-100*seged;
+	pontkirajz(kx/2-0*160-75,ky/2-135,seged);
+
+	seged = s2/10;
+	s2=s2-10*seged;
+	pontkirajz(kx/2+1*160-75,ky/2-135,seged);
+
+	seged = s2;
+	pontkirajz(kx/2+2*160-75,ky/2-135,seged);
 }
