@@ -16,8 +16,6 @@ using namespace std;
 
 /* DEKRALÁCIÓK	*/
 
-/* STRUCTOK */
-
 
 /* CLASS 	*/
 
@@ -39,6 +37,7 @@ public:
 	bool getSpritePosition(long long int id,double &x,double &y);
 	bool setSpriteAllapot(long long int id,unsigned char allapot);
 	bool getSpriteAllapot(long long int id,unsigned char &allapot);
+	bool SpriteBenneVan(long long int id, double px, double py);
 
 	long long int utkozott(long long int aid);
 
@@ -51,7 +50,7 @@ protected:
 	{
 		long long int id; // az id-je (0 nem lehet!)
 		double x,y; // kooridiáták lehet negatív is
-		unsigned int allapot; // -1 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
+		unsigned int allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
 		unsigned int kx,ky,sx,sy; // sprite x,y és szélesség magasság
 		double vx,vy; // sebesség
 		long long utk;
@@ -134,9 +133,9 @@ void ENV::kirajzol()
 	{
 		if (i->allapot==0 or i->allapot==2) i->supdate(SPRITEOK);
 		if (i->allapot==0 or i->allapot==1) i->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
-		if (i->allapot==-1) {std::swap(*i, SPRITEOK.back()); SPRITEOK.pop_back(); cout << "torolve: " << i->id << endl;}// ezt lehetne kicserél popback re cserélni
+		cout << "d: "<< i->allapot << " " << i->id << endl;
+		if (i->allapot==255) {std::swap(*i, SPRITEOK.back()); SPRITEOK.pop_back(); cout << "torolve: " << i->id << endl;}// ezt lehetne kicserél popback re cserélni
 		else ++i;
-		cout << i->allapot << " " << i->id << endl;
 	}
 
 	gout << refresh;
@@ -171,8 +170,9 @@ void ENV::SPRITE::supdate(vector<SPRITE> &SPRITEOK)
 	for (SPRITE &sp:SPRITEOK)
 		if (sp.id!=id and (sp.allapot==0 or sp.allapot==2))
 		{
-			if (bennevan(x,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x,y+sy,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y+sy,sp.x,sp.y,sp.sx,sp.sy)) utk=sp.id;
-			else if (bennevan(sp.x,sp.y,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y,x,y,sx,sy) or bennevan(sp.x,sp.y+sp.sy,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y+sp.sy,x,y,sx,sy)) utk=sp.id;
+			if (bennevan(x,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x,y+sy,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y+sy,sp.x,sp.y,sp.sx,sp.sy) or
+			bennevan(sp.x,sp.y,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y,x,y,sx,sy) or bennevan(sp.x,sp.y+sp.sy,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y+sp.sy,x,y,sx,sy)) 
+				{utk=sp.id;}
 		}
 	if (utk) cout << "utk: " << id << " " << utk << endl;
 }
@@ -248,6 +248,15 @@ long long int ENV::utkozott(long long int aid)
 		if (aid==sp.id) {return sp.utk;}
 	return 0;
 }
+
+bool ENV::SpriteBenneVan(long long int id, double px, double py)
+	{ 
+		double mx,msx,my,msy;
+		for (SPRITE &sp:SPRITEOK)
+			if (id==sp.id) {mx=sp.x;msx=sp.sx;my=sp.y;msy=sp.sy;}
+		if (px>=mx and px<=mx+msx and py>=my and py<=my+msy) return true;
+		return false;
+	};
 
 
 bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.

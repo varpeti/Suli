@@ -10,7 +10,7 @@ void gutkozott(long long int aid, double &ax, double &ay, unsigned int &asx, uns
 int main()
 {
 	ENV env (1300,600,false);
-	if(!env.spriteok_beolvas("hal.bmp")) gout << text("Nem talalhato a kep!");
+	if(!env.spriteok_beolvas("hal2.bmp")) gout << text("Nem talalhato a kep!");
 	env.newSprite(1,100,0,300,160,170,160);
 	env.newSprite(2,300,-50,300,160,170,160);
 	env.newSprite(3,500,500,300,160,170,160);

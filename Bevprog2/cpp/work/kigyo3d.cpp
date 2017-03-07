@@ -28,7 +28,7 @@ void forgat(double &fx,double &fy, double &fz,double alpha)
 	fz= -fx*sin(alpha)+fz*cos(alpha);
 	fx= se;
 
-	//x tengely körüli forgatás
+	//x tengely körüli forgatás 
 	se= fy*cos(PI)-fz*sin(PI);
 	fz= fy*sin(PI)+fz*cos(PI);
 	fy= se;
@@ -59,15 +59,43 @@ struct Skoord
 		z=0;
 	}
 
-	double operator| (const Skoord& str) const
-	{
-		return sqrt( (x-str.x)*(x-str.x)+(y-str.y)*(y-str.y)+(z-str.z)*(z-str.z) );
-	}
+	Skoord operator+(Skoord);
+	Skoord operator-(Skoord);
+	Skoord operator/(double);
+	double operator|(Skoord);
 };
 
-Skoord operator+(const Skoord a, const Skoord b) {return Skoord(a.x+b.x,a.y+b.y,a.z+b.z);}
-Skoord operator-(const Skoord a, const Skoord b) {return Skoord(a.x-b.x,a.y-b.y,a.z-b.z);}
-Skoord operator/(const Skoord a, double b) {return Skoord(a.x+a.x/b,a.y+a.y/b,a.z+a.z/b);}
+Skoord Skoord::operator+(Skoord b)
+{
+	Skoord c;
+	c.x = x+b.x;
+	c.y = y+b.y;
+	c.z = z+b.z;
+	return(c);
+}
+
+Skoord Skoord::operator-(Skoord b)
+{
+	Skoord c;
+	c.x = x-b.x;
+	c.y = y-b.y;
+	c.z = z-b.z;
+	return(c);
+}
+
+Skoord Skoord::operator/(double b)
+{
+	Skoord c;
+	c.x = x+x/b;
+	c.y = x+y/b;
+	c.z = x+z/b;
+	return(c);
+}
+
+double Skoord::operator|(Skoord b)
+{
+	return sqrt( (x-b.x)*(x-b.x)+(y-b.y)*(y-b.y)+(z-b.z)*(z-b.z) ); 
+}
 
 
 struct Sboxok
@@ -100,11 +128,9 @@ struct Sboxok
 double Sboxok::supdate(Skoord c, double alpha, double ex, double ey) 
 {
 	if (!tipus) {
-		cout << "c: " << int(c.x) << " " << int(c.y) << " " << int(c.z) << endl;
-		cout << "k: " << int(k.x) << " " << int(k.y) << " " << int(k.z) << endl;
 		Skoord a = c-k;
-		cout << "a: " << int(k.x) << " " << int(k.y) << " " << int(k.z) << endl;
 		double h = c|k; if (h==0) h=1; // normalizásás csak e = 3;
+		cout << "h: " << h << endl;
 		//k=a/h;
 	}
 

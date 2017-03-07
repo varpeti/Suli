@@ -84,7 +84,7 @@ struct Selemek
 		}
 		for (int i = 1; i <= 4; ++i)
 		{
-			if (!env.setSpriteSebesseg(id-i,3,0)) cout << "gond: " << i << endl;
+			if (!env.setSpriteSebesseg(id-i,5,0)) cout << "gond: " << i << endl;
 		}
 	}
 };
@@ -96,12 +96,12 @@ int main()
 	ENV env (Ksz,Km,false);
 	if(!env.spriteok_beolvas("star.bmp")) cout << "Nem talalhato a kep!";
            
-	//env.newSprite(-2,-90,-10,0,0,Ksz,10); //env.setSpriteAllapot(-2,0);	// verem jobboldala  -----------|
-	env.newSprite(-3,Ksz,-10,0,0,10,Km+10); //env.setSpriteAllapot(-2,0);// verem alja 					|
-	env.newSprite(-4,-90,Km,0,0,Ksz,10); //env.setSpriteAllapot(-3,0);	// verem jobboldala  -----------|
+	env.newSprite(-1,-90,-10,0,0,Ksz,10); env.setSpriteAllapot(-1,0);	// verem jobboldala  -----------|
+	env.newSprite(-2,Ksz,-10,0,0,10,Km+10); env.setSpriteAllapot(-2,0);// verem alja 					|
+	env.newSprite(-3,-90,Km,0,0,Ksz,10); env.setSpriteAllapot(-3,0);	// verem jobboldala  -----------|
 
 	long long int ids=1; // nem lehet 0
-	//std::vector<Selemek> elemek;
+	std::vector<Selemek> elemek;
 
 	gin.timer(33);
 
@@ -111,20 +111,19 @@ int main()
 		
 		if (env.ev.type==ev_timer) 
 		{
-			/*for (std::vector<Selemek>::iterator i = elemek.begin(); i != elemek.end(); ++i)
+			for (std::vector<Selemek>::iterator i = elemek.begin(); i != elemek.end(); ++i)
 			{
 				for (int j = 1; j <= 4; ++j){
 					long long int b = env.utkozott(i->id-j);
-					if (b>0) {env.setSpriteAllapot(b,-1);
-						cout << "tr: " << b << " " << i->id-j << endl;
+					if (b>0) { if (env.setSpriteAllapot(b,255)) cout << "tr: " << b << " " << i->id-j << endl;
 					}
 				}
-			}*/
+			}
 			env.kirajzol();
 		}
 		else if (env.ev.type==ev_key)
 		{
-			//Selemek elem(env,rand()%6+1,rand()%5*45,ids); elemek.push_back(elem);
+			Selemek elem(env,rand()%6+1,rand()%5*45,ids); elemek.push_back(elem);
 		}
 	}
 	int a;
