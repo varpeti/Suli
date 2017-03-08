@@ -16,10 +16,6 @@ const int kx = 1330;
 const int ky = 700;
 const int kz = round((kx+ky)/2);
 const bool teljes = false;
-const int nagyszam = kx+ky+kz+1; // A legnagyobb tav
-const int maxkaja = 20;
-const int szindifferencial = 1;
-const int hosszszorzo = 10;
 
 struct Skoord
 {	
@@ -103,105 +99,38 @@ Skoord Skoord::forgat(double alpha)
 	return f;
 }
 
-struct SRekord
-{	
-	// playerstat
-	int kaja;
-	int pont;
-	int hossz;
-	int elet;
-	double sebesseg;
-
-	SRekord(int eelet, int esebesseg)
-	{
-		kaja=0;
-		pont=0;
-		hossz=1;
-		elet=eelet*hosszszorzo;
-		sebesseg=esebesseg;
-	}
-};
 
 struct Sboxok
 {
-	private: 
+	//private: 
 	Skoord k; //Azért tarton meg a forgatás nélküli koordinátákat is mert a forgatás torzít
-	unsigned char rr,gg,bb;
+	Skoord szin; // Miért ne? ez is 3 :)
 	Skoord f; //elforgatott koordináták, azért tárolom külön hogy sortolni lehessen ezek alapján
-	bool tipus; // 0 fal 1 kaja;
+	Sboxok *kovet;
 
 	public:
-	Sboxok (Skoord ek, int szin, bool etipus)
+	Sboxok (Skoord ek, int gszin,Sboxok *ekovet)
 	{
 		k=k+ek;
-		tipus = etipus;
+		kovet = ekovet;
 		
-		if (szin<255) 					{rr=255-(szin-0*255); 	gg=(szin-0*255); 		bb=000;} 				else
-		if (szin>255 and szin<2*255) 	{rr=000; 				gg=255-(szin-1*255); 	bb=(szin-1*255);} 		else
-		if (szin>2*255) 				{rr=(szin-2*255); 		gg=000; 				bb=255-(szin-2*255);}
+		if (gszin<255) 					{szin.x=255-(gszin-0*255); 	szin.y=(gszin-0*255); 		szin.z=000;} 				else
+		if (gszin>255 and gszin<2*255) 	{szin.x=000; 				szin.y=255-(gszin-1*255); 	szin.z=(gszin-1*255);} 		else
+		if (gszin>2*255) 				{szin.x=(gszin-2*255); 		szin.y=000; 				szin.z=255-(gszin-2*255);}
+	}
+
+	~Sboxok ()
+	{
+		cout << "Meghaltam! " << this << endl;
 	}
 
 	bool operator < (const Sboxok& str) const { return (f.z<str.f.z); } // Ez felel azért hogy a hátul lévőt elöbb rajzolja ki
 
+	void supdate(double alfa); // forgatás
 	void srajzol();
 	Skoord getKoords();
 	Skoord getSzin();
-
-	// az update specifikus, kifejezetten a játékoz lett írva, nem kéne tagfüggvénynek lennie csak így kevesebbet kell gépelni :D
-	double supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id);
-
 };
-
-double Sboxok::supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id)
-{
-	if (!tipus) {
-		Skoord a = c-k; //vektor számolás
-		double h = c|k; if (h==0) h=1; else h/=( (rand()%200)/100+rekord.sebesseg); //normalizálás || h/=3 miatt gyorsabban halad
-		k=k+a/h; //mozgatás
-	}
-	f = k.forgat(alpha); // forgatás rajzoláshoz
-
-	if (tipus) {
-		if ((fej|k)<10) {
-			tipus=false;
-			if (rekord.hossz+hosszszorzo>id) rekord.pont+=((rand()%10+5)*rekord.sebesseg); else rekord.elet--;
-			rekord.hossz++;
-			rekord.kaja--;
-			
-		} // Megette
-
-
-		double ax = round(f.x + f.z/2 + kx/2); // Az egérhez legközelebbi kiválasztáshoz
-		double ay = round(f.y + f.z/2 + ky/2);
-		return (sqrt((ax-ex)*(ax-ex)+(ay-ey)*(ay-ey)));
-	}
-
-	return nagyszam;
-
-}
-
-void Sboxok::srajzol()
-{
-
-	//2d leképzés (Leggagyibb ami létezik, de legalább saját :D )
-	int ax = round(f.x + f.z/2 + kx/2); 
-	int ay = round(f.y + f.z/2 + ky/2);
-	if (ax==kx/2 and ay==ky/2) return; // Az új objektum ne villanjon fel
-
-	if (ax>=kx-10 or ax<0) return; // ne jelenjen meg ha ki megy a képernyőről
-	if (ay>=ky-10 or ay<0) return;
-
-	/*stringstream str;
-	str << int(k.x) << " " << int(k.y) << " " << int(k.z);
-	string s = str.str(); //*/
-
-	double mx = (kz/2+f.z)/(kz/2)*10; if (mx<3) mx=3; // a Z távolság függvényében változik a méret
-	double my = (kz/2+f.z)/(kz/2)*10; if (my<3) my=3;
-	gout << color(rr,gg,bb)
-		<< move_to(ax,ay)
-		<< box(mx,my);
-		//<< text(s);
-}
 
 Skoord Sboxok::getKoords()
 {
@@ -210,53 +139,71 @@ Skoord Sboxok::getKoords()
 
 Skoord Sboxok::getSzin()
 {
-	return Skoord(rr,gg,bb);
+	return szin;
+}
+
+void Sboxok::supdate(double alpha)
+{	
+	if (kovet) {
+		Skoord c = kovet->getKoords();
+		Skoord a = c-k; //vektor számolás 
+		double h = c|k; if (h==0) h=1; //normalizálás
+		k=k+a/h; //mozgatás
+	}
+
+	f = k.forgat(alpha);
+}
+
+void Sboxok::srajzol()
+{
+
+	//2d leképzés (Leggagyibb ami létezik, de legalább saját :D )
+	int ax = round(f.x + f.z/2 + kx/2); 
+	int ay = round(f.y + f.z/2 + ky/2);
+
+	if (ax>=kx-10 or ax<0) return; // ne jelenjen meg ha ki megy a képernyőről
+	if (ay>=ky-10 or ay<0) return;
+
+	stringstream str;
+	str << int(k.x) << " " << int(k.y) << " " << int(k.z);
+	string s = str.str(); //*/
+
+	double mx = (kz/2+f.z)/(kz/2)*10; if (mx<3) mx=3; // a Z távolság függvényében változik a méret
+	double my = (kz/2+f.z)/(kz/2)*10; if (my<3) my=3;
+	gout << color(szin.x,szin.y,szin.z)
+		<< move_to(ax,ay)
+		<< box(mx,my)
+		<< text(s);
 }
 
 void pontkiir(int pont);
 
-void updatedraw(std::vector<Sboxok> &v, int &target,double alpha, double ex, double ey,SRekord &rekord)
+double updategame()
+{
+	return 0.1;
+}
+
+void updatedraw(vector<Sboxok*> &boxok,double alfa,Skoord eger)
 {
 	gout << color(000,000,000) 
 			<< move_to(0,0) 
 			<< box(kx,ky);
 
 	gout << color(25,25,25);
-	pontkiir(rekord.pont);
+	//pontkiir(100);
 
-
-	std::vector<Sboxok> rajZ = v; // új vektor a sorba rajzoláshoz
-	std::sort(rajZ.begin(), rajZ.end()); // sorba rendezés
-
-	int minid = -1; // Az egérhez leközelebbi // minimum kiválasztás
-	double mint = nagyszam;
-
-	Skoord fej = v[0].getKoords(); // fej koordinátái
-
-	// Target vonal
-	Skoord targetbox = v[target].getKoords().forgat(alpha); // target koordinátái
-	Skoord ffej = fej.forgat(alpha);
-	gout << color(255,255,255)
-			<< move_to(ffej.x + ffej.z/2 + kx/2 + (kz/2+ffej.z)/(kz/2)*5,ffej.y + ffej.z/2 + ky/2 +(kz/2+ffej.z)/(kz/2)*5 )
-			<< line_to(targetbox.x + targetbox.z/2 + kx/2 + (kz/2+targetbox.z)/(kz/2)*5,targetbox.y + targetbox.z/2 + ky/2 + (kz/2+targetbox.z)/(kz/2)*5);
-	for (int i = 0; i < v.size(); ++i)
-	{ 
-		Skoord c;
-		if (i>0) c=v[i-1].getKoords(); // a kígyó irányába
-		else c=v[target].getKoords(); // target irányába
-		double t = v[i].supdate(c,alpha,ex,ey,fej,rekord,i);
-		if (t<mint) {mint=t;minid=i;}
-		rajZ[i].srajzol(); //az új sorba rendezett vektor alapján rajzolok
-	}
-
-	if (minid>0) target=minid;
-
-	Skoord rgb = v[rekord.hossz+hosszszorzo].getSzin();
-	gout << color(rgb.x,rgb.y,rgb.z);
-	for (int i = 0; i < int(rekord.elet/hosszszorzo); ++i)
+	for (int i = 0; i < boxok.size();i++)
 	{
-		gout << move_to(10+i*40,10) << box(25,25);
+		boxok[i]->supdate(alfa);
+		boxok[i]->srajzol();
+		if ((boxok[i]->getKoords()|boxok[0]->getKoords())<50 and boxok[i]!=boxok[0]) 
+		{
+			delete boxok[i];
+			boxok[i] = boxok[boxok.size()-1];
+			boxok.pop_back();
+		}
 	}
+	
 
 	gout << refresh;
 
@@ -270,42 +217,33 @@ int main()
 
 	gin.timer(20);
 
-	std::vector<Sboxok> v;
-	int szin = rand()%(3*255);
+	double alfa 		= 0;
+	double rpx			= 0;
+	const double mertek = 0.03;
 
-	Skoord n;
-	for (int i = 0; i < hosszszorzo*3; ++i)
+	double ex			= 0;
+	double ey 			= 0;
+
+	vector<Sboxok*> boxok;
+
+	Sboxok *fej 		= new Sboxok(Skoord(0,0,0),0,NULL);
+	boxok.push_back(fej);
+
+	for (int i = 0; i < 10; ++i)
 	{
-		Sboxok b(n,szin,true); v.push_back(b);
-		szin+=szindifferencial; if (szin>3*255) szin=0;
+		Sboxok *box = new Sboxok(Skoord(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2),0,fej);
+		boxok.push_back(box);
 	}
-
-	double mertek = 0.01;
-	double rpx = 0;
-	double alpha = PI;
-
-	double ex=0,ey=0;
-
-	int target=1;
-	SRekord rekord(5,2);
 	
+
+
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
 		if (ev.type==ev_timer) 
 		{
-			alpha+=rpx; // forgatás
-			updatedraw(v,target,alpha,ex,ey,rekord);
-			while (rekord.kaja<maxkaja*hosszszorzo) // létrehozás
-			{
-				Skoord n(rand()%(9*kx/10)-(9*kx/20),rand()%(9*ky/10)-(9*ky/20),rand()%(9*kz/10)-(9*kz/20)); // azért legyenenek bentebb a pontok
-				for (int i = 0; i < hosszszorzo; ++i)
-				{
-					Sboxok b(n,szin,true); v.push_back(b);
-					szin+=szindifferencial; if (szin>3*255) szin=0;
-				}
+			alfa+=rpx; // forgatás
+			updatedraw(boxok,alfa,Skoord(ex-kx/2,ey-ky/2,0));
 		
-				rekord.kaja+=hosszszorzo;
-			}
 		}
 		else if (ev.type==ev_key)
 		{
@@ -313,6 +251,7 @@ int main()
 			if (ev.keycode==key_left 	or ev.keycode=='a') rpx=-mertek;
 
 			if (-ev.keycode==key_right 	or -ev.keycode=='d') rpx=0;
+			if (-ev.keycode==key_left 	or -ev.keycode=='a') rpx=0;
 			if (-ev.keycode==key_left 	or -ev.keycode=='a') rpx=0;
 		}
 		else if (ev.type==ev_mouse)
