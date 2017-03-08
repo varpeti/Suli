@@ -17,30 +17,9 @@ const int ky = 700;
 const int kz = round((kx+ky)/2);
 const bool teljes = false;
 const int nagyszam = kx+ky+kz+1; // A legnagyobb tav
-
-struct SRekord
-{	
-	// playerstat
-	int kaja;
-	int pont;
-	int hossz;
-
-	// gamestat
-	int maxkaja;
-	int szindifferencial;
-	int hosszszorzo;
-
-	SRekord(int nehezseg) // Nehéz (3-30)
-	{
-		kaja=0;
-		pont=500;
-		hossz=1;
-
-		maxkaja = nehezseg;
-		szindifferencial = 2;
-		hosszszorzo = 10;
-	}
-};
+const int maxkaja = 20;
+const int szindifferencial = 1;
+const int hosszszorzo = 10;
 
 struct Skoord
 {	
@@ -124,6 +103,24 @@ Skoord Skoord::forgat(double alpha)
 	return f;
 }
 
+struct SRekord
+{	
+	// playerstat
+	int kaja;
+	int pont;
+	int hossz;
+	int elet;
+	double sebesseg;
+
+	SRekord(int eelet, int esebesseg)
+	{
+		kaja=0;
+		pont=0;
+		hossz=1;
+		elet=eelet*hosszszorzo;
+		sebesseg=esebesseg;
+	}
+};
 
 struct Sboxok
 {
@@ -146,9 +143,12 @@ struct Sboxok
 
 	bool operator < (const Sboxok& str) const { return (f.z<str.f.z); } // Ez felel azért hogy a hátul lévőt elöbb rajzolja ki
 
-	double supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id);
 	void srajzol();
 	Skoord getKoords();
+	Skoord getSzin();
+
+	// az update specifikus, kifejezetten a játékoz lett írva, nem kéne tagfüggvénynek lennie csak így kevesebbet kell gépelni :D
+	double supdate(Skoord c, double alpha, double ex, double ey, Skoord fej, SRekord &rekord, int id);
 
 };
 
@@ -156,7 +156,7 @@ double Sboxok::supdate(Skoord c, double alpha, double ex, double ey, Skoord fej,
 {
 	if (!tipus) {
 		Skoord a = c-k; //vektor számolás
-		double h = c|k; if (h==0) h=1; else h/=(rand()%300)/100+1; //normalizálás || h/=3 miatt gyorsabban halad
+		double h = c|k; if (h==0) h=1; else h/=( (rand()%200)/100+rekord.sebesseg); //normalizálás || h/=3 miatt gyorsabban halad
 		k=k+a/h; //mozgatás
 	}
 	f = k.forgat(alpha); // forgatás rajzoláshoz
@@ -164,7 +164,7 @@ double Sboxok::supdate(Skoord c, double alpha, double ex, double ey, Skoord fej,
 	if (tipus) {
 		if ((fej|k)<10) {
 			tipus=false;
-			if (rekord.hossz+rekord.hosszszorzo>id) rekord.pont+=rand()%10+5; else rekord.pont-=rand()%10+6;
+			if (rekord.hossz+hosszszorzo>id) rekord.pont+=((rand()%10+5)*rekord.sebesseg); else rekord.elet--;
 			rekord.hossz++;
 			rekord.kaja--;
 			
@@ -195,8 +195,8 @@ void Sboxok::srajzol()
 	str << int(k.x) << " " << int(k.y) << " " << int(k.z);
 	string s = str.str(); //*/
 
-	double mx = (kz/2+f.z)/(kz/2)*10; if (mx<1) mx=2; // a Z távolság függvényében változik a méret
-	double my = (kz/2+f.z)/(kz/2)*10; if (my<1) my=2;
+	double mx = (kz/2+f.z)/(kz/2)*10; if (mx<3) mx=3; // a Z távolság függvényében változik a méret
+	double my = (kz/2+f.z)/(kz/2)*10; if (my<3) my=3;
 	gout << color(rr,gg,bb)
 		<< move_to(ax,ay)
 		<< box(mx,my);
@@ -206,6 +206,11 @@ void Sboxok::srajzol()
 Skoord Sboxok::getKoords()
 {
 	return k;
+}
+
+Skoord Sboxok::getSzin()
+{
+	return Skoord(rr,gg,bb);
 }
 
 void pontkiir(int pont);
@@ -228,6 +233,12 @@ void updatedraw(std::vector<Sboxok> &v, int &target,double alpha, double ex, dou
 
 	Skoord fej = v[0].getKoords(); // fej koordinátái
 
+	// Target vonal
+	Skoord targetbox = v[target].getKoords().forgat(alpha); // target koordinátái
+	Skoord ffej = fej.forgat(alpha);
+	gout << color(255,255,255)
+			<< move_to(ffej.x + ffej.z/2 + kx/2 + (kz/2+ffej.z)/(kz/2)*5,ffej.y + ffej.z/2 + ky/2 +(kz/2+ffej.z)/(kz/2)*5 )
+			<< line_to(targetbox.x + targetbox.z/2 + kx/2 + (kz/2+targetbox.z)/(kz/2)*5,targetbox.y + targetbox.z/2 + ky/2 + (kz/2+targetbox.z)/(kz/2)*5);
 	for (int i = 0; i < v.size(); ++i)
 	{ 
 		Skoord c;
@@ -239,24 +250,35 @@ void updatedraw(std::vector<Sboxok> &v, int &target,double alpha, double ex, dou
 	}
 
 	if (minid>0) target=minid;
+
+	Skoord rgb = v[rekord.hossz+hosszszorzo].getSzin();
+	gout << color(rgb.x,rgb.y,rgb.z);
+	for (int i = 0; i < int(rekord.elet/hosszszorzo); ++i)
+	{
+		gout << move_to(10+i*40,10) << box(25,25);
+	}
+
 	gout << refresh;
 
 }
 
 int main()
 {
-	std::vector<Sboxok> v;
-	int szin = 0;
-
 	srand (time(NULL));
+
 	gout.open(kx,ky,teljes);
 
 	gin.timer(20);
 
+	std::vector<Sboxok> v;
+	int szin = rand()%(3*255);
+
 	Skoord n;
-	Sboxok b(n,szin,false);
-	szin++; if (szin>3*255) szin=0;
-	v.push_back(b);
+	for (int i = 0; i < hosszszorzo*3; ++i)
+	{
+		Sboxok b(n,szin,true); v.push_back(b);
+		szin+=szindifferencial; if (szin>3*255) szin=0;
+	}
 
 	double mertek = 0.01;
 	double rpx = 0;
@@ -265,24 +287,24 @@ int main()
 	double ex=0,ey=0;
 
 	int target=1;
-	SRekord rekord(10);
+	SRekord rekord(5,2);
 	
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
 		if (ev.type==ev_timer) 
 		{
-			alpha+=rpx;
+			alpha+=rpx; // forgatás
 			updatedraw(v,target,alpha,ex,ey,rekord);
-			while (rekord.kaja<rekord.maxkaja*rekord.hosszszorzo)
+			while (rekord.kaja<maxkaja*hosszszorzo) // létrehozás
 			{
 				Skoord n(rand()%(9*kx/10)-(9*kx/20),rand()%(9*ky/10)-(9*ky/20),rand()%(9*kz/10)-(9*kz/20)); // azért legyenenek bentebb a pontok
-				for (int i = 0; i < rekord.hosszszorzo; ++i)
+				for (int i = 0; i < hosszszorzo; ++i)
 				{
 					Sboxok b(n,szin,true); v.push_back(b);
-					szin+=rekord.szindifferencial; if (szin>3*255) szin=0;
+					szin+=szindifferencial; if (szin>3*255) szin=0;
 				}
 		
-				rekord.kaja+=rekord.hosszszorzo;
+				rekord.kaja+=hosszszorzo;
 			}
 		}
 		else if (ev.type==ev_key)
@@ -304,7 +326,7 @@ int main()
 
 void pontkirajz(int x, int y, int sz)
 {
-	switch(sz)
+	switch(sz) //Hmm ctrl+c ctrl+v a "kockás" játékból :D
 	{
 		case 0: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30) << box(30,90) << move_to(x,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
 		case 1: gout << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
@@ -319,12 +341,8 @@ void pontkirajz(int x, int y, int sz)
 	}
 }
 
-int gpont;
-
 void pontkiir(int pont)
 {
-	if (gpont!=pont) cout << "d pont: " << pont-gpont << endl;
-	gpont=pont;
 
 	int seged, s2;
 	s2=pont;
