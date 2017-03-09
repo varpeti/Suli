@@ -104,7 +104,7 @@ Skoord Skoord::forgat(double alpha)
 Skoord Skoord::lekepzes()
 {
 	double mz = (kz/2 + z)/(kz/2) *10; if (mz<3) mz=3; // Mekkora legyen | ne legyen kissebb 3x3-as nál
-	return Skoord(round(x + z/2 + kx/2),round(y + z/2 + ky/2),mz); // a Z koordináta a nagyságát adja meg
+	return Skoord(x + z/2 + kx/2,y + z/2 + ky/2,mz); // a Z koordináta a nagyságát adja meg
 }
 
 
@@ -132,12 +132,10 @@ struct Sboxok
 		cout << "Meghaltam! " << this << endl;
 	}
 
-	bool operator < (const Sboxok& str) const { return (f.z<str.f.z); } // Ez felel azért hogy a hátul lévőt elöbb rajzolja ki
-
-	void supdate(double alpha); // forgatás, mozgatás
+	void supdate(double alpha,double sebesseg); // forgatás, mozgatás
 	void srajzol(); // csak rajzolás
 	Skoord getKoords(); //read only
-	Skoord getSzin(); //read only
+	bool isSlpeep(); // read only
 	void setKovet(Sboxok *ekovet); // write only
 };
 
@@ -146,23 +144,23 @@ Skoord Sboxok::getKoords()
 	return k;
 }
 
-Skoord Sboxok::getSzin()
-{
-	return szin;
-}
-
 void Sboxok::setKovet(Sboxok *ekovet)
 {
 	kovet=ekovet;
 }
 
-void Sboxok::supdate(double alpha)
+bool Sboxok::isSlpeep()
+{
+	return not kovet;
+}
+
+void Sboxok::supdate(double alpha,double sebesseg)
 {	
 	if (kovet) {
 		Skoord c = kovet->getKoords();
 		Skoord a = c-k; //vektor számolás 
 		double h = c|k; if (h==0) h=1; //normalizálás
-		k=k+a/h; //mozgatás
+		k=k+a/(h/sebesseg); //mozgatás
 	}
 
 	f = k.forgat(alpha);
@@ -183,7 +181,7 @@ void Sboxok::srajzol()
 	gout << color(szin.x,szin.y,szin.z)
 		<< move_to(a.x,a.y)
 		<< box(a.z,a.z);
-		//<< text(s);
+		//text(s);
 }
 
 
@@ -195,8 +193,10 @@ void Sboxok::srajzol()
 struct Srekord
 {	
 	int pont;
+	int elet;
 	int kaja;
 	int maxkaja;
+	double sebesseg;
 	const int hosszszorzo;
 
 	Sboxok *fej;
@@ -205,80 +205,121 @@ struct Srekord
 	Sboxok *cel;
 	// A target az tárolódik a vektorban;
 
-	Srekord(int &szin,vector<Sboxok*> &boxok,int maxkaja,int hosszszorzo) : maxkaja(maxkaja), kaja(0), pont(0), hosszszorzo(hosszszorzo)
+	Srekord(int &szin,vector<Sboxok*> &boxok,int elet,int maxkaja,double sebesseg,int hosszszorzo) : pont(0),kaja(0),elet(elet),maxkaja(maxkaja),sebesseg(sebesseg),hosszszorzo(hosszszorzo)
 	{
 		fej = new Sboxok(Skoord(0,0,0),szin,NULL);
 		boxok.push_back(fej); if (szin<3*255) szin++; else szin=0;
 		farok = fej;
-		target = NULL;
-		cel = NULL;
+		target = 0;
+		cel = 0;
 	}
 	
 };
 
 void pontkiir(int pont);
 
-double update(int i,vector<Sboxok*> &boxok,Skoord eger,double alpha)
+double update(int i,vector<Sboxok*> &boxok,Skoord eger,Srekord &rekord,double alpha)
 {
-	if (false)
+	if (!boxok[i]->isSlpeep() or rekord.fej==boxok[i]) return nagyszam; // Ha  nem kaja vagy fej akkor nem vizsgálunk rá.
+	if ((boxok[i]->getKoords().forgat(alpha)|rekord.fej->getKoords().forgat(alpha))<10) // Megeszi ha a közelébe ért
 	{
-			delete boxok[i];
-			boxok[i] = boxok[boxok.size()-1];
-			boxok.pop_back();
+		if (rekord.cel==boxok[i]){ // ha a célt ette meg
+			for (Sboxok *box : boxok)
+				if (box->isSlpeep() and box!=boxok[i]) {rekord.cel=box; break; // Célt választ
+			}
+			rekord.pont+=rand()%50+50;
+		}
+
+		delete boxok[i];
+		boxok[i] = boxok[boxok.size()-1];
+		boxok.pop_back();
+		rekord.kaja--;
 	}
 	Skoord a = boxok[i]->getKoords().forgat(alpha).lekepzes(); a.z=0; // pontok helyzete a képernyőn
 	return a|eger; //egértől való távolság
-	}
+}
 
+bool rendez(Sboxok* a, Sboxok* b) { return (a->f.z < b->f.z); } // A f.z koordinátára rendezek hogy ami hátrébb van elöbb rajzolódjon ki
 
 void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,int &szin)
 {
 	//draw
 
-	gout << color(000,000,000) 
+	gout << color(000,000,000) //Törlés
 			<< move_to(0,0) 
 			<< box(kx,ky);
 
-	gout << color(25,25,25);
+	gout << color(25,25,25); //Pontszám
 	pontkiir(rekord.pont);
 
 	//update
 
-	while (rekord.kaja<rekord.maxkaja)
+	while (rekord.kaja<rekord.maxkaja) // Ha nincs elég kaja lespawnol
 	{
-		Sboxok *a = new Sboxok(Skoord(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2),szin,NULL);
-		boxok.push_back(a); if (szin<3*255) szin++; else szin=0;
+		Sboxok *a = new Sboxok(Skoord(rand()%kx-kx/2,rand()%ky-ky/2,rand()%kz-kz/2),rand()%(3*255),NULL); // random hely szín és nem mozog
+		boxok.push_back(a);
+
+		for (int i = 0; i < rekord.hosszszorzo; ++i)
+		{
+			cout << rekord.farok << " "<< rekord.farok->isSlpeep() << endl;
+			rekord.farok = new Sboxok(rekord.farok->getKoords(),szin,rekord.farok); // kígyó növelése
+			boxok.push_back(rekord.farok); if (szin<3*255) szin++; else szin=0;
+		}
+		
 		rekord.kaja++;
 	}
 
-	if (rekord.target) {
-		Skoord ffej = rekord.fej->getKoords().forgat(alpha).lekepzes();
+	Skoord ffej = rekord.fej->getKoords().forgat(alpha).lekepzes(); // Vonalakhoz 
+
+	if (rekord.target) { // ha van target
 		Skoord ftarget = rekord.target->getKoords().forgat(alpha).lekepzes();
 
 	//draw
 
 		gout << color(255,255,255)
-			<< move_to(ffej.x + ffej.z/2, ffej.y + ffej.z/2) // a Z koordináta a bagyságukat adja meg
-			<< line_to(ftarget.x + ftarget.z/2, ftarget.y + ftarget.z/2);
+			<< move_to(ffej.x + ffej.z/2, ffej.y + ffej.z/2) // a Z koordináta a nagyságukat adja meg
+			<< line_to(ftarget.x + ftarget.z/2, ftarget.y + ftarget.z/2); //kirajzolom a vonalat a tragethez
+	}
+
+	//update
+
+	if (rekord.cel) { // ha van cél
+		Skoord fcel = rekord.cel->getKoords().forgat(alpha).lekepzes();
+		Skoord a = fcel-ffej; // vektor számolás
+		double d = (fcel|ffej); if (d>50) d/=50; else d=1;
+		a = a/d;  // normálás csak nem egységre
+
+	//draw
+
+		gout << color(255,255,255) // Vonal rajzolás a cél felé
+			<< move_to(ffej.x + ffej.z/2, ffej.y + ffej.z/2)
+			<< line(a.x + a.z/2, a.y + a.z/2); 
+	}else{
+		for (Sboxok *box : boxok) if (box->isSlpeep() and box!=rekord.fej) {rekord.cel=box; break;} // Az első célt kiválasztja
 	}
 
 	//update
 
 	int mintav = nagyszam;
-	rekord.target = NULL;
+
+	vector<Sboxok*> rajZ = boxok; // új vektor a sorba rajzoláshoz
+	std::sort(rajZ.begin(), rajZ.end(),rendez); // sorba rendezés f.z koordináta szerint
 
 
-	for (int i = 0; i < boxok.size();i++)
+	for (int i = 0; i < boxok.size(); ++i)
 	{
-		boxok[i]->supdate(alpha); //update
-		boxok[i]->srajzol(); //draw
-		double tav = update(i,boxok,eger,alpha); //update
-		if (tav<mintav and rekord.fej!=boxok[i]) {mintav=tav; rekord.target=boxok[i];} //update
+		boxok[i]->supdate(alpha,rekord.sebesseg+(rand()%200/100)); //a sebességen van random faktor hogy kígyószerű legyen
+		double tav = update(i,boxok,eger,rekord,alpha);
+		if (tav<mintav) {mintav=tav; rekord.target=boxok[i];} // kiválasztja az egérhez a legközelebbit
+
+		//draw
+		rajZ[i]->srajzol(); // rajz a sorba rendezett vektor alapján
 	}
+
 
 	//update
 
-	rekord.fej->setKovet(rekord.target);
+	rekord.fej->setKovet(rekord.target); // Induljon a target felé
 	
 
 	//draw
@@ -286,8 +327,6 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 	gout << refresh;
 
 }
-
-
 
 int main()
 {
@@ -306,7 +345,7 @@ int main()
 
 	vector<Sboxok*> boxok;
 
-	Srekord	rekord		  (szin,boxok,9,10);
+	Srekord	rekord		  (szin,boxok,5,50,3.1,5); // szin,boxok,elet,kajaszam,sebesseg,hosszszorzó
 
 
 	event ev;
