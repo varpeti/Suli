@@ -12,13 +12,13 @@
 using namespace genv;
 using namespace std;
 
-const int kx = 1330;
+const int kx = 1330; // A játék émény ezen a felbontáson a legjobb.
 const int ky = 700;
 const int kz = round((kx+ky)/2);
 const bool teljes = false;
 const int nagyszam = kx+ky+kz;
 
-struct Skoord
+struct Skoord // koordináták, szinek tárolására szolgáló struct, forgatással és 3d->2d leképzéssel
 {	
 	double x;
 	double y;
@@ -84,12 +84,12 @@ Skoord Skoord::forgat(double alpha)
 	double se;
 	Skoord f=*this;
 
-	//y tengely körüli forgatás (2d-s forgatási mátrixból tippeltem a 3d-st)
+	//y tengely körüli forgatás
 	se= f.x*cos(alpha)+f.z*sin(alpha);
 	f.z= -f.x*sin(alpha)+f.z*cos(alpha);
 	f.x= se;
 
-	//x tengely körüli forgatás 
+	//x tengely körüli forgatás // Konstans pi, ha szükséges átírható változóra
 	se= f.y*cos(PI)-f.z*sin(PI);
 	f.z= f.y*sin(PI)+f.z*cos(PI);
 	f.y= se;
@@ -110,7 +110,7 @@ Skoord Skoord::lekepzes()
 
 struct Sboxok
 {
-	//private: 
+	private: 
 	Skoord k; //Azért tartom meg a forgatás nélküli koordinátákat is mert a forgatás torzít
 	Skoord szin; // Miért ne? ez is 3 :)
 	Skoord f; //elforgatott koordináták, azért tárolom külön hogy sortolni lehessen ezek alapján
@@ -122,20 +122,22 @@ struct Sboxok
 		k=k+ek;
 		kovet = ekovet;
 		
-		if (gszin<255) 					{szin.x=255-(gszin-0*255); 	szin.y=(gszin-0*255); 		szin.z=000;} 				else
-		if (gszin>255 and gszin<2*255) 	{szin.x=000; 				szin.y=255-(gszin-1*255); 	szin.z=(gszin-1*255);} 		else
+		if (gszin<=255) 				{szin.x=255-(gszin-0*255); 	szin.y=(gszin-0*255); 		szin.z=000;} 				else
+		if (gszin>255 and gszin<=2*255) {szin.x=000; 				szin.y=255-(gszin-1*255); 	szin.z=(gszin-1*255);} 		else
 		if (gszin>2*255) 				{szin.x=(gszin-2*255); 		szin.y=000; 				szin.z=255-(gszin-2*255);}
-		cout << "Leterejottem! " << this << endl;
+		//cout << "Letrejottem! " << this << endl;
 	}
 
 	~Sboxok ()
 	{
-		cout << "Meghaltam! " << this << endl;
+		//cout << "Meghaltam! " << this << endl;
+		// Kiirattam egy fileba a lértejövő és törlődő címeket és össszehasonlítottam a két filet. Minden amit létrehoztam meg is szünt miután kiléptem a menübe.
 	}
 
 	void supdate(double alpha,double sebesseg); // forgatás, mozgatás
 	void srajzol(); // csak rajzolás
 	Skoord getKoords(); //read only
+	double getFZ(); // read only | sorba rendezéshez
 	bool isSlpeep(); // read only
 	void setKovet(Sboxok *ekovet); // write only
 };
@@ -145,14 +147,19 @@ Skoord Sboxok::getKoords()
 	return k;
 }
 
-void Sboxok::setKovet(Sboxok *ekovet)
+double Sboxok::getFZ()
 {
-	kovet=ekovet;
+	return f.z;
 }
 
 bool Sboxok::isSlpeep()
 {
 	return not kovet;
+}
+
+void Sboxok::setKovet(Sboxok *ekovet)
+{
+	kovet=ekovet;
 }
 
 void Sboxok::supdate(double alpha,double sebesseg)
@@ -175,14 +182,9 @@ void Sboxok::srajzol()
 	if (a.x>=kx-a.z or a.x<0) return; // ne jelenjen meg ha ki megy a képernyőről
 	if (a.y>=ky-a.z or a.y<0) return;
 
-	/*stringstream str;
-	str << int(k.x) << " " << int(k.y) << " " << int(k.z);
-	string s = str.str(); //*/
-
 	gout << color(szin.x,szin.y,szin.z)
 		<< move_to(a.x,a.y)
 		<< box(a.z,a.z);
-		//text(s);
 }
 
 
@@ -198,6 +200,7 @@ struct Srekord
 	int kaja;
 	int maxkaja;
 	double sebesseg;
+	const int vhossz;
 	const int hosszszorzo;
 
 	Sboxok *fej;
@@ -205,8 +208,8 @@ struct Srekord
 	Sboxok *target;
 	Sboxok *cel;
 	// A target az tárolódik a vektorban;
-
-	Srekord(int &szin,vector<Sboxok*> &boxok,int elet,int maxkaja,double sebesseg,int hosszszorzo) : pont(0),kaja(0),elet(elet),maxkaja(maxkaja),sebesseg(sebesseg),hosszszorzo(hosszszorzo)
+	//											3-5		30-50			0-3			50				5-10
+	Srekord(int &szin,vector<Sboxok*> &boxok,int elet,int maxkaja,double sebesseg,int vhossz,int hosszszorzo) : pont(0),kaja(0),elet(elet),maxkaja(maxkaja),sebesseg(sebesseg),vhossz(vhossz),hosszszorzo(hosszszorzo)
 	{
 		fej = new Sboxok(Skoord(0,0,0),szin,NULL);
 		boxok.push_back(fej); if (szin<3*255) szin++; else szin=0;
@@ -222,13 +225,13 @@ void pontkiir(int pont);
 double update(int i,vector<Sboxok*> &boxok,Skoord eger,Srekord &rekord,double alpha)
 {
 	if (!boxok[i]->isSlpeep() or rekord.fej==boxok[i]) return nagyszam; // Ha  nem kaja vagy fej akkor nem vizsgálunk rá.
-	if ((boxok[i]->getKoords().forgat(alpha)|rekord.fej->getKoords().forgat(alpha))<10) // Megeszi ha a közelébe ért
+	if ((boxok[i]->getKoords()|rekord.fej->getKoords())<10) // Megeszi ha a közelébe ért | konstans 10 elég közeli nincs ok változtatni
 	{
 		if (rekord.cel==boxok[i]){ // ha a célt ette meg
 			for (Sboxok *box : boxok)
 				if (box->isSlpeep() and box!=boxok[i]) {rekord.cel=box; break; // Célt választ
 			}
-			rekord.pont+=rekord.sebesseg*27;
+			rekord.pont+=rekord.sebesseg*27; //Pontozás | konstans 27 csak úgy hasraütve jó lesz, nincs értelme változtatni
 		}else{ // Ha nem a célt ette meg
 			rekord.elet--;
 		}
@@ -242,7 +245,7 @@ double update(int i,vector<Sboxok*> &boxok,Skoord eger,Srekord &rekord,double al
 	return a|eger; //egértől való távolság
 }
 
-bool rendez(Sboxok* a, Sboxok* b) { return (a->f.z < b->f.z); } // A f.z koordinátára rendezek hogy ami hátrébb van elöbb rajzolódjon ki
+bool rendez(Sboxok* a, Sboxok* b) { return (a->getFZ() < b->getFZ()); } // A f.z koordinátára rendezek hogy ami hátrébb van elöbb rajzolódjon ki
 
 void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,int &szin)
 {
@@ -266,7 +269,7 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 		for (int i = 0; i < rekord.hosszszorzo; ++i)
 		{
 			rekord.farok = new Sboxok(rekord.farok->getKoords(),szin,rekord.farok); // kígyó növelése
-			boxok.push_back(rekord.farok); if (szin<=3*255) szin++; else szin=0;
+			boxok.push_back(rekord.farok); if (szin<3*255) szin++; else szin=0;
 			rekord.farok->supdate(alpha,rekord.sebesseg);
 		}
 		
@@ -290,7 +293,7 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 	if (rekord.cel) { // ha van cél
 		Skoord fcel = rekord.cel->getKoords().forgat(alpha).lekepzes();
 		Skoord a = fcel-ffej; // vektor számolás
-		double d = (fcel|ffej); if (d>50) d/=50; else d=1;
+		double d = (fcel|ffej); if (d>rekord.vhossz) d/=rekord.vhossz; else d=1; 
 		a = (a/d);  // normálás csak nem egységre
 
 	//draw
@@ -312,7 +315,7 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 
 	for (int i = 0; i < boxok.size(); ++i)
 	{
-		boxok[i]->supdate(alpha,rekord.sebesseg+(rand()%200/100)); //a sebességen van random faktor hogy kígyószerű legyen
+		boxok[i]->supdate(alpha,rekord.sebesseg+(rand()%200/100)); //a sebességen van random faktor hogy kígyószerű legyen | konstans 0-2 nem kell változtatni
 		double tav = update(i,boxok,eger,rekord,alpha);
 		if (tav<mintav) {mintav=tav; rekord.target=boxok[i];} // kiválasztja az egérhez a legközelebbit
 
@@ -328,16 +331,16 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 	//draw
 
 	gout << color(255,0,0);
-	for (int i = 0; i < int(rekord.elet); ++i)
+	for (int i = 0; i < int(rekord.elet); ++i) // Élet kirajzolása bal felülre a HUD-ra
 	{
-		gout << move_to(10+i*40,10) << box(25,25);
+		gout << move_to(10+i*kx/30,10) << box(25,25); // konstans 30, a képernyő felbontással változik
 	}
 
 	gout << refresh;
 
 }
 
-void menurajz(string s1, string s2, string s3) // Nincs kölön struck menühöz, nem is kell mert kevés dolog van benne, nem lesz bővítve
+void menurajz(string s1, string s2, string s3) // Nincs kölön struct menühöz, nem is kell mert kevés dolog van benne, nem lesz bővítve
 {
 	int akx=kx/2, aky=ky/2;
 	int h1 = gout.twidth(s1);
@@ -359,8 +362,23 @@ void menurajz(string s1, string s2, string s3) // Nincs kölön struck menühöz
 			<< refresh;
 }
 
+void showinfo(event &ev,int maxpont,int pont) // Mivel "meg lehet fogni" a program haladását, nem stat-ekkel oldottam meg a menüt. (Utálok menüt készíteni)
+{
+	stringstream str;
+	str << "Rekord: " << maxpont;
+	string s1 = str.str(); str.str("");
+	str << "Elért pontszám: " << pont;
+	string s2 = str.str();
+	if (pont==-1) menurajz("Kígyó mozgatás: egér | Kamera forgatás: A,D","Cél: a kígyó általl (rövid) vonallal mutatott kaja megevése",s1);
+	else menurajz(s2," ",s1);
+	while(gin >> ev and ev.keycode!=key_escape); // várunk ESC-re
+	menurajz("Új játék (0-9)","Információk (h)","Kilépés (ESC)"); // Vissza rajzolom a menüt
+}
+
 int main()
 {
+	cout << "Tipp jár azoknak akik beleolvasnak a konzolba ヾ(＾∇＾) \nHa forgatod a képernyőt jobban látod mit akar a kígyó megenni ┗(⊙ ‿ ⊙)L \nA kiválasztott kaján nem mutat túl a (rövid) vonal. 〜(°▽°〜) \nNehézség növeléséel több pontot kapsz （ゝ‿ ・） \nNe egyél éretlen kaját (◎_◎;) \nSzórakozz jól! (>◕ω◕<)\n";
+	
 	srand (time(NULL));
 
 	gout.open(kx,ky,teljes);
@@ -376,6 +394,7 @@ int main()
 	Skoord eger			  (0,0,0); 			// A Z koordináta nem használt
 	int szin 			= rand()%(3*255);
 
+	int maxpont = 0;
 
 	event ev;
 	while (gin >> ev) // Main ciklus
@@ -396,21 +415,18 @@ int main()
 				else if (ev.keycode=='7') nehezseg=7;
 				else if (ev.keycode=='8') nehezseg=8;
 				else if (ev.keycode=='9') nehezseg=9;
-				else if (ev.keycode=='h') {
-					menurajz("Kígyó mozgatás: egér | Kamera mozgatás: a,d","Cél: a kígyó általl (rövid) vonallal mutatott kaja megevése","Halál: Nem a kívánt kaja elfogyasztása");
-					while(gin >> ev and ev.keycode!=key_escape); // várunk ESC-re
-					menurajz("Új játék (0-9)","Információk (h)","Kilépés (ESC)"); // Vissza rajzolom a menüt
-				}
+				else if (ev.keycode=='h') showinfo(ev,maxpont,-1);
 				else if (ev.keycode==key_escape) return 0; // Kilépés
 			}
 			
 		}
 
+		// Játék init
 		nehezseg=((nehezseg+1)/10)*5;
 		vector<Sboxok*> boxok;
-		Srekord	rekord (szin,boxok,5,50,nehezseg,10); // szin,boxok,elet,kajaszam,sebesseg,hosszszorzó
+		Srekord	rekord (szin,boxok,5,50,nehezseg,50,8); // szin,boxok,elet,kajaszam,sebesseg,vhossz,hosszszorzó
 
-		while(gin >> ev and ev.keycode!=key_escape and rekord.elet>0) // Játék ciklus
+		while(gin >> ev and ev.keycode!=key_escape and rekord.elet>0 and rekord.pont<9999) // Játék ciklus
 		{
 			if (ev.type==ev_timer) 
 			{
@@ -420,11 +436,11 @@ int main()
 			}
 			else if (ev.type==ev_key)
 			{
-				if (ev.keycode==key_right 	or ev.keycode=='d') rpx=mertek;
-				if (ev.keycode==key_left 	or ev.keycode=='a') rpx=-mertek;
+				if (ev.keycode==key_right 	or ev.keycode=='d' or 	ev.keycode=='D') rpx=mertek; // Kamera forgatás
+				if (ev.keycode==key_left 	or ev.keycode=='a' or 	ev.keycode=='A') rpx=-mertek;
 
-				if (-ev.keycode==key_right 	or -ev.keycode=='d') rpx=0;
-				if (-ev.keycode==key_left 	or -ev.keycode=='a') rpx=0;
+				if (-ev.keycode==key_right 	or -ev.keycode=='d' or 	-ev.keycode=='D') rpx=0;
+				if (-ev.keycode==key_left 	or -ev.keycode=='a' or 	-ev.keycode=='A') rpx=0;
 			}
 			else if (ev.type==ev_mouse)
 			{
@@ -433,6 +449,9 @@ int main()
 			}
 		}
 
+		if (rekord.pont>maxpont) maxpont=rekord.pont; // Új rekord?
+
+		showinfo(ev,maxpont,rekord.pont); // End screen
 
 		while (0<boxok.size()) // Játék utáni memória felaszabadítás
 		{
@@ -445,7 +464,7 @@ int main()
 
 void pontkirajz(int x, int y, int sz)
 {
-	switch(sz) //Hmm ctrl+c ctrl+v a "kockás" játékból :D
+	switch(sz) //Az indoklás hogy miért lehet konstans nagyság: Sokkal nagyobb kijelzőn sem néz ki rosszul (1920x1080 tesztelve) kisebben meg a játék is játszahatlan (1330x700 alatt)
 	{
 		case 0: gout << move_to(x+30,y) << box(90,30) << move_to(x+30+90,y+30) << box(30,90) << move_to(x,y+30) << box(30,90) << move_to(x,y+30+90+30) << box(30,90) << move_to(x+30,y+30+90+30+90) << box(90,30) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
 		case 1: gout << move_to(x+30+90,y+30) << box(30,90) << move_to(x+30+90,y+30+90+30) << box(30,90); break;
