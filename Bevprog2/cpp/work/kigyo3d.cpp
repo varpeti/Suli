@@ -6,6 +6,7 @@
 #include "math.h"
 #include "algorithm"
 #include "iostream"
+#include "fstream"
 
 #define PI 3.141592
 
@@ -15,7 +16,7 @@ using namespace std;
 const int kx = 1330; // A játék émény ezen a felbontáson a legjobb.
 const int ky = 700;
 const int kz = round((kx+ky)/2);
-const bool teljes = false;
+const bool teljes = false; 			// Van teljes képernyős mód is. Laptopon jól szuperál.
 const int nagyszam = kx+ky+kz;
 
 struct Skoord // koordináták, szinek tárolására szolgáló struct, forgatással és 3d->2d leképzéssel
@@ -350,13 +351,13 @@ void menurajz(string s1, string s2, string s3) // Nincs kölön struct menühöz
 	gout << color(000,000,100) //képernyő törlés
 			<< move_to(0,0) 
 			<< box(kx,ky) 
-			<< color(000,200,000) // Új játék menüpont
+			<< color(000,200,000) 
 			<< move_to(akx-h1/2,aky-bky/2-bky)
 			<< text(s1)
-			<< color(200,200,000) // Információk menüpont
+			<< color(200,200,000) 
 			<< move_to(akx-h2/2,aky-bky/2)
 			<< text(s2)
-			<< color(200,000,000) // Kilépés menüpont
+			<< color(200,000,000)
 			<< move_to(akx-h3/2,aky-bky/2+bky)
 			<< text(s3)
 			<< refresh;
@@ -369,7 +370,7 @@ void showinfo(event &ev,int maxpont,int pont) // Mivel "meg lehet fogni" a progr
 	string s1 = str.str(); str.str("");
 	str << "Elért pontszám: " << pont;
 	string s2 = str.str();
-	if (pont==-1) menurajz("Kígyó mozgatás: egér | Kamera forgatás: A,D","Cél: a kígyó általl (rövid) vonallal mutatott kaja megevése",s1);
+	if (pont==-1) menurajz("Kígyó mozgatás: egér | Kamera forgatás: A,D","Cél: csak a (rövid) vonallal mutatott kaja megevése",s1);
 	else menurajz(s2," ",s1);
 	while(gin >> ev and ev.keycode!=key_escape); // várunk ESC-re
 	menurajz("Új játék (0-9)","Információk (h)","Kilépés (ESC)"); // Vissza rajzolom a menüt
@@ -394,12 +395,15 @@ int main()
 	Skoord eger			  (0,0,0); 			// A Z koordináta nem használt
 	int szin 			= rand()%(3*255);
 
-	int maxpont = 0;
+	int maxpont 		= 0;
+
+	ifstream be ("hs.dat");
+	if (be.is_open()) {be >> maxpont; maxpont/=7; be.close();} //hs beolvasás
 
 	event ev;
 	while (gin >> ev) // Main ciklus
 	{ 
-		menurajz("Új játék (0-9)","Információk (h)","Kilépés (ESC)");
+		menurajz("Új játék (0-9)","Információk (H)","Kilépés (ESC)");
 		double nehezseg = -1;
 		while(gin >> ev and nehezseg==-1) // Menü cikluss
 		{
@@ -415,7 +419,7 @@ int main()
 				else if (ev.keycode=='7') nehezseg=7;
 				else if (ev.keycode=='8') nehezseg=8;
 				else if (ev.keycode=='9') nehezseg=9;
-				else if (ev.keycode=='h') showinfo(ev,maxpont,-1);
+				else if (ev.keycode=='h' or ev.keycode=='H') showinfo(ev,maxpont,-1);
 				else if (ev.keycode==key_escape) return 0; // Kilépés
 			}
 			
@@ -449,7 +453,10 @@ int main()
 			}
 		}
 
-		if (rekord.pont>maxpont) maxpont=rekord.pont; // Új rekord?
+		if (rekord.pont>maxpont) {
+			maxpont=rekord.pont; // Új rekord?
+			ofstream ki ("hs.dat"); ki<<maxpont*7; ki.close(); // Rögtön mentem, nehogy elvesszen időközben
+		}
 
 		showinfo(ev,maxpont,rekord.pont); // End screen
 
