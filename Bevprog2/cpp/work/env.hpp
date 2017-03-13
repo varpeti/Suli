@@ -16,6 +16,15 @@ using namespace std;
 
 /* DEKRALÁCIÓK	*/
 
+struct SZIN
+{
+	unsigned char rr,gg,bb;
+
+	SZIN(unsigned char rr,unsigned char gg,unsigned char bb) : rr(rr), gg(gg), bb(bb) {};
+
+	SZIN() : rr(0), gg(0), bb(0) {};
+};
+
 
 /* CLASS 	*/
 
@@ -26,20 +35,8 @@ public:
 	ENV(unsigned int szelesseg, unsigned int magassag);
 	~ENV();
 
-	bool newSprite(long long int id, double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // látható és updetelődik
-	bool newSprite(long long int id, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // nem látható és nem updatelődik
 	void kirajzol();
 	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
-
-	bool setSpriteSebesseg(long long int id,double vx,double vy);
-	bool getSpriteSebesseg(long long int id,double &vx,double &vy);
-	bool setSpritePosition(long long int id,double x,double y);
-	bool getSpritePosition(long long int id,double &x,double &y);
-	bool setSpriteAllapot(long long int id,unsigned char allapot);
-	bool getSpriteAllapot(long long int id,unsigned char &allapot);
-	bool SpriteBenneVan(long long int id, double px, double py);
-
-	long long int utkozott(long long int aid);
 
 	event ev;
 	KAMERA kamera;
@@ -48,35 +45,56 @@ protected:
 
 	struct SPRITE
 	{
-		long long int id; // az id-je (0 nem lehet!)
 		double x,y; // kooridiáták lehet negatív is
 		unsigned int allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
-		unsigned int kx,ky,sx,sy; // sprite x,y és szélesség magasság
+		unsigned int sx,sy; // szélesség magasság
+		SZIN szin; //szín
+		unsigned int kx,ky; // sprite x,y
 		double vx,vy; // sebesség
-		long long utk;
+		SPRITE *utk;
 
 		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
-		void supdate(vector<SPRITE> &SPRITEOK);
-		SPRITE(long long int uid,double ux,double uy,unsigned int uallapot, unsigned int ukx, unsigned int uky, unsigned int usx, unsigned int usy)
+		void supdate(vector<SPRITE*> &SPRITEOK);
+
+		SPRITE(double x,double y,unsigned int allapot, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
+			: x(x), y(y), allapot(allapot), kx(kx), ky(ky), sx(sx), sy(sy)
 		{
-			id=uid;
-			x=ux;
-			y=uy;
-			allapot=uallapot;
-			kx=ukx;
-			ky=uky;
-			sx=usx;
-			sy=usy;
+			szin = SZIN(0,0,0);
 			vx=0;
 			vy=0;
-			utk=0;
+			utk=NULL;
 		}
+		SPRITE(double x,double y,unsigned int allapot,unsigned int sx, unsigned int sy,SZIN szin)
+			: x(x), y(y), allapot(allapot), sx(sx), sy(sy), szin(szin)
+		{
+			kx=0;
+			ky=0;
+			vx=0;
+			vy=0;
+			utk=NULL;
+		}
+
 	};
 	canvas TSPRITEOK;	//az összes sprite képét ide olvasom be
-	vector<SPRITE> SPRITEOK;
 
 	unsigned int KEPERNYOSZELESSEG;
 	unsigned int KEPERNYOMAGASSAG;
+public:
+	vector<SPRITE*> SPRITEOK; // Az összes sprite
+
+	SPRITE *newSprite(double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // spriteos
+	SPRITE *newSprite(double x, double y, unsigned int sx, unsigned int sy,SZIN szin); // színes
+
+	// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
+	void setSpriteSebesseg(SPRITE *sp,double vx,double vy);
+	void getSpriteSebesseg(SPRITE *sp,double &vx,double &vy);
+	void setSpritePosition(SPRITE *sp,double x,double y);
+	void getSpritePosition(SPRITE *sp,double &x,double &y);
+	void setSpriteAllapot(SPRITE *sp,unsigned char allapot);
+	void getSpriteAllapot(SPRITE *sp,unsigned char &allapot);
+
+	bool SpriteBenneVan(SPRITE *sp, double px, double py);
+	SPRITE *utkozott(SPRITE *sp);
 };
 
 /* MEGVALÓSÍTÁS */
@@ -89,8 +107,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 	KEPERNYOMAGASSAG=magassag;
 	KEPERNYOSZELESSEG=szelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
-	SPRITE b(0,0,0,3,0,0,0,0); SPRITEOK.push_back(b);
-	
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
@@ -99,7 +115,6 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 	KEPERNYOMAGASSAG=magassag;
 	KEPERNYOSZELESSEG=szelesseg;
 	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
-	SPRITE b(0,0,0,3,0,0,0,0); SPRITEOK.push_back(b);
 }
 
 ENV::~ENV() //dest
@@ -107,35 +122,35 @@ ENV::~ENV() //dest
 
 }
 
-bool ENV::newSprite(long long int id, double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
+ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
 {
-	if (id==0) return false;
-	for (SPRITE i:SPRITEOK) if (i.id==id) return false; // ha létezik ilyen idvel kilép
-	SPRITE sp(id,x,y,0,kx,ky,sx,sy);
+	SPRITE *sp = new SPRITE(x,y,0,kx,ky,sx,sy);
 	SPRITEOK.push_back(sp);
-	return true;
+	return sp;
 }
 
-bool ENV::newSprite(long long int id, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
+ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int sx, unsigned int sy, SZIN szin)
 {
-	if (id==0) return false;
-	for (SPRITE i:SPRITEOK) if (i.id==id) return false;
-	SPRITE sp(id,0,0,3,kx,ky,sx,sy); // nem jelenek meg nem updatelődik
+	SPRITE *sp = new SPRITE(x,y,0,sx,sy,szin);
 	SPRITEOK.push_back(sp);
-	return true;
+	return sp;
 }
 
 void ENV::kirajzol()
 {
 	gout << color(0,0,0) << move_to(0,0) << box(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
 
-	for (vector<SPRITE>::iterator i=SPRITEOK.begin(); i!=SPRITEOK.end();)
+	for (int i = 0; i < SPRITEOK.size();)
 	{
-		if (i->allapot==0 or i->allapot==2) i->supdate(SPRITEOK);
-		if (i->allapot==0 or i->allapot==1) i->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
-		cout << "d: "<< i->allapot << " " << i->id << endl;
-		if (i->allapot==255) {std::swap(*i, SPRITEOK.back()); SPRITEOK.pop_back(); cout << "torolve: " << i->id << endl;}// ezt lehetne kicserél popback re cserélni
-		else ++i;
+		if (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==2) SPRITEOK[i]->supdate(SPRITEOK);
+		if (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==1) SPRITEOK[i]->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
+		if (SPRITEOK[i]->allapot==255) 
+		{ //törlés
+			delete SPRITEOK[i];
+			SPRITEOK[i] = SPRITEOK[SPRITEOK.size()-1];
+			SPRITEOK.pop_back();
+		}
+		else ++i; // Ha nem törlődik, a következőre lép
 	}
 
 	gout << refresh;
@@ -147,19 +162,21 @@ void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int
 	ux=x;uy=y;usx=sx;usy=sy;ukx=kx;uky=ky;
 	kamera.getCoords(ux,uy);
 	if (ux+usx<0 or ux>KEPERNYOSZELESSEG or uy+usy<0 or uy>KEPERNYOMAGASSAG) return;
-	if (ux+usx>KEPERNYOSZELESSEG) {usx=KEPERNYOSZELESSEG-ukx;}
+	if (ux+usx>KEPERNYOSZELESSEG) {usx=KEPERNYOSZELESSEG-ux;}
 	if (ux<0) {usx+=ux; ukx-=ux; ux=0;}
-	if (uy+usy>KEPERNYOMAGASSAG) {usy=KEPERNYOMAGASSAG-uky;}
+	if (uy+usy>KEPERNYOMAGASSAG) {usy=KEPERNYOMAGASSAG-uy;}
 	if (uy<0) {usy+=uy; uky-=uy; uy=0;}
-	gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
+	if (kx==0 and ky==0) 
+		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
+	else 
+		gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
 }
 
-void ENV::SPRITE::supdate(vector<SPRITE> &SPRITEOK)
+void ENV::SPRITE::supdate(vector<SPRITE*> &SPRITEOK)
 {
-	//cout << id << " " << vx << " " << vy << endl;
 	x+=vx;
 	y+=vy;
-	utk = 0;
+	utk = NULL;
 
 	auto bennevan = [](double px, double py, double mx, double my, int msx, int msy) 
 	{ 
@@ -167,96 +184,68 @@ void ENV::SPRITE::supdate(vector<SPRITE> &SPRITEOK)
 		return false;
 	};
 
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id!=id and (sp.allapot==0 or sp.allapot==2))
+	for (int i = 0; i < SPRITEOK.size(); ++i)
+		if ( (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==2) and SPRITEOK[i]!=this)
 		{
-			if (bennevan(x,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x,y+sy,sp.x,sp.y,sp.sx,sp.sy) or bennevan(x+sx,y+sy,sp.x,sp.y,sp.sx,sp.sy) or
-			bennevan(sp.x,sp.y,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y,x,y,sx,sy) or bennevan(sp.x,sp.y+sp.sy,x,y,sx,sy) or bennevan(sp.x+sp.sx,sp.y+sp.sy,x,y,sx,sy)) 
-				{utk=sp.id;}
+			if (bennevan(x,y,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x+sx,y,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x,y+sy,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x+sx,y+sy,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or
+				bennevan(SPRITEOK[i]->x,SPRITEOK[i]->y,x,y,sx,sy) or bennevan(SPRITEOK[i]->x+SPRITEOK[i]->sx,SPRITEOK[i]->y,x,y,sx,sy) or bennevan(SPRITEOK[i]->x,SPRITEOK[i]->y+SPRITEOK[i]->sy,x,y,sx,sy) or bennevan(SPRITEOK[i]->x+SPRITEOK[i]->sx,SPRITEOK[i]->y+SPRITEOK[i]->sy,x,y,sx,sy)) 
+				{utk=SPRITEOK[i];}
 		}
-	if (utk) cout << "utk: " << id << " " << utk << endl;
 }
 
-bool ENV::setSpriteSebesseg(long long int id,double vx,double vy)
+void ENV::setSpriteSebesseg(SPRITE *sp,double vx,double vy)
 {
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			sp.vx=vx;
-			sp.vy=vy;
-			return true;
-		}
+	if (!sp) return;
+	sp->vx=vx;
+	sp->vy=vy;
+}
+
+void ENV::getSpriteSebesseg(SPRITE *sp,double &vx,double &vy)
+{
+	if (!sp) return;
+	vx=sp->vx;
+	vy=sp->vy;
+}
+
+void ENV::setSpritePosition(SPRITE *sp,double x,double y)
+{
+	if (!sp) return;
+	sp->x=x;
+	sp->y=y;
+}
+
+void ENV::getSpritePosition(SPRITE *sp,double &x,double &y)
+{
+	if (!sp) return;
+	x=sp->x;
+	y=sp->y;
+}
+
+void ENV::setSpriteAllapot(SPRITE *sp,unsigned char allapot)
+{
+	if (!sp) return;
+	sp->allapot=allapot;
+}
+
+void ENV::getSpriteAllapot(SPRITE *sp,unsigned char &allapot)
+{
+	if (!sp) return;
+	allapot=sp->allapot;
+}
+
+
+ENV::SPRITE *ENV::utkozott(SPRITE *sp)
+{
+	if (!sp) return NULL;
+	return sp->utk;
+}
+
+bool ENV::SpriteBenneVan(SPRITE *sp, double px, double py)
+{ 
+	if (!sp) return false;
+	if (px>=sp->x and px<=sp->x+sp->sx and py>=sp->y and py<=sp->y+sp->sy) return true;
 	return false;
-}
-
-bool ENV::getSpriteSebesseg(long long int id,double &vx,double &vy)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			vx=sp.vx;
-			vy=sp.vy;
-			return true;
-		}
-	return false;
-}
-
-bool ENV::setSpritePosition(long long int id,double x,double y)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			sp.x=x;
-			sp.y=y;
-			return true;
-		}
-	return false;
-}
-
-bool ENV::getSpritePosition(long long int id,double &x,double &y)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			x=sp.x;
-			y=sp.y;
-			return true;
-		}
-	return false;
-}
-
-bool ENV::setSpriteAllapot(long long int id,unsigned char allapot)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			sp.allapot=allapot;
-			return true;
-		}
-	return false;
-}
-
-bool ENV::getSpriteAllapot(long long int id,unsigned char &allapot)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (sp.id==id) {
-			allapot=sp.allapot;
-			return true;
-		}
-	return false;
-}
-
-
-long long int ENV::utkozott(long long int aid)
-{
-	for (SPRITE &sp:SPRITEOK)
-		if (aid==sp.id) {return sp.utk;}
-	return 0;
-}
-
-bool ENV::SpriteBenneVan(long long int id, double px, double py)
-	{ 
-		double mx,msx,my,msy;
-		for (SPRITE &sp:SPRITEOK)
-			if (id==sp.id) {mx=sp.x;msx=sp.sx;my=sp.y;msy=sp.sy;}
-		if (px>=mx and px<=mx+msx and py>=my and py<=my+msy) return true;
-		return false;
-	};
+};
 
 
 bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
