@@ -15,7 +15,7 @@ using namespace std;
 const int kx = 1330; // A játék émény ezen a felbontáson a legjobb.
 const int ky = 700;
 const int kz = round((kx+ky)/2);
-const bool teljes = false; 			// Van teljes képernyős mód is. Laptopon jól szuperál.
+const bool teljes = true; 			// Van teljes képernyős mód is. Laptopon jól szuperál.
 const int nagyszam = kx+ky+kz;
 
 struct Skoord // koordináták, szinek tárolására szolgáló struct, forgatással és 3d->2d leképzéssel

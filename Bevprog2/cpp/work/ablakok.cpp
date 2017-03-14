@@ -7,12 +7,11 @@ int main()
 	ENV env (1300,600,false);
 	if(!env.spriteok_beolvas("hal.bmp")) gout << text("Nem talalhato a kep!");
 	
-	long long int sid = 1;
-	env.newSprite(sid,300,-50,300,160,170,160); sid++;
+	env.newSprite(300,-50,300,160,170,160);
 
 	gin.timer(20);
 
-	long long int lenyomva = 0;
+	int lenyomva = -1;
 	double kx,ky = 0;
 
 	while(gin >> env.ev and env.ev.keycode!=key_escape) {
@@ -23,23 +22,40 @@ int main()
 		if (env.ev.type==ev_mouse)
 		{
 			if (env.ev.button==btn_left)
-				for (int i = 1; i < sid; ++i)
-					if (env.SpriteBenneVan(i,env.ev.pos_x,env.ev.pos_y)) {
-						env.getSpritePosition(i,kx,ky);
+				for (int i = 0; i < env.SPRITEOK.size(); ++i)
+					if (env.SpriteBenneVan(env.SPRITEOK[i],env.ev.pos_x,env.ev.pos_y)) {
+						env.getSpritePosition(env.SPRITEOK[i],kx,ky);
 						kx-=env.ev.pos_x;
 						ky-=env.ev.pos_y;
 						lenyomva=i;
 					}
 
-			if (-env.ev.button==btn_left) {lenyomva=0; kx=0; ky=0;}
+			if (-env.ev.button==btn_left) {lenyomva=-1; kx=0; ky=0;}
 
 			if (env.ev.button==btn_right) {
-				env.newSprite(sid,env.ev.pos_x,env.ev.pos_y,300,160,170,160); sid++;
+				env.newSprite(env.ev.pos_x,env.ev.pos_y,170,160,SZIN(rand()%255,rand()%255,rand()%255));
 			};
 
-			if (lenyomva)
+			if (env.ev.button==btn_wheelup) 
+				for (int i = env.SPRITEOK.size()-1; i >= 0; i--)
+					if (env.SpriteBenneVan(env.SPRITEOK[i],env.ev.pos_x,env.ev.pos_y)) {
+						env.getSpritePosition(env.SPRITEOK[i],kx,ky);
+						kx-=env.ev.pos_x;
+						ky-=env.ev.pos_y;
+						env.setSpriteSzam(env.SPRITEOK[i],1); break;
+					}
+			if (env.ev.button==btn_wheeldown)
+				for (int i = env.SPRITEOK.size()-1; i >= 0; i--)
+					if (env.SpriteBenneVan(env.SPRITEOK[i],env.ev.pos_x,env.ev.pos_y)) {
+						env.getSpritePosition(env.SPRITEOK[i],kx,ky);
+						kx-=env.ev.pos_x;
+						ky-=env.ev.pos_y;
+						env.setSpriteSzam(env.SPRITEOK[i],-1); break;
+					}
+
+			if (lenyomva!=-1)
 			{
-				env.setSpritePosition(lenyomva,env.ev.pos_x+kx,env.ev.pos_y+ky);
+				env.setSpritePosition(env.SPRITEOK[lenyomva],env.ev.pos_x+kx,env.ev.pos_y+ky);
 			}
 		}
 		

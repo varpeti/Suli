@@ -52,6 +52,7 @@ protected:
 		unsigned int kx,ky; // sprite x,y
 		double vx,vy; // sebesség
 		SPRITE *utk;
+		int szam;
 
 		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
 		void supdate(vector<SPRITE*> &SPRITEOK);
@@ -63,6 +64,7 @@ protected:
 			vx=0;
 			vy=0;
 			utk=NULL;
+			szam=10;
 		}
 		SPRITE(double x,double y,unsigned int allapot,unsigned int sx, unsigned int sy,SZIN szin)
 			: x(x), y(y), allapot(allapot), sx(sx), sy(sy), szin(szin)
@@ -72,6 +74,7 @@ protected:
 			vx=0;
 			vy=0;
 			utk=NULL;
+			szam=10;
 		}
 
 	};
@@ -92,6 +95,7 @@ public:
 	void getSpritePosition(SPRITE *sp,double &x,double &y);
 	void setSpriteAllapot(SPRITE *sp,unsigned char allapot);
 	void getSpriteAllapot(SPRITE *sp,unsigned char &allapot);
+	void setSpriteSzam(SPRITE *sp,int szam);
 
 	bool SpriteBenneVan(SPRITE *sp, double px, double py);
 	SPRITE *utkozott(SPRITE *sp);
@@ -170,6 +174,8 @@ void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int
 		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
 	else 
 		gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
+	stringstream str; str << szam; string s = str.str();
+	gout << color(255,255,255) << move_to(ux+usx/2,uy+usy/2) << text(s);
 }
 
 void ENV::SPRITE::supdate(vector<SPRITE*> &SPRITEOK)
@@ -231,6 +237,11 @@ void ENV::getSpriteAllapot(SPRITE *sp,unsigned char &allapot)
 {
 	if (!sp) return;
 	allapot=sp->allapot;
+}
+
+void ENV::setSpriteSzam(SPRITE *sp,int szam)
+{
+	sp->szam+=szam;
 }
 
 
