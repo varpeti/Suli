@@ -276,7 +276,10 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 		rekord.kaja++;
 	}
 
-	Skoord ffej = rekord.fej->getKoords().forgat(alpha).lekepzes(); // Vonalakhoz | Ismert hiba: ha 
+	Skoord ffej = rekord.fej->getKoords().forgat(alpha).lekepzes(); // Vonalakhoz
+	ffej.x+=ffej.z/2;ffej.y+=ffej.z/2; ffej.z=0;
+	if (ffej.x<0) ffej.x=0; if (ffej.x>kx-1) ffej.x=kx-1; // Ha kimegy a kígyó a pályáról a vonal ne bugoljon
+	if (ffej.y<0) ffej.y=0; if (ffej.y>ky-1) ffej.y=ky-1;
 
 	if (rekord.target) { // ha van target
 		Skoord ftarget = rekord.target->getKoords().forgat(alpha).lekepzes();
@@ -284,7 +287,7 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 	//draw
 
 		gout << color(255,255,255)
-			<< move_to(ffej.x + ffej.z/2, ffej.y + ffej.z/2) // a Z koordináta a nagyságukat adja meg
+			<< move_to(ffej.x, ffej.y) // a Z koordináta a nagyságukat adja meg
 			<< line_to(ftarget.x + ftarget.z/2, ftarget.y + ftarget.z/2); //kirajzolom a vonalat a tragethez
 	}
 
@@ -299,7 +302,7 @@ void updatedraw(vector<Sboxok*> &boxok,double alpha,Skoord eger,Srekord &rekord,
 	//draw
 
 		gout << color(255,255,255) // Vonal rajzolás a cél felé
-			<< move_to(ffej.x + ffej.z/2, ffej.y + ffej.z/2)
+			<< move_to(ffej.x, ffej.y)
 			<< line(a.x + a.z/2, a.y + a.z/2); 
 	}else{
 		for (Sboxok *box : boxok) if (box->isSlpeep() and box!=rekord.fej) {rekord.cel=box; break;} // Az első célt kiválasztja
@@ -383,9 +386,9 @@ int main()
 
 	gout.open(kx,ky,teljes);
 
-	gout.load_font("font.ttf",40);
+	gout.showmouse(false); 
 
-	gin.timer(20);
+	gout.load_font("font.ttf",40);
 
 	double alpha 		= 0;
 	double rpx			= 0;
@@ -425,6 +428,8 @@ int main()
 		}
 
 		// Játék init
+		gin.timer(20);
+		gout.showmouse(true); 
 		nehezseg=((nehezseg+1)/10)*5;
 		vector<Sboxok*> boxok;
 		Srekord	rekord (szin,boxok,5,50,nehezseg,50,8); // szin,boxok,elet,kajaszam,sebesseg,vhossz,hosszszorzó
@@ -451,6 +456,9 @@ int main()
 				eger.y=ev.pos_y;
 			}
 		}
+
+		gin.timer(0); // Leállítja az időzítőt
+		gout.showmouse(false); 
 
 		if (rekord.pont>maxpont) {
 			maxpont=rekord.pont; // Új rekord?

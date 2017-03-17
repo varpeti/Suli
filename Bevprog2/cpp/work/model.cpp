@@ -189,8 +189,6 @@ void Sboxok::srajzol()
 
 int main()
 {
-	cout << "Tipp jár azoknak akik beleolvasnak a konzolba ヾ(＾∇＾) \nHa forgatod a képernyőt jobban látod mit akar a kígyó megenni ┗(⊙ ‿ ⊙)L \nA kiválasztott kaján nem mutat túl a (rövid) vonal. 〜(°▽°〜) \nNehézség növeléséel több pontot kapsz （ゝ‿ ・） \nNe egyél éretlen kaját (◎_◎;) \nSzórakozz jól! (>◕ω◕<)\n";
-	
 	srand (time(NULL));
 
 	gout.open(kx,ky,teljes);
@@ -200,7 +198,7 @@ int main()
 	gin.timer(20);
 
 	ifstream be ("hs.dat");
-	if (be.is_open()) {be >> maxpont; maxpont/=7; be.close();} //hs beolvasás
+	if (be.is_open()) {be >> maxpont; 
 
 	event ev;
 
