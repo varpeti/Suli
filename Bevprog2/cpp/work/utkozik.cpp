@@ -5,14 +5,14 @@
 #include "math.h"
 #include "iostream"
 
-#define PI 3.141592
-
 using namespace genv;
 using namespace std;
 
 const int XX = 1330;
 const int YY = 600;
 const bool teljes = false;
+
+const double maximumsebesseg = 10;
 
 struct Skoordinatak
 {
@@ -28,11 +28,6 @@ struct Skoordinatak
 	Skoordinatak () 
 	{};
 
-	double operator|(Skoordinatak jobb)
-	{
-	return sqrt( (x-jobb.x)*(x-jobb.x)+(y-jobb.y)*(y-jobb.y) );
-	}
-
 };
 
 void kor(Skoordinatak pozicio, double sugar)
@@ -44,11 +39,6 @@ void kor(Skoordinatak pozicio, double sugar)
 			if (x*x+y*y-sugar*sugar<1) gout << move_to(x+pozicio.x,y+pozicio.y) << dot;
 		}
 	}
-}
-
-bool ukozott(Skoordinatak A,Skoordinatak B, double sugarA, double sugarB)
-{
-	return (A|B)<=sugarA+sugarB and (A|B)>0;
 }
 
 struct Sgolyo
@@ -76,34 +66,36 @@ struct Sgolyo
 		kor(pozicio,sugar);
 	}
 
-	void update(vector<Sgolyo> &labdak)
+	void update(vector<Sgolyo> &labdak, double surlodas)
 	{
-		for (int i = 0; i < labdak.size(); ++i)
-		{
-			if (ukozott(pozicio,labdak[i].pozicio,sugar,labdak[i].sugar)) {
-				cout << "a" << endl;
-				double alpha = atan((pozicio.y - labdak[i].pozicio.y) / (pozicio.x - labdak[i].pozicio.x));
-				double X1 = sebesseg.x * cos(-alpha) - sebesseg.y * sin(-alpha);
-				double Y1 = sebesseg.x * sin(-alpha) + sebesseg.y * cos(-alpha);
-				double X2 = labdak[i].sebesseg.x * cos(-alpha) - labdak[i].sebesseg.y * sin(-alpha);
-				double Y2 = labdak[i].sebesseg.x * sin(-alpha) + labdak[i].sebesseg.y * cos(-alpha);
+		for (int i = 0; i < labdak.size(); i++) { // Megvizsgálom mindegyikkel, hogy ütközött-e
+	 		double dx = labdak[i].pozicio.x - pozicio.x; // Vektort képzek
+			double dy = labdak[i].pozicio.y - pozicio.y;
+			double distance = sqrt(dx*dx + dy*dy); // távolság
+			double minDist = labdak[i].sugar + sugar; // Legkisebb távolság hogy még nem ütközik
+	  		if (distance < minDist) { // ütközött-e
+				double angle = atan2(dy, dx); // ütközés szöge
 
-				double newX1 = X2 * cos(alpha) - Y1 * sin(alpha);
-				double newY1 = X2 * sin(alpha) + Y1 * cos(alpha);
-				double newX2 = X1 * cos(alpha) - Y2 * sin(alpha);
-				double newY2 = X1 * sin(alpha) + Y2 * cos(alpha);
+				double targetX = pozicio.x + cos(angle) * minDist; // sebesség vektor számolás (előkészület)
+				double targetY = pozicio.y + sin(angle) * minDist;
 
-				sebesseg.x = newX1;
-				sebesseg.y = newY1;
-				labdak[i].sebesseg.x = newX2;
-				labdak[i].sebesseg.y = newY2;
+				double ax = (targetX - labdak[i].pozicio.x) * 0.9; // sebesség vektor számolás (befejezés)
+				double ay = (targetY - labdak[i].pozicio.y) * 0.9; // A 0.9es szorzó azért van hogy szétjöjjenek ha egyberakjuk őket. (Ugyanakkor rugalmatlanabb lesz az ütközés) 
+
+				sebesseg.x -= ax; // Sebességvektorok megváltozatása
+				sebesseg.y -= ay;
+				labdak[i].sebesseg.x += ax;
+				labdak[i].sebesseg.y += ay;
 			}
-		} 
+		}
 
-		pozicio.x+=sebesseg.x;
+		if (sebesseg.x>maximumsebesseg) sebesseg.x=maximumsebesseg; else if (sebesseg.x<-maximumsebesseg) sebesseg.x=-maximumsebesseg; // Ha túl gyorsak lennének (ami csak akkor lehet ha egyberakjuk őket)
+        if (sebesseg.y>maximumsebesseg) sebesseg.y=maximumsebesseg; else if (sebesseg.y<-maximumsebesseg) sebesseg.y=-maximumsebesseg; // Maximum sebességre állítjuk őket
+
+		pozicio.x+=sebesseg.x; // Mozgatás
 		pozicio.y+=sebesseg.y;
 
-		if (pozicio.x-sugar<0) {
+		if (pozicio.x-sugar<0) { // Fallakkal való ütközés
 			sebesseg.x=-sebesseg.x;
 			pozicio.x=0+sugar;
 		}
@@ -119,6 +111,11 @@ struct Sgolyo
 			sebesseg.y=-sebesseg.y;
 			pozicio.y=YY-sugar;
 		}
+
+		sebesseg.x/=surlodas;
+		sebesseg.y/=surlodas;
+		cout << surlodas << "	" << int(sebesseg.x*100)/100.0 << "	" << int(sebesseg.y*100)/100.0 << endl;
+
 	}
 };
 
@@ -130,8 +127,9 @@ int main()
 	gout.open(XX,YY,teljes);
 
 	gin.timer(20);
-
 	vector<Sgolyo> labdak;
+
+	double surlodas = 1;
 
 	event ev;
 	while(gin >> ev and ev.keycode!=key_escape) {
@@ -140,7 +138,7 @@ int main()
 			gout << color(0,0,0) << move_to(0,0) << box(XX,YY);
 			for (int i = 0; i < labdak.size(); ++i)
 			{
-				labdak[i].update(labdak);
+				labdak[i].update(labdak, surlodas);
 				labdak[i].rajzol();
 			}
 			gout << refresh;
@@ -148,9 +146,13 @@ int main()
 		else if (ev.type==ev_mouse)
 		{
 			if (ev.button==btn_left) {
-				Sgolyo labda(rand()%20+3,Skoordinatak(ev.pos_x,ev.pos_y),Skoordinatak((rand()%600-300)/100.0,(rand()%600-300)/100.0));
+				Sgolyo labda(rand()%20+3,Skoordinatak(ev.pos_x,ev.pos_y),Skoordinatak((rand()%int(maximumsebesseg*200)-maximumsebesseg*100)/100.0,(rand()%int(maximumsebesseg*200)-maximumsebesseg*100)/100.0));
+				// rand()%int(maximumsebesseg*200)-maximumsebesseg*100)/100.0) -nek az értékei ha maximumsebesseg=3: -3.00-tól +3.00-ig
 				labdak.push_back(labda);
 			}
+			else if (ev.button==btn_wheelup) surlodas+=0.001;
+			else if (ev.button==btn_wheeldown) surlodas-=0.001;
+			if (surlodas<1) surlodas=1;
 		}
 		else if (ev.type==ev_key)
 		{
