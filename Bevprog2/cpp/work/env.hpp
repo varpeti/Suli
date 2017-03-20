@@ -18,9 +18,9 @@ using namespace std;
 
 struct SZIN
 {
-	unsigned char rr,gg,bb;
+	char rr,gg,bb;
 
-	SZIN(unsigned char rr,unsigned char gg,unsigned char bb) : rr(rr), gg(gg), bb(bb) {};
+	SZIN(char rr,char gg,char bb) : rr(rr), gg(gg), bb(bb) {};
 
 	SZIN() : rr(0), gg(0), bb(0) {};
 };
@@ -30,43 +30,51 @@ struct SZIN
 
 class ENV
 {
-public:
+	protected:
+
+	canvas TSPRITEOK;	//az összes sprite képét ide olvasom be
+
+	unsigned int KEPERNYOSZELESSEG;
+	unsigned int KEPERNYOMAGASSAG;
+
+	public:
+
+	// mezők;
+	event ev;
+	KAMERA kamera;
+
+	//konst dest
 	ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo);
 	ENV(unsigned int szelesseg, unsigned int magassag);
 	~ENV();
 
+	// tagfüggvények
 	void kirajzol();
 	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
 
-	event ev;
-	KAMERA kamera;
-	
-protected:
-
 	struct SPRITE
 	{
+		private:
+
 		double x,y; // kooridiáták lehet negatív is
-		unsigned int allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
-		unsigned int sx,sy; // szélesség magasság
+		char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
+		double sx,sy; // szélesség magasság
 		SZIN szin; //szín
 		unsigned int kx,ky; // sprite x,y
 		double vx,vy; // sebesség
 		SPRITE *utk;
-		int szam;
 
-		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
-		void supdate(vector<SPRITE*> &SPRITEOK);
+		public:
 
-		SPRITE(double x,double y,unsigned int allapot, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
+		SPRITE(double x,double y,unsigned int allapot, unsigned int kx, unsigned int ky, double sx, double sy)
 			: x(x), y(y), allapot(allapot), kx(kx), ky(ky), sx(sx), sy(sy)
 		{
 			szin = SZIN(0,0,0);
 			vx=0;
 			vy=0;
 			utk=NULL;
-			szam=10;
 		}
-		SPRITE(double x,double y,unsigned int allapot,unsigned int sx, unsigned int sy,SZIN szin)
+		SPRITE(double x,double y,unsigned int allapot,double sx, double sy,SZIN szin)
 			: x(x), y(y), allapot(allapot), sx(sx), sy(sy), szin(szin)
 		{
 			kx=0;
@@ -74,31 +82,32 @@ protected:
 			vx=0;
 			vy=0;
 			utk=NULL;
-			szam=10;
 		}
 
-	};
-	canvas TSPRITEOK;	//az összes sprite képét ide olvasom be
+		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
+		void supdate(vector<SPRITE*> &SPRITEOK);
 
-	unsigned int KEPERNYOSZELESSEG;
-	unsigned int KEPERNYOMAGASSAG;
-public:
+		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
+		void setSebesseg(double vx,double vy);
+		void getSebesseg(double &vx,double &vy);
+		void setPosition(double x,double y);
+		void getPosition(double &x,double &y);
+		void setAllapot(char allapot);
+		int  getAllapot();
+		void setMeret(double sx,double sy);
+		void getMeret(double &sx,double &sy);
+
+
+		bool BenneVan(double px, double py);
+		SPRITE *utkozott();
+
+	};
+
 	vector<SPRITE*> SPRITEOK; // Az összes sprite
 
-	SPRITE *newSprite(double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy); // spriteos
-	SPRITE *newSprite(double x, double y, unsigned int sx, unsigned int sy,SZIN szin); // színes
-
-	// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
-	void setSpriteSebesseg(SPRITE *sp,double vx,double vy);
-	void getSpriteSebesseg(SPRITE *sp,double &vx,double &vy);
-	void setSpritePosition(SPRITE *sp,double x,double y);
-	void getSpritePosition(SPRITE *sp,double &x,double &y);
-	void setSpriteAllapot(SPRITE *sp,unsigned char allapot);
-	void getSpriteAllapot(SPRITE *sp,unsigned char &allapot);
-	void setSpriteSzam(SPRITE *sp,int szam);
-
-	bool SpriteBenneVan(SPRITE *sp, double px, double py);
-	SPRITE *utkozott(SPRITE *sp);
+	SPRITE *newSprite(double x, double y, unsigned int kx, unsigned int ky, double sx, double sy); // spriteos
+	SPRITE *newSprite(double x, double y, double sx, double sy,SZIN szin); // színes
+	void SpriteKiemel(SPRITE *sp); // Előre hozza a spriteot.
 };
 
 /* MEGVALÓSÍTÁS */
@@ -126,18 +135,29 @@ ENV::~ENV() //dest
 
 }
 
-ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int kx, unsigned int ky, unsigned int sx, unsigned int sy)
+ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int kx, unsigned int ky, double sx, double sy)
 {
 	SPRITE *sp = new SPRITE(x,y,0,kx,ky,sx,sy);
 	SPRITEOK.push_back(sp);
 	return sp;
 }
 
-ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int sx, unsigned int sy, SZIN szin)
+ENV::SPRITE *ENV::newSprite(double x, double y, double sx, double sy, SZIN szin)
 {
 	SPRITE *sp = new SPRITE(x,y,0,sx,sy,szin);
 	SPRITEOK.push_back(sp);
 	return sp;
+}
+
+void ENV::SpriteKiemel(ENV::SPRITE *sp)
+{
+	for (int i = 0; i < SPRITEOK.size(); ++i)
+		if (SPRITEOK[i]==sp)
+		{
+			SPRITEOK.push_back(sp);
+			SPRITEOK.erase(SPRITEOK.begin()+i);
+			return;
+		}
 }
 
 void ENV::kirajzol()
@@ -146,9 +166,9 @@ void ENV::kirajzol()
 
 	for (int i = 0; i < SPRITEOK.size();)
 	{
-		if (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==2) SPRITEOK[i]->supdate(SPRITEOK);
-		if (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==1) SPRITEOK[i]->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
-		if (SPRITEOK[i]->allapot==255) 
+		if (SPRITEOK[i]->getAllapot()==0 or SPRITEOK[i]->getAllapot()==2) SPRITEOK[i]->supdate(SPRITEOK);
+		if (SPRITEOK[i]->getAllapot()==0 or SPRITEOK[i]->getAllapot()==1) SPRITEOK[i]->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
+		if (SPRITEOK[i]->getAllapot()==255)
 		{ //törlés
 			delete SPRITEOK[i];
 			SPRITEOK[i] = SPRITEOK[SPRITEOK.size()-1];
@@ -174,8 +194,6 @@ void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int
 		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
 	else 
 		gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
-	stringstream str; str << szam; string s = str.str();
-	gout << color(255,255,255) << move_to(ux+usx/2,uy+usy/2) << text(s);
 }
 
 void ENV::SPRITE::supdate(vector<SPRITE*> &SPRITEOK)
@@ -199,62 +217,62 @@ void ENV::SPRITE::supdate(vector<SPRITE*> &SPRITEOK)
 		}
 }
 
-void ENV::setSpriteSebesseg(SPRITE *sp,double vx,double vy)
+void ENV::SPRITE::setSebesseg(double uvx,double uvy)
 {
-	if (!sp) return;
-	sp->vx=vx;
-	sp->vy=vy;
+	vx=uvx;
+	vy=uvy;
 }
 
-void ENV::getSpriteSebesseg(SPRITE *sp,double &vx,double &vy)
+void ENV::SPRITE::getSebesseg(double &uvx,double &uvy)
 {
-	if (!sp) return;
-	vx=sp->vx;
-	vy=sp->vy;
+	uvx=vx;
+	uvy=vy;
 }
 
-void ENV::setSpritePosition(SPRITE *sp,double x,double y)
+void ENV::SPRITE::setPosition(double ux,double uy)
 {
-	if (!sp) return;
-	sp->x=x;
-	sp->y=y;
+	x=ux;
+	y=uy;
 }
 
-void ENV::getSpritePosition(SPRITE *sp,double &x,double &y)
+void ENV::SPRITE::getPosition(double &ux,double &uy)
 {
-	if (!sp) return;
-	x=sp->x;
-	y=sp->y;
+	ux=x;
+	uy=y;
 }
 
-void ENV::setSpriteAllapot(SPRITE *sp,unsigned char allapot)
+void ENV::SPRITE::setAllapot(char uallapot)
 {
-	if (!sp) return;
-	sp->allapot=allapot;
+	if (uallapot>3 or uallapot<0 or uallapot!=255) return;
+	allapot=uallapot;
 }
 
-void ENV::getSpriteAllapot(SPRITE *sp,unsigned char &allapot)
+int ENV::SPRITE::getAllapot()
 {
-	if (!sp) return;
-	allapot=sp->allapot;
+	return allapot;
 }
 
-void ENV::setSpriteSzam(SPRITE *sp,int szam)
+void ENV::SPRITE::setMeret(double usx,double usy)
 {
-	sp->szam+=szam;
+	sx=usx;
+	sy=usy;
+}
+
+void ENV::SPRITE::getMeret(double &usx,double &usy)
+{
+	usx=sx;
+	usy=sy;
 }
 
 
-ENV::SPRITE *ENV::utkozott(SPRITE *sp)
+ENV::SPRITE *ENV::SPRITE::utkozott()
 {
-	if (!sp) return NULL;
-	return sp->utk;
+	return utk;
 }
 
-bool ENV::SpriteBenneVan(SPRITE *sp, double px, double py)
-{ 
-	if (!sp) return false;
-	if (px>=sp->x and px<=sp->x+sp->sx and py>=sp->y and py<=sp->y+sp->sy) return true;
+bool ENV::SPRITE::BenneVan(double px, double py)
+{
+	if (px>=x and px<=x+sx and py>=y and py<=y+sy) return true;
 	return false;
 };
 
@@ -281,15 +299,15 @@ bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
 	be.close();*/
 
 	FILE* f = fopen(fname, "rb"); if (!f) return false;
-	unsigned char info[54] = {0}; // 54 byte: az infók
-	fread(info, sizeof(unsigned char), 54, f); 
+	char info[54] = {0}; // 54 byte: az infók
+	fread(info, sizeof(char), 54, f); 
 
 	unsigned int width = *(int*)&info[18]; //18. szélesség
 	unsigned int height = *(int*)&info[22]; //22. magasság
 
 	unsigned int size = 3 * width * height; // 3 byte pixelenként
-	unsigned char* data = new unsigned char[size]; // lefoglalás
-	fread(data, sizeof(unsigned char), size, f); // beolvasás egyszerre / csak ha nincsenek színtérinformációk, különben csúszik
+	char* data = new char[size]; // lefoglalás
+	fread(data, sizeof(char), size, f); // beolvasás egyszerre / csak ha nincsenek színtérinformációk, különben csúszik
 	fclose(f);
 
 	TSPRITEOK.open(width,height); // canvas megnyitása
