@@ -52,9 +52,9 @@ class ENV
 	void kirajzol();
 	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
 
-	struct SPRITE
+	class SPRITE
 	{
-		private:
+		protected:
 
 		double x,y; // kooridiáták lehet negatív is
 		char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
@@ -84,8 +84,8 @@ class ENV
 			utk=NULL;
 		}
 
-		void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
-		void supdate(vector<SPRITE*> &SPRITEOK);
+		virtual void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
+		virtual void supdate(vector<SPRITE*> &SPRITEOK);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
 		void setSebesseg(double vx,double vy);
@@ -325,6 +325,5 @@ bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
 	delete data; //Nem használt memória felszabadítása
 	return true;
 }
-
 
 #endif
