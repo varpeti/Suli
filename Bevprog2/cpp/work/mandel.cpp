@@ -3,11 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <cmath>
 #include "mandelrajz.hpp"
 #include "komplex.hpp"
-
-#include "mandelrajz.cpp" // EZT NEM SZABAD SOHA
 
 using namespace genv;
 using namespace std;
@@ -23,19 +20,28 @@ double nagyitas = 2;
 int main()
 {
 	gout.open(XX,YY);
-	mandelrajz(XX,YY, MAX, nagyitas);
+
+	//gin.timer(1000);
+
+	mandelrajz(XX,YY, MAX, nagyitas, XX/2, YY/2); gout << refresh;
+	//mandelrajz(XX,YY, MAX,nagyitas,XX*0.3994999999988,YY*0.195303); gout << refresh;
+
 	event ev;
 	while(gin >> ev && ev.keycode != key_escape) {
 		if (ev.type==ev_mouse and ev.button==btn_left)
 		{
-			gout << color(000,000,000) 
-				<< move_to(0,0) 
-				<< box(XX,YY);
-			nagyitas/=1;
+			nagyitas/=1.1;
 
 			mandelrajz(XX,YY, MAX,nagyitas,ev.pos_x,ev.pos_y);
 			
 		}
+		if (ev.type==ev_timer)
+		{
+			nagyitas/=1.01;
+			mandelrajz(XX,YY, MAX,nagyitas,XX/2,YY/2);
+			gout << refresh;
+		}
+
 	}
 	return 0;
 }
