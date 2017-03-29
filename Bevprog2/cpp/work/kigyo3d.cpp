@@ -375,7 +375,7 @@ void showinfo(event &ev,int maxpont,int pont) // Mivel "meg lehet fogni" a progr
 	if (pont==-1) menurajz("Kígyó mozgatás: egér | Kamera forgatás: A,D","Cél: csak a (rövid) vonallal mutatott kaja megevése",s1);
 	else menurajz(s2," ",s1);
 	while(gin >> ev and ev.keycode!=key_escape); // várunk ESC-re
-	menurajz("Új játék (0-9)","Információk (h)","Kilépés (ESC)"); // Vissza rajzolom a menüt
+	menurajz("Új játék (0-9)","Információk (H)","Kilépés (ESC)"); // Vissza rajzolom a menüt
 }
 
 int main()
