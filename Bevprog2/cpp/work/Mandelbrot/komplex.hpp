@@ -18,12 +18,12 @@ public:
 		return b;
 	};
 
-	komplex operator*(komplex j)
+	inline komplex operator*(komplex j)
 	{
 		return komplex(a*j.a-b*j.b, b*j.a+a*j.b);
 	}
 
-	komplex operator+(komplex j)
+	inline komplex operator+(komplex j)
 	{
 		return komplex(a+j.a,b+j.b);
 	}

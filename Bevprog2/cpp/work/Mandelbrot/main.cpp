@@ -13,36 +13,28 @@ const int XX=800;
 const int YY=600;
 
 
-const int MAX = 255;
+int MAX = 255;
 
-double nagyitas = 2;
+double nagyitas = 4;
 
 int main()
 {
 	gout.open(XX,YY);
 
-	//gin.timer(1000);
-
 	mandelrajz(XX,YY, MAX, nagyitas, XX/2, YY/2); gout << refresh;
-	//mandelrajz(XX,YY, MAX,nagyitas,XX*0.3994999999988,YY*0.195303); gout << refresh;
 
 	event ev;
 	while(gin >> ev && ev.keycode != key_escape) {
 		if (ev.type==ev_mouse and ev.button==btn_left)
 		{
-			nagyitas/=1.1;
-
+			nagyitas/=2;
 			mandelrajz(XX,YY, MAX,nagyitas,ev.pos_x,ev.pos_y);
+			cout << double(ev.pos_x)/XX << " " << double(ev.pos_y)/YY << endl;
 			
-		}
-		if (ev.type==ev_timer)
-		{
-			nagyitas/=1.01;
-			mandelrajz(XX,YY, MAX,nagyitas,XX/2,YY/2);
-			gout << refresh;
 		}
 
 	}
+
 	return 0;
 }
 
