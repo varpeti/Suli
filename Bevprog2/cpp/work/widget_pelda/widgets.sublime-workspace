@@ -1,0 +1,1272 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"p",
+				"push_back"
+			],
+			[
+				"wid",
+				"Widget"
+			],
+			[
+				"g",
+				"gout"
+			],
+			[
+				"vizsgal",
+				"vizsgal_oldal_elek"
+			],
+			[
+				"S",
+				"Selek"
+			],
+			[
+				"y",
+				"y"
+			],
+			[
+				"x",
+				"x"
+			],
+			[
+				"szor",
+				"szorzo"
+			],
+			[
+				"po",
+				"pontnagysag"
+			],
+			[
+				"pos",
+				"pos_y"
+			],
+			[
+				"be",
+				"beolvas"
+			],
+			[
+				"XX",
+				"XX"
+			],
+			[
+				"kol",
+				"koltseg_penz"
+			],
+			[
+				"fal",
+				"falmagassag"
+			],
+			[
+				"ra",
+				"random_lep"
+			],
+			[
+				"he",
+				"HealKartya"
+			],
+			[
+				"ket",
+				"kezdeti_falmagassag"
+			],
+			[
+				"SP",
+				"SPRITEOK"
+			],
+			[
+				"ma",
+				"maximumsebesseg"
+			],
+			[
+				"m",
+				"maximumsebesseg"
+			],
+			[
+				"ne",
+				"newY2"
+			],
+			[
+				"new",
+				"newX2"
+			],
+			[
+				"re",
+				"return"
+			],
+			[
+				"s",
+				"sebesseg"
+			],
+			[
+				"So",
+				"Sgolyo"
+			],
+			[
+				"du",
+				"double"
+			],
+			[
+				"us",
+				"usebesseg"
+			],
+			[
+				"forga",
+				"forgat"
+			],
+			[
+				"c",
+				"celbox"
+			],
+			[
+				"a",
+				"alpha"
+			],
+			[
+				"get",
+				"getKoords"
+			],
+			[
+				"hos",
+				"hossz"
+			],
+			[
+				"ho",
+				"hosszszorzo"
+			],
+			[
+				"se",
+				"sebesseg"
+			],
+			[
+				"el",
+				"elet"
+			],
+			[
+				"for",
+				"for\tFor Loop"
+			],
+			[
+				"tar",
+				"targetbox"
+			],
+			[
+				"target",
+				"targetbox"
+			],
+			[
+				"targe",
+				"target"
+			],
+			[
+				"t",
+				"type"
+			],
+			[
+				"KEP",
+				"KEPERNYOMAGASSAG"
+			],
+			[
+				"KE",
+				"KEPERNYOSZELESSEG"
+			],
+			[
+				"kem",
+				"kamera"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"set",
+				"aSetKamera"
+			],
+			[
+				"fy",
+				"fy"
+			],
+			[
+				"fon",
+				"load_font"
+			],
+			[
+				"Te",
+				"TERULET"
+			],
+			[
+				"SPR",
+				"SPRITEOK"
+			],
+			[
+				"u",
+				"updatel"
+			],
+			[
+				"oss",
+				"osszeg"
+			],
+			[
+				"the",
+				"theend"
+			],
+			[
+				"ido",
+				"idomulas"
+			],
+			[
+				"ter",
+				"terido"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"ob",
+				"objs"
+			],
+			[
+				"e",
+				"ertek"
+			],
+			[
+				"str",
+				"struct\tstruct"
+			],
+			[
+				"sz",
+				"szetvalaszt"
+			],
+			[
+				"de",
+				"deobjs"
+			],
+			[
+				"gra",
+				"graphics"
+			],
+			[
+				"lo",
+				"love"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "linker",
+			"settings":
+			{
+				"buffer_size": 712,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.cpp",
+			"settings":
+			{
+				"buffer_size": 1138,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "textbox.hpp",
+			"settings":
+			{
+				"buffer_size": 910,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "stattext.hpp",
+			"settings":
+			{
+				"buffer_size": 336,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "stattext.cpp",
+			"settings":
+			{
+				"buffer_size": 363,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/farkasbarany.cpp",
+			"settings":
+			{
+				"buffer_size": 5074,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "examplecheckbox.hpp",
+			"settings":
+			{
+				"buffer_size": 407,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "examplecheckbox.cpp",
+			"settings":
+			{
+				"buffer_size": 1085,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "widgets.cpp",
+			"settings":
+			{
+				"buffer_size": 387,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "widgets.hpp",
+			"settings":
+			{
+				"buffer_size": 384,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/User/C++/C++.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					""
+				],
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					""
+				],
+				[
+					"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++ Starting Kit/C++ - Starting Kit.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					""
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++11/C++11.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++11/C++11.sublime-build",
+					""
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++11/C++11.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Lua/Lua.sublime-build",
+					""
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					""
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"Love2D"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"ldoc: File"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"ldoc: Project"
+				]
+			],
+			[
+				"Packages/Lua Love/LuaLove.sublime-build",
+				"Love2D"
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/C++/C++.sublime-build",
+					""
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"Run in terminal"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"CV Run"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"PG Run"
+				]
+			],
+			[
+				"Packages/User/C++/C++.sublime-build",
+				"PG Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/C++/C++.sublime-build",
+					""
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"Run in terminal"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"CV Run"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"PG Run"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"Project"
+				]
+			],
+			[
+				"Packages/User/C++/C++.sublime-build",
+				"Project"
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/C++/C++.sublime-build",
+					""
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"Terminal"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"CV Run"
+				],
+				[
+					"Packages/User/C++/C++.sublime-build",
+					"PG Run"
+				]
+			],
+			[
+				"Packages/User/C++/C++.sublime-build",
+				"Terminal"
+			]
+		]
+	],
+	"build_varint": "Project",
+	"command_palette":
+	{
+		"height": 372.0,
+		"last_filter": "Package Control: ",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"Package Control: lis",
+				"Package Control: List Packages"
+			],
+			[
+				"Package Control: re",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control:in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: cre",
+				"Package Control: Create Package File"
+			],
+			[
+				"Package Control:re",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control",
+				"Package Control: Enable Package"
+			],
+			[
+				"Package Control:",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar"
+	],
+	"file_history":
+	[
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widget_pelda/stattext.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widget_pelda/stattext.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/Mandelbrot/mandelrajz.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/Mandelbrot/main.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widget_pelda/examplecheckbox.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/farkasbarany.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/kiir.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widget_pelda/checkbox.hpp",
+		"/home/itep/Ddotsizepp2017/Izomorfia/doboz2.txt",
+		"/home/itep/Ddotsizepp2017/Izomorfia/doboz.txt",
+		"/home/itep/Ddotsizepp2017/Izomorfia/izomorfia.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/kigyo3d.cpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/kartya.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/farkasbarany.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widget_pelda/examplecheckbox.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog/float/cam.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Matlab/Work/gyak3_f32_BUGE0Q.m",
+		"/home/itep/Asztal/Link erre: Suli/Matlab/Work/gyak3_f31_BUGE0Q.m",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/linkeltlista.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/Mandelbrot/komplex.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/Mandelbrot/main.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/Mandelbrot/mandelrajz.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/Mandelbrot/mandelrajz.hpp",
+		"/home/itep/Letöltések/cop_car_lp.obj",
+		"/home/itep/Letöltések/Dice_high_poly/Dice_high_poly.obj",
+		"/home/itep/Letöltések/Blonde Elexis - nude/Blonde Elexis - nude.obj",
+		"/home/itep/Ddotsizepp2017/Izomorfia/graphics.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/main.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/komplex.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/mandelrajz.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/mandelrajz.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/ablakok.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/env.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/mandel.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/koveto3d.cpp",
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar/kamera.lua",
+		"/home/itep/.config/sublime-text-3/Packages/User/C++/C++.sublime-build",
+		"/home/itep/Asztal/Link erre: Suli/Linal/Komplex.lua",
+		"/home/itep/Letöltések/fel/mandelrajz.cpp",
+		"/home/itep/Letöltések/fel/teszt.cpp",
+		"/home/itep/Letöltések/fel/mandelrajz.hpp",
+		"/home/itep/Letöltések/fel/main.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/mandel.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/komplex.hpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/kiir.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/widproba.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/koveto.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/tuzijatek.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/utkozik.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/koveto3d.cpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/widgets.hpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/kartya2.cpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/kartya.txt",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/kartya.cpp",
+		"/home/itep/Dokumentumok/LOVE/WORK/Yasumihar/main.lua",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/model.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/friss.cpp",
+		"/home/itep/Asztal/Age Of Empires II lan",
+		"/home/itep/Letöltések/Blonde Elexis - nude/Blonde Elexis - nude.mtl",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/FinalBaseMesh.obj",
+		"/home/itep/lmms/LMMS VST plugins/DSK ZetH/DSK Music - Readme.txt",
+		"/home/itep/Letöltések/FinalBaseMesh.obj",
+		"/home/itep/Letöltések/e60b7eb99f5f835c6e8a280e5163b1e6/archibase.net.txt",
+		"/home/itep/Letöltések/e60b7eb99f5f835c6e8a280e5163b1e6/Table.3DS",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/hatetetrix.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/le",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/fel",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/fel2",
+		"/home/itep/.cache/.fr-PQlh1E/Read me.txt",
+		"/home/itep/Letöltések/cute-animal/1001fonts-cute-animal-eula.txt",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/Sboxok.hpp",
+		"/home/itep/Asztal/teendok",
+		"/home/itep/Asztal/Link erre: Suli/Matlab/Work/gyak4_f",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/szep.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/kamera.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Matlab/Work/gyak2_BUGE0Q.m",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/graphics.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/pointers.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/canvas.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/h3d.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/graphics_src/graphics.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/tuzijatek (másolat).cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/graphics.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/graphics_src/graphics.hpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/graphics.hpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/compile_app",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/graphics_src/graphics.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog/float/recept.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/main.cpp",
+		"/home/itep/Letöltések/gyak2/a.kep",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/sziavilag.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Mérés/meres.lua",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/main.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/kiir.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/env.hpp SZAR",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/tuzijatek.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog2/cpp/work/canvas.cpp",
+		"/home/itep/Asztal/Link erre: Suli/Bevmér/Bevmér.lua",
+		"/home/itep/Asztal/Link erre: Suli/Bevprog/float/1.8a.cpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/main.cpp",
+		"/home/itep/Dokumentumok/Suli/Bevprog2/cpp/work/sziavilag.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog/float/aaa.cpp",
+		"/home/itep/Asztal/Link erre: Bevprog/float/cam.cpp",
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar/game.lua",
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar/fa.lua",
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar/client.lua",
+		"/home/itep/Asztal/Link erre: LOVE/Yasumihar/env.lua",
+		"/home/itep/Dokumentumok/LOVE/WORK/Yasumihar/kepernyo.lua",
+		"/home/itep/Dokumentumok/LOVE/WORK/Yasumihar/player.lua",
+		"/home/itep/Dokumentumok/LOVE/WORK/Vilag/main.lua",
+		"/home/itep/.cache/.fr-qYlYfr/13zh/bevprog_1314/beugro_a.cpp",
+		"/home/itep/Asztal/TeamSpeak3",
+		"/home/itep/Programok/TS/TeamSpeak3-Client-linux_amd64-3.1.0.1.run",
+		"/home/itep/.config/sublime-text-3/Packages/User/Lua/Lua5.3.sublime-build",
+		"/home/itep/Videók/anime",
+		"/home/itep/Letöltések/TR/Paprika.avi",
+		"/home/itep/�+�\u0001",
+		"/home/itep/Asztal/Link erre: Bevprog/float/almakorte.cpp",
+		"/home/itep/.cache/.fr-1ENKEc/13zh/bevprog_1314/repterek.txt",
+		"/home/itep/.cache/.fr-29kDUT/13zh/bevprog_1314/repterek.txt",
+		"/home/itep/Dokumentumok/Suli/LICENSE.md",
+		"/home/itep/Asztal/Link erre: Suli/Anal/Matek.lua",
+		"/home/itep/Letöltések/TR/Mathworks_Matlab_R2015a_Linux/crack/readme.txt",
+		"/home/itep/Asztal/aaa",
+		"/home/itep/Asztal/matek",
+		"/home/itep/Letöltések/love3d-demo_2015-07-26/main.lua",
+		"/home/itep/Dokumentumok/LOVE/WORK/Dun-gen-master/main.lua",
+		"/home/itep/Dokumentumok/LOVE/WORK/Yasumihar/fa.lua"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"    ",
+			"STAT",
+			"$",
+			"    ",
+			"ExampleCheckBox",
+			"EXAMPLECHECKBOX_HPP_INCLUDED",
+			"    ",
+			"szor",
+			" ",
+			"s",
+			"//",
+			"f",
+			"vn",
+			"v",
+			"g",
+			"/",
+			"f",
+			"vt",
+			"v",
+			"boxok",
+			"    ",
+			"szin",
+			"widgets",
+			"HPup",
+			"  ",
+			"     ",
+			"    ",
+			"ß",
+			"    ",
+			"env.SPRITEOK[i].",
+			"Sprite",
+			"env.SPRITEOK[i],",
+			"Sprite",
+			"env.SPRITEOK[i],",
+			"env.SP",
+			"env.set",
+			"Sprite",
+			"unsigned char",
+			"szam",
+			"double sze",
+			"unsigned int s",
+			"szam",
+			"pozicio",
+			"angle",
+			"x",
+			"1",
+			"gout",
+			"color",
+			"str",
+			"benne",
+			"Meghaltam!",
+			"Leterejottem!",
+			"Letrejottem!",
+			"cout",
+			"pont",
+			"load",
+			"rekord.kaja++",
+			"rekord.elet",
+			"rekord",
+			"forgat",
+			"kamera",
+			"  ",
+			"int",
+			"px",
+			"elet",
+			"canvas",
+			"gout",
+			"    ",
+			"cout",
+			"<50",
+			"ter",
+			"o",
+			"i",
+			"obj",
+			"pos",
+			"x",
+			"dt*player.speed",
+			"love.keyboard.isDown(",
+			"env.playerek[DATA.pID].teamcolor.rr,env.playerek[DATA.pID].teamcolor.gg,env.playerek[DATA.pID].teamcolor.bb",
+			"DATA.szin.rr,DATA.szin.gg,DATA.szin.bb",
+			"getPoints",
+			"  ",
+			"explode",
+			"PlayerObjs",
+			"env",
+			"exf",
+			"lines",
+			"DEBUG",
+			"usD",
+			"kx",
+			"print",
+			"deobjs",
+			"mitlat",
+			"print",
+			"bf",
+			"af",
+			"    ",
+			"getHeight"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": false
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "linker",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 712,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								198,
+								198
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1138,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								495,
+								495
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 405.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "textbox.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 910,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								861,
+								861
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 225.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "stattext.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 336,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "stattext.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 363,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								360,
+								360
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/home/itep/Asztal/Link erre: Suli/Bevprog2/cpp/work/farkasbarany.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5074,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								377,
+								377
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "examplecheckbox.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 407,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								288,
+								288
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "examplecheckbox.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1085,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								380,
+								380
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "widgets.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 387,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								46,
+								46
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "widgets.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								102,
+								102
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 119.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "Packages/User/C++/C++.sublime-build",
+	"project": "widgets.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
