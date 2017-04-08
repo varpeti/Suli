@@ -1,13 +1,18 @@
-#include "widgets.hpp"
+#include "env.hpp"
+#include "ablak.hpp"
 
 using namespace genv;
 
 int main()
 {
 	ENV env (1300,600,false);
-	if(!env.spriteok_beolvas("hal.bmp")) gout << text("Nem talalhato a kep!");
+	if(!env.kepek_beolvas("hal.bmp")) gout << text("Nem talalhato a kep!");
 	
-	WIDGETS *szem = new WIDGETS(300,-50,300,160,170,160);
+	OBJ *ablak = new ABLAK(300,0,300,160,0,170,160); env.objektumok.push_back(ablak);
+	OBJ *a = new ABLAK(10,10,100,80,0,SZIN(0,255,0)); env.objektumok[0]->objektumok.push_back(a);
+	a = new ABLAK(10,10,60,50,0,SZIN(255,0,0)); env.objektumok[0]->objektumok[0]->objektumok.push_back(a);
+	a = new ABLAK(10,10,50,60,0,SZIN(255,255,0)); env.objektumok[0]->objektumok[0]->objektumok.push_back(a);
+	a = new ABLAK(10,10,10,10,0,SZIN(0,0,255)); env.objektumok[0]->objektumok[0]->objektumok[0]->objektumok.push_back(a);
 
 	gin.timer(20);
 
@@ -16,55 +21,14 @@ int main()
 
 	while(gin >> env.ev and env.ev.keycode!=key_escape) {
 
+		env.UpdateDrawHandle();
+
 		if (env.ev.type==ev_timer){
-			env.kirajzol();
+			
 		} 
 		else if (env.ev.type==ev_mouse)
 		{
-			if (env.ev.button==btn_left)
-				for (int i = env.SPRITEOK.size()-1; i >= 0; i--)
-					if (env.SPRITEOK[i]->BenneVan(env.ev.pos_x,env.ev.pos_y)) {
-						env.SPRITEOK[i]->getPosition(kx,ky);
-						kx-=env.ev.pos_x;
-						ky-=env.ev.pos_y;
-						lenyomva=true;
-						env.SpriteKiemel(env.SPRITEOK[i]);
-						break;
-					}
 
-			if (-env.ev.button==btn_left) {lenyomva=false; kx=0; ky=0;}
-
-			if (env.ev.button==btn_right) {
-				env.newSprite(env.ev.pos_x-175,env.ev.pos_y-100,250,200,SZIN(rand()%255,rand()%255,rand()%255));
-			};
-
-			if (env.ev.button==btn_wheelup) 
-				for (int i = env.SPRITEOK.size()-1; i >= 0; i--)
-					if (env.SPRITEOK[i]->BenneVan(env.ev.pos_x,env.ev.pos_y)) {
-						double mx,my;
-						env.SPRITEOK[i]->getMeret(mx,my); cout << mx << " " << my << endl;
-						env.SPRITEOK[i]->setMeret(mx*1.01,my*1.01); 
-						env.SpriteKiemel(env.SPRITEOK[i]);
-						break;
-					}
-			if (env.ev.button==btn_wheeldown)
-				for (int i = env.SPRITEOK.size()-1; i >= 0; i--)
-					if (env.SPRITEOK[i]->BenneVan(env.ev.pos_x,env.ev.pos_y)) {
-						double mx,my;
-						env.SPRITEOK[i]->getMeret(mx,my);
-						env.SPRITEOK[i]->setMeret(mx*0.99,my*0.99); 
-						env.SpriteKiemel(env.SPRITEOK[i]);
-						break;
-					}
-
-			if (lenyomva)
-			{
-				env.SPRITEOK[env.SPRITEOK.size()]->setPosition(env.ev.pos_x+kx,env.ev.pos_y+ky);
-			}
-		}
-		else if (env.ev.type==ev_key)
-		{
-			//szem->setPosition(rand()%200,rand()%200);
 		}
 		
 	}

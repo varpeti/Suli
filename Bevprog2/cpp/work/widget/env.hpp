@@ -14,15 +14,134 @@
 using namespace genv;
 using namespace std;
 
-/* DEKRALÁCIÓK	*/
+/* OBJ-ektum class */ // ebből örőklődik minden
 
-struct SZIN
+class OBJ // Az szülő
 {
-	char rr,gg,bb;
+	public:
+		double x,y; //x,y
+		double sx,sy; //méret
+		unsigned char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
+		vector<OBJ*> objektumok; // Pl ablakban lehetnek widgetek, de akár több ablak is, vagy egy legördülő widgetben több statikus szöveg widget.
 
-	SZIN(char rr,char gg,char bb) : rr(rr), gg(gg), bb(bb) {};
+		OBJ (double x,double y,double sx,double sy,unsigned char allapot) : x(x), y(y), sx(sx), sy(sy), allapot(allapot) {lenyomva=false; ex=0; ey=0;};
+		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double XX, double YY, KAMERA kamera) const =0;
+		virtual void supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev);
+		virtual bool shandle(event ev, double X0, double Y0);
 
-	SZIN() : rr(0), gg(0), bb(0) {};
+		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
+		void setPosition(double x,double y);
+		void getPosition(double &x,double &y);
+		void setAllapot(char allapot);
+		unsigned char getAllapot();
+		void setMeret(double sx,double sy);
+		void getMeret(double &sx,double &sy);
+
+		void ObjKiemel(OBJ *obj);
+		bool BenneVan(double px, double py);
+
+	private:
+		bool lenyomva; // A tartalom mozgatáshoz kell.
+		double ex,ey;
+};
+
+void OBJ::supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev)
+{
+	if (objektumok.size()==0) return;
+
+	if (ev.type==ev_timer)
+	{
+		for (int i = 0; i < objektumok.size();) // Saját objektumai
+		{
+			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==2) objektumok[i]->supdate(Tkepek,X0+x,Y0+y,kamera,ev);
+			if (objektumok[i]->allapot==255)
+			{ //törlés
+				delete objektumok[i];
+				objektumok[i] = objektumok[objektumok.size()-1];
+				objektumok.pop_back();
+			}
+			else ++i; // Ha nem törlődik, a következőre lép
+		}
+	}
+}
+
+bool OBJ::shandle(event ev, double X0, double Y0)
+{
+	if (objektumok.size()==0) return false; // Ha nincs benne semmi.
+
+	if (objektumok[objektumok.size()-1]->shandle(ev,X0+x,Y0+y)) return true; // Ha benne lévőt mozgattnak nem mozognak a szülők
+
+	if (ev.type==ev_mouse) // A legfelső (fókuszban lévő) megkapja az inputokat.
+	{
+		if (ev.button==btn_left)
+			for (int i = objektumok.size()-1; i >= 0; i--)
+				if (objektumok[i]->BenneVan(ev.pos_x-(X0+x),ev.pos_y-(Y0+y))) 
+				{
+					objektumok[i]->getPosition(ex,ey);
+					ex-=ev.pos_x;
+					ey-=ev.pos_y;
+					lenyomva=true;
+					OBJ::ObjKiemel(objektumok[i]);
+					break;
+				}
+
+		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;}
+
+		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey);
+	}
+	return lenyomva;
+}
+
+void OBJ::ObjKiemel(OBJ *obj)
+{
+	for (int i = 0; i < objektumok.size(); ++i)
+		if (objektumok[i]==obj)
+		{
+			objektumok.push_back(obj);
+			objektumok.erase(objektumok.begin()+i);
+			return;
+		}
+}
+
+void OBJ::setPosition(double ux,double uy)
+{
+	x=ux;
+	y=uy;
+}
+
+void OBJ::getPosition(double &ux,double &uy)
+{
+	ux=x;
+	uy=y;
+}
+
+void OBJ::setAllapot(char uallapot)
+{
+	if (uallapot>3 or uallapot<0 or uallapot!=255) return;
+	allapot=uallapot;
+}
+
+unsigned char OBJ::getAllapot()
+{
+	return allapot;
+}
+
+void OBJ::setMeret(double usx,double usy)
+{
+	sx=usx;
+	sy=usy;
+}
+
+void OBJ::getMeret(double &usx,double &usy)
+{
+	usx=sx;
+	usy=sy;
+}
+
+bool OBJ::BenneVan(double px, double py)
+{
+	if (px>=x and px<=x+sx and py>=y and py<=y+sy) return true;
+	return false;
 };
 
 
@@ -30,14 +149,12 @@ struct SZIN
 
 class ENV
 {
-	protected:
-
-	canvas TSPRITEOK;	//az összes sprite képét ide olvasom be
-
-	unsigned int KEPERNYOSZELESSEG;
-	unsigned int KEPERNYOMAGASSAG;
-
 	public:
+
+	canvas Tkepek;	//az összes OBJ képét ide olvasom be
+
+	unsigned int XX;
+	unsigned int YY;
 
 	// mezők;
 	event ev;
@@ -49,65 +166,12 @@ class ENV
 	~ENV();
 
 	// tagfüggvények
-	void kirajzol();
-	bool spriteok_beolvas(const char *fname); // BMP-ből olvassa be az összes spriteot
+	void UpdateDrawHandle();
+	bool kepek_beolvas(const char *fname); // BMP-ből olvassa be az összes képet
 
-	class SPRITE
-	{
-		protected:
+	vector<OBJ*> objektumok; // Az összes obj
 
-		double x,y; // kooridiáták lehet negatív is
-		char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
-		double sx,sy; // szélesség magasság
-		SZIN szin; //szín
-		unsigned int kx,ky; // sprite x,y
-		double vx,vy; // sebesség
-		SPRITE *utk;
-
-		public:
-
-		SPRITE(double x,double y,unsigned int allapot, unsigned int kx, unsigned int ky, double sx, double sy)
-			: x(x), y(y), allapot(allapot), kx(kx), ky(ky), sx(sx), sy(sy)
-		{
-			szin = SZIN(0,0,0);
-			vx=0;
-			vy=0;
-			utk=NULL;
-		}
-		SPRITE(double x,double y,unsigned int allapot,double sx, double sy,SZIN szin)
-			: x(x), y(y), allapot(allapot), sx(sx), sy(sy), szin(szin)
-		{
-			kx=0;
-			ky=0;
-			vx=0;
-			vy=0;
-			utk=NULL;
-		}
-
-		virtual void srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera);
-		virtual void supdate(vector<SPRITE*> &SPRITEOK);
-
-		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
-		void setSebesseg(double vx,double vy);
-		void getSebesseg(double &vx,double &vy);
-		void setPosition(double x,double y);
-		void getPosition(double &x,double &y);
-		void setAllapot(char allapot);
-		int  getAllapot();
-		void setMeret(double sx,double sy);
-		void getMeret(double &sx,double &sy);
-
-
-		bool BenneVan(double px, double py);
-		SPRITE *utkozott();
-
-	};
-
-	vector<SPRITE*> SPRITEOK; // Az összes sprite
-
-	SPRITE *newSprite(double x, double y, unsigned int kx, unsigned int ky, double sx, double sy); // spriteos
-	SPRITE *newSprite(double x, double y, double sx, double sy,SZIN szin); // színes
-	void SpriteKiemel(SPRITE *sp); // Előre hozza a spriteot.
+	void ObjKiemel(OBJ *obj); // Előre hozza az objektumot
 };
 
 /* MEGVALÓSÍTÁS */
@@ -117,17 +181,17 @@ class ENV
 ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 {
 	srand(time(NULL));
-	KEPERNYOMAGASSAG=magassag;
-	KEPERNYOSZELESSEG=szelesseg;
-	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,teljeskepernyo);
+	YY=magassag;
+	XX=szelesseg;
+	gout.open(XX,YY,teljeskepernyo);
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 {
 	srand(time(NULL));
-	KEPERNYOMAGASSAG=magassag;
-	KEPERNYOSZELESSEG=szelesseg;
-	gout.open(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
+	YY=magassag;
+	XX=szelesseg;
+	gout.open(XX,YY);
 }
 
 ENV::~ENV() //dest
@@ -135,169 +199,66 @@ ENV::~ENV() //dest
 
 }
 
-ENV::SPRITE *ENV::newSprite(double x, double y, unsigned int kx, unsigned int ky, double sx, double sy)
+void ENV::ObjKiemel(OBJ *obj)
 {
-	SPRITE *sp = new SPRITE(x,y,0,kx,ky,sx,sy);
-	SPRITEOK.push_back(sp);
-	return sp;
-}
-
-ENV::SPRITE *ENV::newSprite(double x, double y, double sx, double sy, SZIN szin)
-{
-	SPRITE *sp = new SPRITE(x,y,0,sx,sy,szin);
-	SPRITEOK.push_back(sp);
-	return sp;
-}
-
-void ENV::SpriteKiemel(ENV::SPRITE *sp)
-{
-	for (int i = 0; i < SPRITEOK.size(); ++i)
-		if (SPRITEOK[i]==sp)
+	for (int i = 0; i < objektumok.size(); ++i)
+		if (objektumok[i]==obj)
 		{
-			SPRITEOK.push_back(sp);
-			SPRITEOK.erase(SPRITEOK.begin()+i);
+			objektumok.push_back(obj);
+			objektumok.erase(objektumok.begin()+i);
 			return;
 		}
 }
 
-void ENV::kirajzol()
+void ENV::UpdateDrawHandle()
 {
-	gout << color(0,0,0) << move_to(0,0) << box(KEPERNYOSZELESSEG,KEPERNYOMAGASSAG);
 
-	for (int i = 0; i < SPRITEOK.size();)
+	if (objektumok.size()<1) return;
+
+	static bool lenyomva=false; 
+	static double ex=0,ey=0;
+
+	if (ev.type==ev_timer)
 	{
-		if (SPRITEOK[i]->getAllapot()==0 or SPRITEOK[i]->getAllapot()==2) SPRITEOK[i]->supdate(SPRITEOK);
-		if (SPRITEOK[i]->getAllapot()==0 or SPRITEOK[i]->getAllapot()==1) SPRITEOK[i]->srajzol(TSPRITEOK,KEPERNYOSZELESSEG,KEPERNYOMAGASSAG,kamera);
-		if (SPRITEOK[i]->getAllapot()==255)
-		{ //törlés
-			delete SPRITEOK[i];
-			SPRITEOK[i] = SPRITEOK[SPRITEOK.size()-1];
-			SPRITEOK.pop_back();
-		}
-		else ++i; // Ha nem törlődik, a következőre lép
-	}
+		gout << color(0,0,0) << move_to(0,0) << box(XX,YY);
 
-	gout << refresh;
-}
-
-void ENV::SPRITE::srajzol(canvas &TS,unsigned int KEPERNYOSZELESSEG,unsigned int KEPERNYOMAGASSAG,KAMERA kamera)
-{
-	double ux,uy,usx,usy,ukx,uky;
-	ux=x;uy=y;usx=sx;usy=sy;ukx=kx;uky=ky;
-	kamera.getCoords(ux,uy);
-	if (ux+usx<0 or ux>KEPERNYOSZELESSEG or uy+usy<0 or uy>KEPERNYOMAGASSAG) return;
-	if (ux+usx>KEPERNYOSZELESSEG) {usx=KEPERNYOSZELESSEG-ux;}
-	if (ux<0) {usx+=ux; ukx-=ux; ux=0;}
-	if (uy+usy>KEPERNYOMAGASSAG) {usy=KEPERNYOMAGASSAG-uy;}
-	if (uy<0) {usy+=uy; uky-=uy; uy=0;}
-	if (kx==0 and ky==0) 
-		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
-	else 
-		gout << stamp(TS,ukx,uky,usx,usy,ux,uy); // A canvasra nem lehet stampelni? ezért így van megoldva a "kilógás"
-}
-
-void ENV::SPRITE::supdate(vector<SPRITE*> &SPRITEOK)
-{
-	x+=vx;
-	y+=vy;
-	utk = NULL;
-
-	auto bennevan = [](double px, double py, double mx, double my, int msx, int msy) 
-	{ 
-		if (px>=mx and px<=mx+msx and py>=my and py<=my+msy) return true;
-		return false;
-	};
-
-	for (int i = 0; i < SPRITEOK.size(); ++i)
-		if ( (SPRITEOK[i]->allapot==0 or SPRITEOK[i]->allapot==2) and SPRITEOK[i]!=this)
+		for (int i = 0; i < objektumok.size();) // Saját objektumai
 		{
-			if (bennevan(x,y,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x+sx,y,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x,y+sy,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or bennevan(x+sx,y+sy,SPRITEOK[i]->x,SPRITEOK[i]->y,SPRITEOK[i]->sx,SPRITEOK[i]->sy) or
-				bennevan(SPRITEOK[i]->x,SPRITEOK[i]->y,x,y,sx,sy) or bennevan(SPRITEOK[i]->x+SPRITEOK[i]->sx,SPRITEOK[i]->y,x,y,sx,sy) or bennevan(SPRITEOK[i]->x,SPRITEOK[i]->y+SPRITEOK[i]->sy,x,y,sx,sy) or bennevan(SPRITEOK[i]->x+SPRITEOK[i]->sx,SPRITEOK[i]->y+SPRITEOK[i]->sy,x,y,sx,sy)) 
-				{utk=SPRITEOK[i];}
+			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==1) objektumok[i]->srajzol(Tkepek,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
+			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==2) objektumok[i]->supdate(Tkepek,0,0,kamera,ev);
+			if (objektumok[i]->allapot==255)
+			{ //törlés
+				delete objektumok[i];
+				objektumok[i] = objektumok[objektumok.size()-1];
+				objektumok.pop_back();
+			}
+			else ++i; // Ha nem törlődik, a következőre lép
 		}
-}
 
-void ENV::SPRITE::setSebesseg(double uvx,double uvy)
-{
-	vx=uvx;
-	vy=uvy;
-}
+		gout << refresh;
 
-void ENV::SPRITE::getSebesseg(double &uvx,double &uvy)
-{
-	uvx=vx;
-	uvy=vy;
-}
-
-void ENV::SPRITE::setPosition(double ux,double uy)
-{
-	x=ux;
-	y=uy;
-}
-
-void ENV::SPRITE::getPosition(double &ux,double &uy)
-{
-	ux=x;
-	uy=y;
-}
-
-void ENV::SPRITE::setAllapot(char uallapot)
-{
-	if (uallapot>3 or uallapot<0 or uallapot!=255) return;
-	allapot=uallapot;
-}
-
-int ENV::SPRITE::getAllapot()
-{
-	return allapot;
-}
-
-void ENV::SPRITE::setMeret(double usx,double usy)
-{
-	sx=usx;
-	sy=usy;
-}
-
-void ENV::SPRITE::getMeret(double &usx,double &usy)
-{
-	usx=sx;
-	usy=sy;
-}
-
-
-ENV::SPRITE *ENV::SPRITE::utkozott()
-{
-	return utk;
-}
-
-bool ENV::SPRITE::BenneVan(double px, double py)
-{
-	if (px>=x and px<=x+sx and py>=y and py<=y+sy) return true;
-	return false;
-};
-
-
-bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
-{
-	/*
-	ifstream be(fname);
-	if (!be.is_open()) return;
-	int kx,ky;
-	be >> kx;
-	be >> ky;
-	TSPRITEOK.open(kx,ky); //TSPRITEOK.load_font("font.ttf",12,true);
-	for (int i = 0; i < ky; ++i)
+	}else if (ev.type==ev_mouse and objektumok.size()!=0 and !objektumok[objektumok.size()-1]->shandle(ev,0,0)) // A legfelső (fókuszban lévő) megkapja az inputokat.
 	{
-		for (int j = 0; j < kx; ++j)
-		{
-			int rr; be >> rr;
-			int gg; be >> gg;
-			int bb; be >> bb;
-			TSPRITEOK << move_to(j,i) << color(rr,gg,bb) << dot;
-		}
-	}
-	be.close();*/
+		if (ev.button==btn_left)
+			for (int i = objektumok.size()-1; i >= 0; i--)
+				if (objektumok[i]->BenneVan(ev.pos_x,ev.pos_y)) 
+				{
+					objektumok[i]->getPosition(ex,ey);
+					ex-=ev.pos_x;
+					ey-=ev.pos_y;
+					lenyomva=true;
+					ENV::ObjKiemel(objektumok[i]);
+					break;
+				}
 
+		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;}
+
+		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey);
+	}
+}
+
+bool ENV::kepek_beolvas(const char *fname) // CSAK azért is BMPből.
+{
 	FILE* f = fopen(fname, "rb"); if (!f) return false;
 	char info[54] = {0}; // 54 byte: az infók
 	fread(info, sizeof(char), 54, f); 
@@ -310,7 +271,7 @@ bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
 	fread(data, sizeof(char), size, f); // beolvasás egyszerre / csak ha nincsenek színtérinformációk, különben csúszik
 	fclose(f);
 
-	TSPRITEOK.open(width,height); // canvas megnyitása
+	Tkepek.open(width,height); // canvas megnyitása
 	unsigned int k = 0;
 	for (unsigned int i = 0; i < height; i++) //y
 	{
@@ -319,7 +280,7 @@ bool ENV::spriteok_beolvas(const char *fname) // CSAK azért is BMPből.
 			unsigned int bb = data[k]; k++; // Igen a mikrofos BBGGRR formátumot használ
 			unsigned int gg = data[k]; k++;
 			unsigned int rr = data[k]; k++;
-			TSPRITEOK << move_to(j,height-i) << color(rr,gg,bb) << dot; // ja és fejjel lefele (MIÉRT???)
+			Tkepek << move_to(j,height-i) << color(rr,gg,bb) << dot; // ja és fejjel lefele (MIÉRT???)
 		}
 	}
 	delete data; //Nem használt memória felszabadítása
