@@ -1,3 +1,17 @@
+//	Minden objektumban úlyabb objektumok lehetne. És mivel volt gyerekválalási tanácsdónál ezért különbőző típúsú objektumok lehetnek egymásba.
+//	Az alobjektumok relatív koordinátával rendelkeznek, a "felettük" lévő bal felső sarka a (0,0) pont.
+//
+//		___OBJ[0]___________________ 		___OBJ[1]________________
+//		|	___OBJ[0].OBJ[0]_____ 	|		|	___OBJ[1].OBJ[1]_	|
+//		|	|					|	|		|	|				|	|
+//		|	|OBJ[0].OBJ[0].OBJ_ |	|		|	|_______________|	|
+//		|	||________________|	|	|		|	___OBJ[1].OBJ[2]_	|
+//		|	|___________________|	|		|	|_______________|	|
+//		|___________________________|		|_______________________|
+//
+
+
+
 #ifndef _ENV_	//ujabb definíció és fordítási hiba elkerülésére
 #define _ENV_
 
@@ -69,9 +83,9 @@ bool OBJ::shandle(event ev, double X0, double Y0)
 {
 	if (objektumok.size()==0) return false; // Ha nincs benne semmi.
 
-	if (objektumok[objektumok.size()-1]->shandle(ev,X0+x,Y0+y)) return true; // Ha benne lévőt mozgattnak nem mozognak a szülők
+	if (objektumok[objektumok.size()-1]->shandle(ev,X0+x,Y0+y)) return true; // Ha benne lévőt mozgattnak nem mozognak visszamenőleg.
 
-	if (ev.type==ev_mouse) // A legfelső (fókuszban lévő) megkapja az inputokat.
+	if (ev.type==ev_mouse)
 	{
 		if (ev.button==btn_left)
 			for (int i = objektumok.size()-1; i >= 0; i--)
@@ -85,9 +99,9 @@ bool OBJ::shandle(event ev, double X0, double Y0)
 					break;
 				}
 
-		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;}
+		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;} // Ha felengedi
 
-		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey);
+		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey); // ameddig nyomva mozog.
 	}
 	return lenyomva;
 }
