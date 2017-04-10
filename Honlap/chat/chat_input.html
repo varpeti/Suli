@@ -1,5 +1,7 @@
-<form class="submit_form" method="post" action="main.php">
-<div>
-	<input type="text" name="s_szoveg" /><input type="submit" value="Kuldes" name="s_gomb" /> <br>
+<form class="submit_form" method="post" action="index.php" autocomplete="off">
+<div data-role="footer" style="text-align: center">
+	<input type="text" name="s_szoveg" autofocus="true" value="<?php echo htmlspecialchars($_POST['s_szoveg']); ?>"/>
+	<input type="submit" value="Kuldes" name="s_gomb"/>
+	<input type="submit" value="Ujratoltes" name="s_ref"/> 
 </div>
 </form>
