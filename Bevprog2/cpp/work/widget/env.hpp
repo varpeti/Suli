@@ -1,5 +1,6 @@
 //	Minden objektumban úlyabb objektumok lehetne. És mivel volt gyerekválalási tanácsdónál ezért különbőző típúsú objektumok lehetnek egymásba.
 //	Az alobjektumok relatív koordinátával rendelkeznek, a "felettük" lévő bal felső sarka a (0,0) pont.
+// Két példa, ahol az OBJ alat bármilyen leszármaztatott osztályt lehet érteni.
 //
 //		___OBJ[0]___________________ 		___OBJ[1]________________
 //		|	___OBJ[0].OBJ[0]_____ 	|		|	___OBJ[1].OBJ[1]_	|
@@ -9,7 +10,12 @@
 //		|	|___________________|	|		|	|_______________|	|
 //		|___________________________|		|_______________________|
 //
-
+// Rajzolsá paraméterei:
+//		canvas	- A képeket tartalmazó canvas
+//		X0,Y0	- A felette lévő OBJEKTUM (vagy képernyő) bal felső sarka. Azért kell külön ez is mert relatív koordináták vannak.
+//		Xb,Yb	- A felette lévő OBJEKTUM a még látható, kirajzolt balfelső sarka. 
+//		Xj,Yj	- A felette lévő OBJEKTUM (a még látható, kirajzolt) jobb alsó sarka. Megegyezik az XX,YY pontal az supdate-ben.
+// 		kamera 	- A kamera
 
 
 #ifndef _ENV_	//ujabb definíció és fordítási hiba elkerülésére
@@ -32,78 +38,41 @@ using namespace std;
 
 class OBJ // Az szülő
 {
-	public:
+	protected:
 		double x,y; //x,y
 		double sx,sy; //méret
 		unsigned char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
 		vector<OBJ*> objektumok; // Pl ablakban lehetnek widgetek, de akár több ablak is, vagy egy legördülő widgetben több statikus szöveg widget.
+		bool mozgathato; // Mozgathatóság
 
-		OBJ (double x,double y,double sx,double sy,unsigned char allapot) : x(x), y(y), sx(sx), sy(sy), allapot(allapot) {lenyomva=false; ex=0; ey=0;};
-		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double XX, double YY, KAMERA kamera) const =0;
-		virtual void supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev);
-		virtual bool shandle(event ev, double X0, double Y0);
+	public:
+		OBJ (double x,double y,double sx,double sy,unsigned char allapot,bool mozgathato=true) : x(x), y(y), sx(sx), sy(sy), allapot(allapot), mozgathato(mozgathato) {lenyomva=false; ex=0; ey=0;};
+		~OBJ () {while(objektumok.size()>0){delete objektumok[objektumok.size()-1]; objektumok.pop_back(); }}; // Minden alosztály tartalmát is kiszedi a memóriából.
+		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const =0; // sprite, felette, határai b-balfelső j-jobbalsó, kamera
+		virtual void supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev) {};
+		virtual bool shandle(event ev, double X0, double Y0, KAMERA kamera) {};
+		virtual void addObj(OBJ* obj);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
 		void setPosition(double x,double y);
 		void getPosition(double &x,double &y);
-		void setAllapot(char allapot);
+		void setAllapot(unsigned char allapot);
 		unsigned char getAllapot();
 		void setMeret(double sx,double sy);
 		void getMeret(double &sx,double &sy);
+		bool isMozgathato();
 
 		void ObjKiemel(OBJ *obj);
 		bool BenneVan(double px, double py);
 
-	private:
+	protected:
 		bool lenyomva; // A tartalom mozgatáshoz kell.
 		double ex,ey;
 };
 
-void OBJ::supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev)
+void OBJ::addObj(OBJ *obj)
 {
-	if (objektumok.size()==0) return;
-
-	if (ev.type==ev_timer)
-	{
-		for (int i = 0; i < objektumok.size();) // Saját objektumai
-		{
-			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==2) objektumok[i]->supdate(Tkepek,X0+x,Y0+y,kamera,ev);
-			if (objektumok[i]->allapot==255)
-			{ //törlés
-				delete objektumok[i];
-				objektumok[i] = objektumok[objektumok.size()-1];
-				objektumok.pop_back();
-			}
-			else ++i; // Ha nem törlődik, a következőre lép
-		}
-	}
-}
-
-bool OBJ::shandle(event ev, double X0, double Y0)
-{
-	if (objektumok.size()==0) return false; // Ha nincs benne semmi.
-
-	if (objektumok[objektumok.size()-1]->shandle(ev,X0+x,Y0+y)) return true; // Ha benne lévőt mozgattnak nem mozognak visszamenőleg.
-
-	if (ev.type==ev_mouse)
-	{
-		if (ev.button==btn_left)
-			for (int i = objektumok.size()-1; i >= 0; i--)
-				if (objektumok[i]->BenneVan(ev.pos_x-(X0+x),ev.pos_y-(Y0+y))) 
-				{
-					objektumok[i]->getPosition(ex,ey);
-					ex-=ev.pos_x;
-					ey-=ev.pos_y;
-					lenyomva=true;
-					OBJ::ObjKiemel(objektumok[i]);
-					break;
-				}
-
-		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;} // Ha felengedi
-
-		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey); // ameddig nyomva mozog.
-	}
-	return lenyomva;
+	objektumok.push_back(obj);
 }
 
 void OBJ::ObjKiemel(OBJ *obj)
@@ -129,9 +98,9 @@ void OBJ::getPosition(double &ux,double &uy)
 	uy=y;
 }
 
-void OBJ::setAllapot(char uallapot)
+void OBJ::setAllapot(unsigned char uallapot)
 {
-	if (uallapot>3 or uallapot<0 or uallapot!=255) return;
+	if ( not ( (uallapot<3 and uallapot>0) or uallapot==255) ) return;
 	allapot=uallapot;
 }
 
@@ -152,6 +121,11 @@ void OBJ::getMeret(double &usx,double &usy)
 	usy=sy;
 }
 
+bool OBJ::isMozgathato()
+{
+	return mozgathato;
+}
+
 bool OBJ::BenneVan(double px, double py)
 {
 	if (px>=x and px<=x+sx and py>=y and py<=y+sy) return true;
@@ -164,28 +138,31 @@ bool OBJ::BenneVan(double px, double py)
 class ENV
 {
 	public:
+		canvas Tkepek;	//az összes OBJ képét ide olvasom be
+	
+		unsigned int XX;
+		unsigned int YY;
+	
+		// mezők;
+		event ev;
+		KAMERA kamera;
+	
+		//konst dest
+		ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo);
+		ENV(unsigned int szelesseg, unsigned int magassag);
+		~ENV();
+	
+		// tagfüggvények
+		void UpdateDrawHandle();
+		bool kepek_beolvas(const char *fname); // BMP-ből olvassa be az összes képet
+	
+	
+	
+		void addObj(OBJ* obj);
+		void ObjKiemel(OBJ *obj); // Előre hozza az objektumot
 
-	canvas Tkepek;	//az összes OBJ képét ide olvasom be
-
-	unsigned int XX;
-	unsigned int YY;
-
-	// mezők;
-	event ev;
-	KAMERA kamera;
-
-	//konst dest
-	ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo);
-	ENV(unsigned int szelesseg, unsigned int magassag);
-	~ENV();
-
-	// tagfüggvények
-	void UpdateDrawHandle();
-	bool kepek_beolvas(const char *fname); // BMP-ből olvassa be az összes képet
-
-	vector<OBJ*> objektumok; // Az összes obj
-
-	void ObjKiemel(OBJ *obj); // Előre hozza az objektumot
+	private:
+		vector<OBJ*> objektumok; // Az összes obj
 };
 
 /* MEGVALÓSÍTÁS */
@@ -213,6 +190,11 @@ ENV::~ENV() //dest
 
 }
 
+void ENV::addObj(OBJ *obj)
+{
+	objektumok.push_back(obj);
+}
+
 void ENV::ObjKiemel(OBJ *obj)
 {
 	for (int i = 0; i < objektumok.size(); ++i)
@@ -238,9 +220,9 @@ void ENV::UpdateDrawHandle()
 
 		for (int i = 0; i < objektumok.size();) // Saját objektumai
 		{
-			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==1) objektumok[i]->srajzol(Tkepek,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
-			if (objektumok[i]->allapot==0 or objektumok[i]->allapot==2) objektumok[i]->supdate(Tkepek,0,0,kamera,ev);
-			if (objektumok[i]->allapot==255)
+			if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==1) objektumok[i]->srajzol(Tkepek,0,0,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
+			if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==2) objektumok[i]->supdate(Tkepek,0,0,kamera,ev);
+			if (objektumok[i]->getAllapot()==255)
 			{ //törlés
 				delete objektumok[i];
 				objektumok[i] = objektumok[objektumok.size()-1];
@@ -251,11 +233,14 @@ void ENV::UpdateDrawHandle()
 
 		gout << refresh;
 
-	}else if (ev.type==ev_mouse and objektumok.size()!=0 and !objektumok[objektumok.size()-1]->shandle(ev,0,0)) // A legfelső (fókuszban lévő) megkapja az inputokat.
+	}else if (ev.type==ev_mouse and objektumok.size()!=0 and !objektumok[objektumok.size()-1]->shandle(ev,0,0,kamera)) // A legfelső (fókuszban lévő) megkapja az inputokat.
 	{
 		if (ev.button==btn_left)
+		{
+			double uX0=0,uY0=0;
+			kamera.getKamCoords(uX0,uY0);
 			for (int i = objektumok.size()-1; i >= 0; i--)
-				if (objektumok[i]->BenneVan(ev.pos_x,ev.pos_y)) 
+				if (objektumok[i]->BenneVan(ev.pos_x-uX0,ev.pos_y-uY0)) 
 				{
 					objektumok[i]->getPosition(ex,ey);
 					ex-=ev.pos_x;
@@ -264,6 +249,7 @@ void ENV::UpdateDrawHandle()
 					ENV::ObjKiemel(objektumok[i]);
 					break;
 				}
+		}
 
 		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;}
 
