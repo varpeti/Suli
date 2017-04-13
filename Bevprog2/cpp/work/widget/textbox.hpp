@@ -3,9 +3,6 @@
 
 #include "stattext.hpp"
 
-
-using namespace genv;
-
 class TEXTBOX : public STATTEXT
 {
 	protected:
@@ -31,7 +28,7 @@ bool TEXTBOX::supdate(event ev, double X0, double Y0, KAMERA kamera)
 		if (ev.keycode>31) szoveg+=ev.keycode; // Írás
 		else if (ev.keycode==key_backspace) szoveg = szoveg.substr(0, szoveg.size()-1); // Törlés
 
-		if (szoveg.size()>size) szoveg = szoveg.substr(0, szoveg.size()-1); // Nincs több karakter
+		if (szoveg.size()>size) szoveg = szoveg.substr(0, szoveg.size()-1); // Nincs több karakter hely
 		return true; // Elfogja a karaktereket.
 	}
 	return false;

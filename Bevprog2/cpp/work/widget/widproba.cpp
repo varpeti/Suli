@@ -2,6 +2,7 @@
 #include "ablak.hpp"
 #include "stattext.hpp"
 #include "textbox.hpp"
+#include "szambox.hpp"
 
 using namespace genv;
 
@@ -14,9 +15,10 @@ int main()
 	OBJ *z = new ABLAK(10,10,500,300,SZIN(0,255,0)); ablak->addObj(z);
 	OBJ *p = new ABLAK(10,10,300,150,SZIN(255,0,0)); z->addObj(p);
 	OBJ *s = new ABLAK(10,10,250,100,SZIN(255,255,0)); z->addObj(s);
-	OBJ *k = new ABLAK(10,10,10,10,SZIN(0,0,255)); p->addObj(k);
+	OBJ *k = new ABLAK(50,50,10,10,SZIN(0,0,255)); p->addObj(k);
 	OBJ *t = new STATTEXT(10,50,SZIN(0,0,0),SZIN(255,255,255),"Az almaspitet szeretem a legjobban, de a kortes is finom!"); s->addObj(t);
-	OBJ *tb = new TEXTBOX(10,50,10,SZIN(0,0,0),SZIN(255,255,255)); z->addObj(tb);
+	OBJ *tb = new TEXTBOX(10,10,10,SZIN(0,0,0),SZIN(255,255,255)); z->addObj(tb);
+	OBJ *szam = new SZAMBOX(10,10,-10,10,SZIN(0,0,0),SZIN(255,255,255)); p->addObj(szam);
 
 
 	gin.timer(20);
