@@ -41,23 +41,19 @@ class OBJ // Az szülő
 	protected:
 		double x,y; //x,y
 		double sx,sy; //méret
-		unsigned char allapot; // 255 törölhető, 0 látszik updetelődik, 1 lát, 2 update, else semmi
 		vector<OBJ*> objektumok; // Pl ablakban lehetnek widgetek, de akár több ablak is, vagy egy legördülő widgetben több statikus szöveg widget.
 		bool mozgathato; // Mozgathatóság
 
 	public:
-		OBJ (double x,double y,double sx,double sy,unsigned char allapot,bool mozgathato=true) : x(x), y(y), sx(sx), sy(sy), allapot(allapot), mozgathato(mozgathato) {lenyomva=false; ex=0; ey=0;};
+		OBJ (double x,double y,double sx,double sy,bool mozgathato=true) : x(x), y(y), sx(sx), sy(sy), mozgathato(mozgathato) {lenyomva=false; ex=0; ey=0;};
 		~OBJ () {while(objektumok.size()>0){delete objektumok[objektumok.size()-1]; objektumok.pop_back(); }}; // Minden alosztály tartalmát is kiszedi a memóriából.
 		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const =0; // sprite, felette, határai b-balfelső j-jobbalsó, kamera
-		virtual void supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev) {};
-		virtual bool shandle(event ev, double X0, double Y0, KAMERA kamera) {};
+		virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {};
 		virtual void addObj(OBJ* obj);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
 		void setPosition(double x,double y);
 		void getPosition(double &x,double &y);
-		void setAllapot(unsigned char allapot);
-		unsigned char getAllapot();
 		void setMeret(double sx,double sy);
 		void getMeret(double &sx,double &sy);
 		bool isMozgathato();
@@ -96,17 +92,6 @@ void OBJ::getPosition(double &ux,double &uy)
 {
 	ux=x;
 	uy=y;
-}
-
-void OBJ::setAllapot(unsigned char uallapot)
-{
-	if ( not ( (uallapot<3 and uallapot>0) or uallapot==255) ) return;
-	allapot=uallapot;
-}
-
-unsigned char OBJ::getAllapot()
-{
-	return allapot;
 }
 
 void OBJ::setMeret(double usx,double usy)
@@ -218,22 +203,14 @@ void ENV::UpdateDrawHandle()
 	{
 		gout << color(0,0,0) << move_to(0,0) << box(XX,YY);
 
-		for (int i = 0; i < objektumok.size();) // Saját objektumai
+		for (int i = 0; i < objektumok.size();++i) // Saját objektumai
 		{
-			if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==1) objektumok[i]->srajzol(Tkepek,0,0,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
-			if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==2) objektumok[i]->supdate(Tkepek,0,0,kamera,ev);
-			if (objektumok[i]->getAllapot()==255)
-			{ //törlés
-				delete objektumok[i];
-				objektumok[i] = objektumok[objektumok.size()-1];
-				objektumok.pop_back();
-			}
-			else ++i; // Ha nem törlődik, a következőre lép
+			objektumok[i]->srajzol(Tkepek,0,0,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
 		}
 
 		gout << refresh;
-
-	}else if (ev.type==ev_mouse and objektumok.size()!=0 and !objektumok[objektumok.size()-1]->shandle(ev,0,0,kamera)) // A legfelső (fókuszban lévő) megkapja az inputokat.
+									    // A legfelső (fókuszban lévő) megkapja az inputokat. És ha mozgott nem tér vissza.
+	}else if (objektumok.size()!=0 and !objektumok[objektumok.size()-1]->supdate(ev,0,0,kamera) and ev.type==ev_mouse) 
 	{
 		if (ev.button==btn_left)
 		{

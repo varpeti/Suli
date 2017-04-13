@@ -17,21 +17,20 @@ class ABLAK : public OBJ
 
 	public:
 
-	ABLAK(double x, double y, double sx, double sy, unsigned int allapot, unsigned int kx, unsigned int ky, bool mozgathato=true)
-		:  OBJ(x,y,sx,sy,allapot,mozgathato), kx(kx), ky(ky)
+	ABLAK(double x, double y, double sx, double sy, unsigned int kx, unsigned int ky, bool mozgathato=true)
+		:  OBJ(x,y,sx,sy,mozgathato), kx(kx), ky(ky)
 	{
 		szin = SZIN(0,0,0);
 	}
-	ABLAK(double x, double y, double sx, double sy, unsigned int allapot, SZIN szin, bool mozgathato=true)
-		: OBJ(x,y,sx,sy,allapot,mozgathato), szin(szin)
+	ABLAK(double x, double y, double sx, double sy, SZIN szin, bool mozgathato=true)
+		: OBJ(x,y,sx,sy,mozgathato), szin(szin)
 	{
 		kx=0;
 		ky=0;
 	}
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const;
-	virtual void supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev);
-	virtual bool shandle(event ev, double X0, double Y0, KAMERA kamera);
+	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera);
 };
 
 void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const
@@ -51,32 +50,12 @@ void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, 
 	
 	for (int i = 0; i < objektumok.size();++i) // Saját objektumai kirajzolása
 	{
-		if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==1) objektumok[i]->srajzol(Tkepek,x+X0,y+Y0,ux,uy,usx,usy,kamera); 
+		objektumok[i]->srajzol(Tkepek,x+X0,y+Y0,ux,uy,usx,usy,kamera); 
 	}
 	
 }
 
-void ABLAK::supdate(canvas &Tkepek, double X0, double Y0, KAMERA kamera, event ev)
-{
-	if (objektumok.size()==0) return;
-
-	if (ev.type==ev_timer)
-	{
-		for (int i = 0; i < objektumok.size();) // Saját objektumai updatelése
-		{
-			if (objektumok[i]->getAllapot()==0 or objektumok[i]->getAllapot()==2) objektumok[i]->supdate(Tkepek,X0+x,Y0+y,kamera,ev);
-			if (objektumok[i]->getAllapot()==255)
-			{ //törlés
-				delete objektumok[i];
-				objektumok[i] = objektumok[objektumok.size()-1];
-				objektumok.pop_back();
-			}
-			else ++i; // Ha nem törlődik, a következőre lép
-		}
-	}
-}
-
-bool ABLAK::shandle(event ev, double X0, double Y0, KAMERA kamera)
+bool ABLAK::supdate(event ev, double X0, double Y0, KAMERA kamera)
 {
 	if (objektumok.size()==0) return false; // Ha nincs benne semmi, az alatta lévők mozognak.
 
@@ -84,7 +63,7 @@ bool ABLAK::shandle(event ev, double X0, double Y0, KAMERA kamera)
 	ux=x+X0;uy=y+Y0;
 	uX0=X0;uY0=Y0;
 
-	if (objektumok[objektumok.size()-1]->shandle(ev,ux,uy,kamera)) return true; // Ha benne lévőt mozgattnak nem mozognak visszamenőleg.
+	if (objektumok[objektumok.size()-1]->supdate(ev,ux,uy,kamera)) return true; // Ha benne lévőt mozgattnak nem mozognak visszamenőleg.
 
 	kamera.getKamCoords(ux,uy);
 	kamera.getKamCoords(uX0,uY0);
@@ -93,12 +72,15 @@ bool ABLAK::shandle(event ev, double X0, double Y0, KAMERA kamera)
 	{
 		if (ev.button==btn_left)
 			for (int i = objektumok.size()-1; i >= 0; i--)
-				if (objektumok[i]->BenneVan(ev.pos_x-ux,ev.pos_y-uy) and objektumok[i]->isMozgathato() and this->BenneVan(ev.pos_x-uX0,ev.pos_y-uY0)) // Az egér a belsőre kattint, mozgatható a belső, és a külsőben is benne van az egér
+				if (objektumok[i]->BenneVan(ev.pos_x-ux,ev.pos_y-uy) and this->BenneVan(ev.pos_x-uX0,ev.pos_y-uY0)) // Az egér a belsőre kattint, mozgatható a belső, és a külsőben is benne van az egér
 				{
-					objektumok[i]->getPosition(ex,ey);
-					ex-=ev.pos_x;
-					ey-=ev.pos_y;
-					lenyomva=true;
+					if (objektumok[i]->isMozgathato())
+					{
+						objektumok[i]->getPosition(ex,ey);
+						ex-=ev.pos_x;
+						ey-=ev.pos_y;
+						lenyomva=true;
+					}
 					OBJ::ObjKiemel(objektumok[i]);
 					break;
 				}

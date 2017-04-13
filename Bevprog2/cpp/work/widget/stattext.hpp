@@ -1,6 +1,8 @@
 #ifndef _STATTEXT_	//ujabb definíció és fordítási hiba elkerülésére
 #define _STATTEXT_
 
+#define TEXT_RAHAGYAS 2
+
 #include "ablak.hpp"
 
 
@@ -15,18 +17,19 @@ class STATTEXT : public ABLAK
 
 	public:
 
-	STATTEXT(double x, double y, unsigned int allapot, SZIN szin, SZIN szin2, string szoveg)
-		: ABLAK(x,y,gout.twidth(szoveg)*1.1,gout.cascent()*1.1,allapot,szin,false), szin2(szin2), szoveg(szoveg)
+	STATTEXT(double x, double y, SZIN szin, SZIN szin2, string szoveg)
+		: ABLAK(x,y,gout.twidth(szoveg)+TEXT_RAHAGYAS,gout.cascent(),szin,false), szin2(szin2), szoveg(szoveg)
 	{}
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const;
-	virtual bool shandle(event ev, double X0, double Y0, KAMERA kamera) {};
+	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {}; 
+	virtual void addObj(OBJ *obj) {}; // Nem lehet hozzáadni újabb objektumokoat.
 };
 
 void STATTEXT::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const
 {
 	double ux,uy,usx,usy,ukx,uky;
-	ux=x+X0;uy=y+Y0-gout.cascent()/2;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky; // A stattext nem a bal felős sarka alapján rajzol
+	ux=x+X0;uy=y+Y0-gout.cascent()/2;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky; // A stattext nem a bal felős sarka alapján rajzol, hanem baloldal középről.
 	kamera.getKamCoords(ux,uy);
 	if (ux+usx<Xb or ux>Xb+Xj or uy<Yb or uy+usy>Yb+Yj) return; // Akkor is kilép ha felül vagy alul kilógna.
 	if (ux+usx>Xb+Xj) {usx=Xb+Xj-ux;}
