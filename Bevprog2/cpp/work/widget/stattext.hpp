@@ -21,12 +21,12 @@ class STATTEXT : public ABLAK
 		: ABLAK(x,y,gout.twidth(szoveg)+TEXT_RAHAGYAS,gout.cascent(),szin,false), szin2(szin2), szoveg(szoveg)
 	{}
 
-	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const;
+	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
 	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {}; 
 	virtual void addObj(OBJ *obj) {}; // Nem lehet hozzáadni újabb objektumokoat.
 };
 
-void STATTEXT::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const
+void STATTEXT::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
 {
 	double ux,uy,usx,usy,ukx,uky;
 	ux=x+X0;uy=y+Y0-gout.cascent()/2;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky; // A stattext nem a bal felős sarka alapján rajzol, hanem baloldal középről.

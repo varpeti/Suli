@@ -3,6 +3,7 @@
 #include "stattext.hpp"
 #include "textbox.hpp"
 #include "szambox.hpp"
+#include "szambeallito.hpp"
 
 using namespace genv;
 
@@ -18,7 +19,8 @@ int main()
 	OBJ *k = new ABLAK(50,50,10,10,SZIN(0,0,255)); p->addObj(k);
 	OBJ *t = new STATTEXT(10,50,SZIN(0,0,0),SZIN(255,255,255),"Az almaspitet szeretem a legjobban, de a kortes is finom!"); s->addObj(t);
 	OBJ *tb = new TEXTBOX(10,10,10,SZIN(0,0,0),SZIN(255,255,255)); z->addObj(tb);
-	OBJ *szam = new SZAMBOX(10,10,-10,10,SZIN(0,0,0),SZIN(255,255,255)); p->addObj(szam);
+	OBJ *szam = new SZAMBOX(10,10,-3.1415e6,900,SZIN(0,0,0),SZIN(255,255,255),-9e99,11); p->addObj(szam);
+	OBJ *szam2 = new SZAMBEALLITO(10,10,-100,100,SZIN(200,150,100),SZIN(0,0,0)); env.addObj(szam2);
 
 
 	gin.timer(20);
@@ -29,15 +31,17 @@ int main()
 
 	while(gin >> env.ev and env.ev.keycode!=key_escape) {
 
-		env.UpdateDrawHandle();
-
+		
 		if (env.ev.type==ev_timer){
 			//env.kamera.rset(1,1);
 		} 
 		else if (env.ev.type==ev_key)
 		{
-			//ablak->setAllapot(255);
+			szam2->getter(cout);
+			cout << endl;
 		}
+
+		env.UpdateDrawHandle();
 		
 	}
 

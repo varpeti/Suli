@@ -29,11 +29,11 @@ class ABLAK : public OBJ
 		ky=0;
 	}
 
-	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const;
+	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
 	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera);
 };
 
-void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const
+void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
 {
 	double ux,uy,usx,usy,ukx,uky;
 	ux=x+X0;uy=y+Y0;usx=sx;usy=sy;ukx=kx;uky=ky;
@@ -43,16 +43,16 @@ void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, 
 	if (ux<Xb) {usx+=ux-Xb; ukx-=ux; ux=Xb;}
 	if (uy+usy>Yb+Yj) {usy=Yb+Yj-uy;}
 	if (uy<Yb) {usy+=uy-Yb; uky-=uy; uy=Yb;}
-	if (kx==0 and ky==0) 
+
+	if (kx==0 and ky==0)
 		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
 	else 
 		gout << stamp(Tkepek,ukx,uky,usx,usy,ux,uy); // Kép
 	
 	for (int i = 0; i < objektumok.size();++i) // Saját objektumai kirajzolása
 	{
-		objektumok[i]->srajzol(Tkepek,x+X0,y+Y0,ux,uy,usx,usy,kamera); 
+		objektumok[i]->srajzol(Tkepek,x+X0,y+Y0,ux,uy,usx,usy,kamera,(i+1==objektumok.size()&&focus)); // Ha utolsó elem és az ablak is az utolsó: focusban van.
 	}
-	
 }
 
 bool ABLAK::supdate(event ev, double X0, double Y0, KAMERA kamera)
@@ -81,7 +81,7 @@ bool ABLAK::supdate(event ev, double X0, double Y0, KAMERA kamera)
 						ey-=ev.pos_y;
 						lenyomva=true;
 					}
-					OBJ::ObjKiemel(objektumok[i]);
+					ObjKiemel(objektumok[i]);
 					break;
 				}
 		if (-ev.button==btn_left) {lenyomva=false; ex=0; ey=0;} // Ha felengedi

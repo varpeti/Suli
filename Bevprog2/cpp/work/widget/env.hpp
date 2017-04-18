@@ -47,8 +47,9 @@ class OBJ // Az szülő
 	public:
 		OBJ (double x,double y,double sx,double sy,bool mozgathato=true) : x(x), y(y), sx(sx), sy(sy), mozgathato(mozgathato) {lenyomva=false; ex=0; ey=0;};
 		~OBJ () {while(objektumok.size()>0){delete objektumok[objektumok.size()-1]; objektumok.pop_back(); }}; // Minden alosztály tartalmát is kiszedi a memóriából.
-		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera) const =0; // sprite, felette, határai b-balfelső j-jobbalsó, kamera
+		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const =0; // sprite, felette, határai b-balfelső j-jobbalsó, kamera
 		virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {};
+		virtual void getter(ostream& ki) const {}; // Adatok kiadására jó.
 		virtual void addObj(OBJ* obj);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
@@ -205,7 +206,7 @@ void ENV::UpdateDrawHandle()
 
 		for (int i = 0; i < objektumok.size();++i) // Saját objektumai
 		{
-			objektumok[i]->srajzol(Tkepek,0,0,0,0,XX,YY,kamera); // saját mérete a benne lévők korlátja
+			objektumok[i]->srajzol(Tkepek,0,0,0,0,XX,YY,kamera,i+1==objektumok.size()); // saját mérete a benne lévők korlátja
 		}
 
 		gout << refresh;
