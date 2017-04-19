@@ -7,21 +7,24 @@ using namespace genv;
 
 class SZAMBEALLITO : public ABLAK
 {
-	protected:
-		SZIN szin2;
-		double szam;
-		double A;
-		double B;
-		unsigned int size;
-
 	public:
 
-		SZAMBEALLITO(double x, double y, double A, double B, SZIN szin, SZIN szin2, double bszam=0, unsigned int size=8)
-			: ABLAK(x,y,gout.twidth("0")*(size+2)+TEXT_RAHAGYAS*3+gout.cascent(),(gout.cascent()+TEXT_RAHAGYAS*5)*2,szin,true), szin2(szin2), A(A), B(B), szam(bszam>A ? bszam<B ? bszam : B : A)
+		SZAMBEALLITO(double x, double y, double A, double B, SZIN szin, SZIN szin2, double szam=0, unsigned int size=8)
+			: ABLAK(x,y,gout.twidth("0")*(size+2)+TEXT_RAHAGYAS*3+gout.cascent(),gout.cascent()*2+TEXT_RAHAGYAS*9,szin,true)
 		{
-			objektumok.push_back( new STATTEXT(gout.twidth("0")*size+TEXT_RAHAGYAS*3,gout.cascent()/2+TEXT_RAHAGYAS,szin2,szin," + ") );
-			objektumok.push_back( new STATTEXT(gout.twidth("0")*size+TEXT_RAHAGYAS*3,gout.cascent()+TEXT_RAHAGYAS*9,szin2,szin," - ") );
-			objektumok.push_back( new SZAMBOX(TEXT_RAHAGYAS,(gout.cascent()+TEXT_RAHAGYAS*4),A,B,szin,szin2,szam,size) );
+			objektumok.push_back( new STATTEXT(gout.twidth("0")*size+TEXT_RAHAGYAS*3,TEXT_RAHAGYAS,szin2,szin," + ") );
+			objektumok.push_back( new STATTEXT(gout.twidth("0")*size+TEXT_RAHAGYAS*3,gout.cascent()+TEXT_RAHAGYAS*5,szin2,szin," - ") );
+			objektumok.push_back( new SZAMBOX(TEXT_RAHAGYAS,gout.cascent()/2+TEXT_RAHAGYAS*3.5,A,B,szin,szin2,szam,size) );
+		}
+
+		SZAMBEALLITO(double x, double y, double A, double B, unsigned int kx, unsigned int ky, unsigned int kx2, unsigned int ky2, SZIN szin, SZIN szin2, double szam=0, unsigned int size=8)
+			: ABLAK(x,y,gout.twidth("0")*(size+2)+TEXT_RAHAGYAS*3+gout.cascent(),(gout.cascent()+TEXT_RAHAGYAS*5)*2,kx,ky,true)
+		{
+			const int xx=gout.twidth("0");
+			const int yy=gout.cascent()+TEXT_RAHAGYAS;
+			objektumok.push_back( new ABLAK(xx*size+TEXT_RAHAGYAS*3,gout.cascent()/2,xx*3,yy,kx2,ky2,false) );
+			objektumok.push_back( new ABLAK(xx*size+TEXT_RAHAGYAS*3,gout.cascent()*2,xx*3,yy,kx2,ky2+yy,false) );
+			objektumok.push_back( new SZAMBOX(TEXT_RAHAGYAS,gout.cascent()/2+TEXT_RAHAGYAS*3.5,A,B,szin,szin2,szam,size) );
 		}
 
 		bool supdate(event ev, double X0, double Y0, KAMERA kamera); 

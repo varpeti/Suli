@@ -50,6 +50,7 @@ class OBJ // Az szülő
 		virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const =0; // sprite, felette, határai b-balfelső j-jobbalsó, kamera
 		virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {};
 		virtual void getter(ostream& ki) const {}; // Adatok kiadására jó.
+		virtual void setter(istream& be) {} // Adatok változtatására jó.
 		virtual void addObj(OBJ* obj);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.

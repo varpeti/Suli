@@ -14,7 +14,7 @@ class TEXTBOX : public STATTEXT
 	TEXTBOX(double x, double y, unsigned int size, SZIN szin, SZIN szin2, string szoveg="")
 		: STATTEXT(x,y,szin,szin2,szoveg), size(size)
 	{
-		sx=gout.twidth("A")*(size+1)+TEXT_RAHAGYAS;
+		sx=gout.twidth("A")*(size)+TEXT_RAHAGYAS;
 	}
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
@@ -39,7 +39,7 @@ bool TEXTBOX::supdate(event ev, double X0, double Y0, KAMERA kamera)
 void TEXTBOX::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
 {
 	double ux,uy,usx,usy,ukx,uky;
-	ux=x+X0;uy=y+Y0-gout.cascent()/2;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky; // A stattext nem a bal felős sarka alapján rajzol, hanem baloldal középről.
+	ux=x+X0;uy=y+Y0;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky;
 	kamera.getKamCoords(ux,uy);
 	if (ux+usx<Xb or ux>Xb+Xj or uy<Yb or uy+usy>Yb+Yj) return; // Akkor is kilép ha felül vagy alul kilógna.
 	if (ux+usx>Xb+Xj) {usx=Xb+Xj-ux;}
@@ -56,7 +56,7 @@ void TEXTBOX::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb
 	{
 		ki = ki.substr(0, ki.size()-1);
 	}
-	gout << color(rszin2.rr,rszin2.gg,rszin2.bb) << move_to(ux,uy+gout.cascent()) << text(ki);	
+	gout << color(rszin2.rr,rszin2.gg,rszin2.bb) << move_to(ux,uy+gout.cascent()) << text(ki);
 }
 
 void TEXTBOX::getter(ostream& ki) const 

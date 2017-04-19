@@ -4,6 +4,7 @@
 #include "textbox.hpp"
 #include "szambox.hpp"
 #include "szambeallito.hpp"
+#include "kivalaszto.hpp"
 
 using namespace genv;
 
@@ -21,7 +22,10 @@ int main()
 	OBJ *tb = new TEXTBOX(10,10,10,SZIN(0,0,0),SZIN(255,255,255)); z->addObj(tb);
 	OBJ *szam = new SZAMBOX(10,10,-3.1415e6,900,SZIN(0,0,0),SZIN(255,255,255),-9e99,11); p->addObj(szam);
 	OBJ *szam2 = new SZAMBEALLITO(10,10,-100,100,SZIN(200,150,100),SZIN(0,0,0)); env.addObj(szam2);
-
+	OBJ *szam3 = new SZAMBEALLITO(10,110,-100,100,1,1,100,100,SZIN(0,0,0),SZIN(0,255,0)); env.addObj(szam3);
+		
+	vector<string> lista; lista.push_back("almaspite");lista.push_back("barack");lista.push_back("citrom");lista.push_back("dinnye");lista.push_back("1");lista.push_back("26435");lista.push_back("szilva");
+	OBJ *leg = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,5); ablak->addObj(leg);
 
 	gin.timer(20);
 
