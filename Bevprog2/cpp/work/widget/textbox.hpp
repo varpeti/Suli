@@ -19,7 +19,6 @@ class TEXTBOX : public STATTEXT
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
 	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera); 
-	virtual void getter(ostream& ki) const;
 };
 
 bool TEXTBOX::supdate(event ev, double X0, double Y0, KAMERA kamera)
@@ -58,11 +57,6 @@ void TEXTBOX::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb
 	}
 	gout << color(rszin2.rr,rszin2.gg,rszin2.bb) << move_to(ux,uy+gout.cascent()) << text(ki);
 }
-
-void TEXTBOX::getter(ostream& ki) const 
-{
-	ki << szoveg;
-};
 
 
 #endif

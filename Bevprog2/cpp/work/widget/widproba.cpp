@@ -41,8 +41,12 @@ int main()
 		} 
 		else if (env.ev.type==ev_key)
 		{
-			szam2->getter(cout);
+			leg->getter(cout);
 			cout << endl;
+			if (env.ev.keycode=='j') {
+				stringstream str ("alma");
+				leg->setter(str);
+			}
 		}
 
 		env.UpdateDrawHandle();

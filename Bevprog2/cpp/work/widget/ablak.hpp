@@ -25,8 +25,8 @@ class ABLAK : public OBJ
 	ABLAK(double x, double y, double sx, double sy, SZIN szin, bool mozgathato=true)
 		: OBJ(x,y,sx,sy,mozgathato), szin(szin)
 	{
-		kx=0;
-		ky=0;
+		kx=9876;
+		ky=9876;
 	}
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
@@ -44,7 +44,7 @@ void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, 
 	if (uy+usy>Yb+Yj) {usy=Yb+Yj-uy;}
 	if (uy<Yb) {usy+=uy-Yb; uky-=uy; uy=Yb;}
 
-	if (kx==0 and ky==0)
+	if (kx==9876 and ky==9876)
 		gout << color(szin.rr,szin.gg,szin.bb) << move_to(ux,uy) << box(usx,usy); // szín
 	else 
 		gout << stamp(Tkepek,ukx,uky,usx,usy,ux,uy); // Kép

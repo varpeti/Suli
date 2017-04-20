@@ -24,6 +24,7 @@ class STATTEXT : public ABLAK
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
 	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera) {}; 
 	virtual void addObj(OBJ *obj) {}; // Nem lehet hozzáadni újabb objektumokoat.
+	virtual void getter(ostream& ki) const; // Kiírja az értékét, menünél / textboxnál kell majd.
 	virtual void setter(istream& be); // Menükiemeléshez kell majd.
 };
 
@@ -46,6 +47,11 @@ void STATTEXT::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Y
 	}
 	gout << color(szin2.rr,szin2.gg,szin2.bb) << move_to(ux,uy+gout.cascent()) << text(ki);	
 }
+
+void STATTEXT::getter(ostream& ki) const 
+{
+	ki << szoveg;
+};
 
 void STATTEXT::setter(istream& be)
 {
