@@ -5,9 +5,9 @@
 
 ##################A projekt paraméterei:################
 fordito="g++"
-projectfileok="bead2.cpp"
+projectfileok="widproba.cpp"
 parameterek="-std=c++14 -lgraphics -lSDL -lSDL_ttf -L."
-nev="b2.run"
+nev="w.run"
 futtatas=true
 ########################################################
 

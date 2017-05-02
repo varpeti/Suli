@@ -19,13 +19,18 @@ int main()
 	OBJ *s = new ABLAK(10,10,250,100,SZIN(255,255,0)); z->addObj(s);
 	OBJ *k = new ABLAK(50,50,10,10,SZIN(0,0,255)); p->addObj(k);
 	OBJ *t = new STATTEXT(10,50,SZIN(0,0,0),SZIN(255,255,255),"Az almaspitet szeretem a legjobban, de a kortes is finom!"); s->addObj(t);
-	OBJ *tb = new TEXTBOX(10,10,10,SZIN(0,0,0),SZIN(255,255,255)); z->addObj(tb);
+	OBJ *tb = new TEXTBOX(10,10,10,SZIN(0,0,0),SZIN(255,255,255)); s->addObj(tb);
 	OBJ *szam = new SZAMBOX(10,10,-3.1415e6,900,SZIN(0,0,0),SZIN(255,255,255),-9e99,11); p->addObj(szam);
 	OBJ *szam2 = new SZAMBEALLITO(10,10,-100,100,SZIN(200,150,100),SZIN(0,0,0)); env.addObj(szam2);
 	OBJ *szam3 = new SZAMBEALLITO(10,110,-100,100,1,1,100,100,SZIN(0,0,0),SZIN(0,255,0)); env.addObj(szam3);
-		
+
 	vector<string> lista; lista.push_back("almaspite");lista.push_back("barack");lista.push_back("citrom");lista.push_back("dinnye");lista.push_back("1");lista.push_back("26435");lista.push_back("szilva");
 	OBJ *leg = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,5); ablak->addObj(leg);
+
+	OBJ *form = new ABLAK(100,100,500,400,SZIN(200,100,100)); env.addObj(form);
+	OBJ *gomb = new ABLAK(10,55,10,10,SZIN(0,0,255),false); form->addObj(gomb);
+	OBJ *ftb = new TEXTBOX(50,50,10,SZIN(0,0,0),SZIN(255,255,255)); form->addObj(ftb);
+	OBJ *list = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,2); form->addObj(list);
 
 	gin.timer(20);
 
@@ -50,6 +55,17 @@ int main()
 		}
 
 		env.UpdateDrawHandle();
+
+		stringstream a,b;
+		form->getter(a);
+		b << gomb;
+		if (a.str()==b.str()) {
+			a.str("");b.str("");
+			ftb->getter(a);
+			list->setter(a);
+			form->ObjKiemel(list);
+		}
+
 		
 	}
 

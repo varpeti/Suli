@@ -31,6 +31,7 @@ class ABLAK : public OBJ
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
 	virtual bool supdate(event ev, double X0, double Y0, KAMERA kamera);
+	virtual void getter(ostream& ki) const;
 };
 
 void ABLAK::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
@@ -96,6 +97,11 @@ bool ABLAK::supdate(event ev, double X0, double Y0, KAMERA kamera)
 		}
 	}
 	return lenyomva;
+}
+
+void ABLAK::getter(ostream& ki) const
+{
+	ki << objektumok[objektumok.size()-1]; // A fókuszban lévő objektum memória címét adja vissza.
 }
 
 #endif
