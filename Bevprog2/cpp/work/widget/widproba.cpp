@@ -29,6 +29,7 @@ int main()
 
 	OBJ *form = new ABLAK(100,100,500,400,SZIN(200,100,100)); env.addObj(form);
 	OBJ *gomb = new ABLAK(10,55,10,10,SZIN(0,0,255),false); form->addObj(gomb);
+	OBJ *gomb2 = new ABLAK(155,55,10,10,SZIN(255,0,0),false); form->addObj(gomb2);
 	OBJ *ftb = new TEXTBOX(50,50,10,SZIN(0,0,0),SZIN(255,255,255)); form->addObj(ftb);
 	OBJ *list = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,2); form->addObj(list);
 
@@ -46,23 +47,29 @@ int main()
 		} 
 		else if (env.ev.type==ev_key)
 		{
-			leg->getter(cout);
-			cout << endl;
 			if (env.ev.keycode=='j') {
 				stringstream str ("alma");
 				leg->setter(str);
+			}
+			if (env.ev.keycode=='a') {
+				list->getter(cout); cout << endl;
 			}
 		}
 
 		env.UpdateDrawHandle();
 
-		stringstream a,b;
+		stringstream a,b,c;
 		form->getter(a);
 		b << gomb;
+		c << gomb2;
 		if (a.str()==b.str()) {
-			a.str("");b.str("");
+			a.str("");
 			ftb->getter(a);
-			list->setter(a);
+			list->setter(a); // Hozzáadás
+			form->ObjKiemel(list);
+		}else if (a.str()==c.str()){
+			a.str("");
+			list->setter(a); // törlés
 			form->ObjKiemel(list);
 		}
 
