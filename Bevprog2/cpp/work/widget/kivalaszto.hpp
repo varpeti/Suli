@@ -28,8 +28,11 @@ class KIVALASZTO : public ABLAK
 				while (lista[i].size()<size) lista[i]+=' ';
 				objektumok.push_back( new STATTEXT(TEXT_RAHAGYAS,TEXT_RAHAGYAS+(gout.cascent()+TEXT_RAHAGYAS*4)*(i+1),szin,szin2,lista[i]) );
 			}
-			kivalasztva=2;
-			objektumok[kivalasztva]->setter(cin);
+			if (lista.size()>0)
+			{
+				kivalasztva=2;
+				objektumok[kivalasztva]->setter(cin);
+			}
 		}
 
 		bool supdate(event ev, double X0, double Y0, KAMERA kamera); 
@@ -87,6 +90,7 @@ bool KIVALASZTO::supdate(event ev, double X0, double Y0, KAMERA kamera)
 
 void KIVALASZTO::getter(ostream& ki) const 
 {
+	if (!(kivalasztva<objektumok.size())) return;
 	objektumok[kivalasztva]->getter(ki);
 }
 
@@ -131,7 +135,7 @@ void KIVALASZTO::setter(istream& be)
 		delete objektumok[van];
 		objektumok.erase(objektumok.begin()+van); // És törlés rendeltetés szerűen.
 
-		if (kivalasztva==van) // Ilyen nem lehet a Malom játékban, de máshol igen.
+		if (kivalasztva==van)
 		{
 			if (kivalasztva==objektumok.size()) kivalasztva--;
 			objektumok[kivalasztva]->setter(cin);

@@ -28,10 +28,12 @@ int main()
 	OBJ *leg = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,5); ablak->addObj(leg);
 
 	OBJ *form = new ABLAK(100,100,500,400,SZIN(200,100,100)); env.addObj(form);
-	OBJ *gomb = new ABLAK(10,55,10,10,SZIN(0,0,255),false); form->addObj(gomb);
-	OBJ *gomb2 = new ABLAK(155,55,10,10,SZIN(255,0,0),false); form->addObj(gomb2);
-	OBJ *ftb = new TEXTBOX(50,50,10,SZIN(0,0,0),SZIN(255,255,255)); form->addObj(ftb);
-	OBJ *list = new KIVALASZTO(10,110,SZIN(0,0,0),SZIN(255,255,255),lista,2); form->addObj(list);
+	OBJ *list = new KIVALASZTO(10,10,SZIN(0,0,0),SZIN(255,255,255),lista,2); form->addObj(list);
+	OBJ *list2 = new KIVALASZTO(90,10,SZIN(0,0,0),SZIN(255,255,255),lista,2); form->addObj(list2);
+	OBJ *gomb = new ABLAK(175,55,10,10,SZIN(0,0,255),false); form->addObj(gomb);
+	lista.clear();
+	OBJ *gomb2 = new ABLAK(175,150,10,10,SZIN(255,0,0),false); form->addObj(gomb2);
+	OBJ *list3 = new KIVALASZTO(10,100,SZIN(0,0,0),SZIN(255,255,255),lista,3,18); form->addObj(list3);
 
 	gin.timer(20);
 
@@ -63,13 +65,19 @@ int main()
 		b << gomb;
 		c << gomb2;
 		if (a.str()==b.str()) {
-			a.str("");
-			ftb->getter(a);
-			list->setter(a); // Hozzáadás
+			a.str("");b.str("");c.str("");
+			string s,e;
+			list->getter(a);
+			list2->getter(b);
+			a >> s;	e=s+":";
+			b >> s; e=e+s; cout << e << endl;
+			c << e;
+			list3->setter(c); // Hozzáadás
 			form->ObjKiemel(list);
 		}else if (a.str()==c.str()){
 			a.str("");
-			list->setter(a); // törlés
+			list3->getter(a);
+			//list3->setter(a); // törlés
 			form->ObjKiemel(list);
 		}
 
