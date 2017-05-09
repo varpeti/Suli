@@ -16,7 +16,7 @@ class KIVALASZTO : public ABLAK
 		KIVALASZTO(double x, double y, SZIN szin, SZIN szin2, vector<string> lista, unsigned int size2=0,unsigned int size=8)
 			: ABLAK(x,y,gout.twidth("A")*size+TEXT_RAHAGYAS*3,
 				(gout.cascent()+TEXT_RAHAGYAS*4)*( (size2 ? size2 : lista.size()) +2)+TEXT_RAHAGYAS,
-				szin2,true), size(size), size2(size2)
+				szin2,false), szin2(szin), size(size), size2(size2)
 		{	
 			string gorget;
 			while (gorget.size()<size) gorget+='-';
@@ -95,35 +95,50 @@ void KIVALASZTO::setter(istream& be)
 	string uj;
 	be >> uj;
 
-	if (uj!=""){
+	int van = -1; // Ha van ilyen töröljük, ha nincs hozzáadjuk.
+
+	for (int i = 2; i < objektumok.size(); ++i)
+	{	
+		stringstream ki;
+		objektumok[i]->getter(ki);
+		string regi;
+		ki >> regi;
+		if (regi==uj) {van=i;break;}
+	}
+
+	if (van==-1){
 		while (uj.size()>size) uj = uj.substr(0, uj.size()-1);
 		while (uj.size()<size) uj+=' ';
 	
 		double ox,oy;
 		objektumok[1]->getPosition(ox,oy);
-		objektumok.push_back( new STATTEXT(ox,oy,szin,szin2,uj) );
+		objektumok.push_back( new STATTEXT(ox,oy,szin2,szin,uj) );
 		objektumok[1]->setPosition(ox,oy+(gout.cascent()+TEXT_RAHAGYAS*4));
 	
-		objektumok[kivalasztva]->setter(cin); // Ne legyen focusba régi
-		kivalasztva=objektumok.size()-1;
 	}else
 	{	
-
 		double ox1,oy1,ox2,oy2;
 		objektumok[objektumok.size()-1]->getPosition(ox1,oy1); // bezáró elem új poz
 
 		ox2=ox1; oy2=oy1; objektumok[1]->getPosition(ox1,oy1);
 		objektumok[1]->setPosition(ox2,oy2);
-		for (int i = kivalasztva; i<=objektumok.size()-1 ; ++i) // visszatolja fentről a lyukba a lista elemeit
+		for (int i = van; i<=objektumok.size()-1 ; ++i) // visszatolja fentről a lyukba a lista elemeit
 		{
 			ox2=ox1; oy2=oy1; objektumok[i]->getPosition(ox1,oy1);
 			objektumok[i]->setPosition(ox2,oy2);
 		} 
 
-		delete objektumok[kivalasztva];
-		objektumok.erase(objektumok.begin()+kivalasztva); // És törlés rendeltetés szerűen.
-		if (kivalasztva==objektumok.size()) kivalasztva--;
-		objektumok[kivalasztva]->setter(cin);
+		delete objektumok[van];
+		objektumok.erase(objektumok.begin()+van); // És törlés rendeltetés szerűen.
+
+		if (kivalasztva==van) // Ilyen nem lehet a Malom játékban, de máshol igen.
+		{
+			if (kivalasztva==objektumok.size()) kivalasztva--;
+			objektumok[kivalasztva]->setter(cin);
+		}else if(kivalasztva>van)
+		{
+			kivalasztva--;
+		}
 
 	}
 }
