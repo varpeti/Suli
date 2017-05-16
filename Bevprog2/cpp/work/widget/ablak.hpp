@@ -25,7 +25,7 @@ class ABLAK : public OBJ
 	ABLAK(double x, double y, double sx, double sy, SZIN szin, bool mozgathato=true)
 		: OBJ(x,y,sx,sy,mozgathato), szin(szin)
 	{
-		kx=9876;
+		kx=9876; // Minek definiáljak -1-et? unsigned és ekkora képet nem tudna beolvasni.
 		ky=9876;
 	}
 

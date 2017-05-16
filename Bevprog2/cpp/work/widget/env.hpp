@@ -142,11 +142,11 @@ class ENV
 		// tagfüggvények
 		void UpdateDrawHandle();
 		bool kepek_beolvas(const char *fname); // BMP-ből olvassa be az összes képet
-	
-	
+		void timer(int ido);
 	
 		void addObj(OBJ* obj);
 		void ObjKiemel(OBJ *obj); // Előre hozza az objektumot
+		void delObj(OBJ* obj);
 
 	private:
 		vector<OBJ*> objektumok; // Az összes obj
@@ -162,6 +162,8 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag, bool teljeskepernyo)
 	YY=magassag;
 	XX=szelesseg;
 	gout.open(XX,YY,teljeskepernyo);
+	Tkepek.transparent(true);
+
 }
 
 ENV::ENV(unsigned int szelesseg, unsigned int magassag)
@@ -170,6 +172,7 @@ ENV::ENV(unsigned int szelesseg, unsigned int magassag)
 	YY=magassag;
 	XX=szelesseg;
 	gout.open(XX,YY);
+	Tkepek.transparent(true);
 }
 
 ENV::~ENV() //dest
@@ -193,9 +196,19 @@ void ENV::ObjKiemel(OBJ *obj)
 		}
 }
 
+void ENV::delObj(OBJ *obj)
+{	
+	int id;
+	for (int i = 0; i < objektumok.size(); ++i) // Megekerssük az ID-jét
+	{
+		if (objektumok[i]==obj) {id=i;break;}
+	}
+	delete obj;
+	objektumok.erase(objektumok.begin()+id);
+}
+
 void ENV::UpdateDrawHandle()
 {
-
 	if (objektumok.size()<1) return;
 
 	static bool lenyomva=false; 
@@ -234,6 +247,11 @@ void ENV::UpdateDrawHandle()
 
 		if (lenyomva) objektumok[objektumok.size()-1]->setPosition(ev.pos_x+ex,ev.pos_y+ey);
 	}
+}
+
+void ENV::timer(int ido)
+{
+	gin.timer(ido);
 }
 
 bool ENV::kepek_beolvas(const char *fname) // CSAK azért is BMPből.
