@@ -1,7 +1,9 @@
-<form class="submit_form" method="post" action="index.php" autocomplete="off">
-<div data-role="footer" style="text-align: center">
-	<input type="text" name="s_szoveg" autofocus="true" value="<?php echo htmlspecialchars($_POST['s_szoveg']); ?>"/>
-	<input type="submit" value="Kuldes" name="s_gomb"/>
-	<input type="submit" value="Ujratoltes" name="s_ref"/> 
-</div>
-</form>
+
+		<form class="submit_form" method="post" action="chat.php" autocomplete="off">
+			<div style="text-align: center">
+				<textarea name="s_szoveg" autofocus="true" value="<?php echo htmlspecialchars($_POST['s_szoveg']); ?>" rows="4" cols="80"></textarea><br>
+				<input type="submit" value="Kuldes" name="s_kuld"/>
+				<input type="submit" value="Ujratoltes" name="s_ref"/>
+			</div>
+		</form>
+	</div>
