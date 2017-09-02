@@ -19,5 +19,4 @@ if(isset($_POST["s_nev_sub"]))
 }
 
 require_once('nev_input.html');
-
 ?>

@@ -9,7 +9,7 @@ if (!isset($_SESSION['nev']))
 	exit;
 }
 
-if (isset($_SESSION['szoba']))
+if (isset($_SESSION['szoba']) and !empty($_SESSION['szoba']))
 {
 	header("Location: chat.php");
 	exit("index");
@@ -21,21 +21,19 @@ visszakilepes();
 
 require_once("titkosit.php");
 
-if(isset($_POST["s_szoba_sub"]) and !empty($_POST["s_szoba"]) and !empty($_POST["s_szoba_pw"]))
+if(isset($_POST["s_szoba_sub"]) and !empty($_POST["s_szoba"]))
 {
 
 	$_SESSION['szoba']=($_POST["s_szoba"]);
-	$_SESSION['szoba_pw']=$_POST["s_szoba_pw"]; //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
-
-	header("Location: chat.php");
-	exit;	
-}
-
-if(isset($_POST["s_szoba_uj"]) and !empty($_POST["s_szoba"]))
-{
-
-	$_SESSION['szoba']=($_POST["s_szoba"]);
-	unset($_SESSION['szoba_pw']); // Nem rögzít jelszót így, ha nem létezik ilyen szoba, újat csinál.
+	if (!empty($_POST["s_szoba_pw"]))
+	{
+		$_SESSION['szoba_pw']=$_POST["s_szoba_pw"]; //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
+	}
+	else
+	{
+		unset($_SESSION['szoba_pw']);
+	}
+	
 
 	header("Location: chat.php");
 	exit;	
@@ -43,7 +41,7 @@ if(isset($_POST["s_szoba_uj"]) and !empty($_POST["s_szoba"]))
 	
 require_once('szoba_begin.html');
 
-echo 'Udv ' . $_SESSION['nev'] . '! Elerheto szobak: ';
+echo 'Udv ' . $_SESSION['nev'] . '!<br>Elerheto szobak: ';
 foreach(glob('../../private_html/chat/szobak/*') as $file) {
 	
 	
@@ -67,6 +65,7 @@ if (!file_exists("../../private_html/chat/szobak/public.szoba")) //Public szoba 
 	fclose($db);
 }
 echo 'public';
+echo '<br>Uj szoba letrehozasahoz, csak irj be egy uj szoba nevet. Ha nem adsz meg jelszot, general egyet.<br>24 oraig nem hasznalt szobak, es linkek torlodnek!';
 
 
 require_once('szoba_input.html');

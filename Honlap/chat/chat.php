@@ -19,6 +19,7 @@ require_once("viki.php");
 visszakilepes();
 
 require_once("titkosit.php");
+require_once("egyszerlink.php");
 
 ujuzenet();
 
@@ -26,7 +27,7 @@ if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba
 {
 	//Jelszó vizsgálata
 	$sor = fgets($db);
-	if ($_SESSION['szoba_pw'] != dekodol($sor,$_SESSION['szoba_pw']))
+	if (!isset($_SESSION['szoba_pw']) or $_SESSION['szoba_pw'] != dekodol($sor,$_SESSION['szoba_pw']))
 	{
 		if ($_SESSION['szoba']=='public')
 		{
@@ -47,6 +48,8 @@ if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba
 
 	echo "<div id='header'><h1 style='padding-bottom: 40px; text-align: center'>" . $_SESSION['szoba'] . "</h2></div>\n<div id='CONTENT'>\n\t<div id='TEXT'>";
 
+	require_once('chat_input.html');
+
 	//Üzenetek olvasása
 	while ( ($l = fgets($db)) !== false)
 	{ 
@@ -62,22 +65,10 @@ if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba
 
 } else { // Csak akkor ha az új szobára lett kattnintva.
 
-	if(!isset($_SESSION['szoba_pw'])) 
-	{
-		ujszoba();
-	}
-	else
-	{
-		unset($_SESSION['szoba']);
-		unset($_SESSION['szoba_pw']);
-
-		header("Location: szoba.php");
-		exit;
-	}
+	ujszoba();
 	
 }
 
-require_once('chat_input.html');
 require_once('chat_end.html');
 
 
@@ -104,15 +95,44 @@ function ujuzenet()
 {
 	if(isset($_POST["s_kuld"]))
   	{ 
-  		$nev = $_SESSION['nev'];
+  		$nev = $_SESSION['nev']; 
 		$uzenet = $_POST["s_szoveg"];  
 		$sec = time();
-		//$time = sec2time($ido);
- 
+
+		// ne lehessen HTML vagy Javascript injection
+		$nev = htmlspecialchars($nev);
+		$uzenet = htmlspecialchars($uzenet);
+		
+		if ($uzenet=="/help") {
+			$uzenet="Parancsok:<br>/help - kiirja ezt.<br>/del - torli a szobat.<br>/link - ad egy linket a szobahoz.<br>/img pelda.jpg - megjeleniti a kepet.";
+		}
+		elseif ($uzenet=="/del") { // Törli a szobát
+
+			unlink("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba");
+
+			unset($_SESSION['szoba']);
+			unset($_SESSION['szoba_pw']);
+			exit('<meta http-equiv="refresh" content="1">');
+		}
+		elseif ($uzenet=="/link") {
+			$uzenet=ujlink($_SESSION['szoba'],$_SESSION['szoba_pw']); // Uj egyszer hasznalhato link
+		}
+		elseif ( strpos($uzenet,"/img ") !== false ) {
+			$uzenet="<img src=".substr($uzenet,5).">";
+		}
+  
 		$_POST["s_szoveg"]=""; 
 
-		$db= fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", "a");
-		fwrite($db,titkosit($nev . "¶" . $sec . "¶" . $uzenet,$_SESSION['szoba_pw'])."\n");
+		$uzenet = titkosit($nev . "¶" . $sec . "¶" . $uzenet,$_SESSION['szoba_pw'])."\n";
+
+		//Berakja az üzenetet a file elejére, a header mögé.
+		$file = file("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba");
+		$header = array_shift($file);  // kiszedi az első sort
+		array_unshift($file, $uzenet); // berakja az üzenetet
+		array_unshift($file, $header); // vissza a header
+
+		$db = fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", 'w'); // Visszaírj az egész fájlt.
+		fwrite($db, implode("", $file));     
 		fclose($db);
  	}
 }
@@ -124,20 +144,23 @@ function ujszoba()
 
 	//szoba létrehozása
 	$db= fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", "w");
+	$megj = false;
+	if(!isset($_SESSION['szoba_pw'])) 
+	{
+		$_SESSION['szoba_pw'] = substr(crypt(openssl_random_pseudo_bytes(16)), -16); // Megbízható 16 karakteres jelszó.
+		$megj=true;
+	} 
 
-	$_SESSION['szoba_pw'] = substr(crypt(openssl_random_pseudo_bytes(16)), -16); // Megbízható 16 karakteres jelszó.
+	fwrite($db,titkosit($_SESSION['szoba_pw'],$_SESSION['szoba_pw'])."\n");
+	fclose($db);
 
 	//Chat és az üzenetek megjelenítése
 	require_once('chat_begin.html');
 
-	echo "<div id='header'><h1 style='padding-bottom: 40px; text-align: center'>" . $_SESSION['szoba'] . "</h2></div>\n<div id='CONTENT'>\n\t<div id='TEXT'>";
-
-	fwrite($db,titkosit($_SESSION['szoba_pw'],$_SESSION['szoba_pw'])."\n");
-	print("<br>A szoba [jelszo]: [".$_SESSION['szoba_pw']."]");
-	require_once("egyszerlink.php");
-	print("<br>".uj($_SESSION['szoba'],$_SESSION['szoba_pw']));
-
-	fclose($db);
+	print("<div id='header'><h1 style='padding-bottom: 40px; text-align: center'>" . $_SESSION['szoba'] . "</h2></div>\n<div id='CONTENT'>\n\t<div id='TEXT'>");
+	if ($megj) { print("<br>A szoba [jelszo]: [".$_SESSION['szoba_pw']."]"); }
+	print("<br>".ujlink($_SESSION['szoba'],$_SESSION['szoba_pw']));
+	print("Elerheto parancsok: /help");
 }
 
 ?>

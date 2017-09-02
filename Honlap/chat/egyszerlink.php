@@ -4,10 +4,13 @@ session_start();
 
 $token = $_GET['q']; // Url beolvasás
 
+require_once("titkosit.php");
+
 if( strlen($token)>=32 )
 {
 	$szoba = '';
 	$kod = '';
+	$ok = false;
 	
 	$file = "../../private_html/chat/linkek.lnk";
 	
@@ -20,23 +23,30 @@ if( strlen($token)>=32 )
 	// Végigmegy az összes tokenen a fileba.
 	for( $i = 0; $lines[$i]; $i++ )
 	{		
-		
-		if( ($tk = strtok($lines[$i],"¶")) == $token )
+		$dat = dekodol(strtok($lines[$i],"¶"),$token); // {token¶szoba¶pw}¶ido
+		$ido = strtok("¶");
+		$tok = strtok($dat,"¶");
+		if (time()-$ido<60*60*24) // Ha nem járt le.
 		{
-			$szoba = strtok("¶"); 
-			$kod= strtok("¶"); 
+			if( $tok === $token) // Ha megvan.
+			{
+				$szoba = strtok("¶"); 
+				$kod= strtok("¶");
+				if (strlen($szoba)>=1) {$ok = true; }
+			}
+			else // Visszaírjuk ami nem egyezik.
+			{
+				fwrite($f,$lines[$i]);
+			}
 		}
-		else // Visszaírjuk ami nem egyezik.
-		{
-			fwrite($f,$lines[$i]);
-		}
+
 	}
 	
 	flock($f,LOCK_UN); //unlock
 	
 	fclose($f);
 	
-	if( $szoba!='' ) //ha van
+	if( $ok ) //ha van
 	{
 		$_SESSION['szoba']=trim($szoba);
 		$_SESSION['szoba_pw']=trim($kod);
@@ -56,7 +66,7 @@ if( strlen($token)>=32 )
 
 
 
-function uj($szoba, $kod)
+function ujlink($szoba, $kod)
 {
 	$token = md5(uniqid(rand(),1));
 
@@ -65,7 +75,10 @@ function uj($szoba, $kod)
 	$f = fopen($file,"a");
 	
 	flock($f,LOCK_EX); //lock
-	fwrite($f,$token."¶".$szoba."¶".$kod."\n");
+
+	require_once("titkosit.php");
+	fwrite($f,titkosit($token."¶".$szoba."¶".$kod,$token)."¶".time()."\n");
+
 	flock($f,LOCK_UN); //unlock
 	
 	fclose($f);
