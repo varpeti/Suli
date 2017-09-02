@@ -42,6 +42,7 @@ if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba
 			exit;
 		}
 	}
+	fclose($db);
 
 	//Chat és az üzenetek megjelenítése
 	require_once('chat_begin.html');
@@ -51,17 +52,7 @@ if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba
 	require_once('chat_input.html');
 
 	//Üzenetek olvasása
-	while ( ($l = fgets($db)) !== false)
-	{ 
-		$ki = strtok(dekodol($l,$_SESSION['szoba_pw']),"¶");
-		$mikor = sec2time(strtok("¶"));
-		$mit = strtok("¶");
-		echo "\n\t\t<div>"; 
-		echo "\n\t\t\t<p style='text-align: left'>" . $ki . ": " . $mit . "</p>";
-		echo "\n\t\t\t<p style='text-align: right'>" . $mikor . "</p>";
-		echo "\n\t\t</div>"; 
-	}
-	fclose($db);
+	require_once('beolvas.php'); // Hogy akinek le van tiltva az ajax is tudja használni.
 
 } else { // Csak akkor ha az új szobára lett kattnintva.
 
@@ -73,23 +64,6 @@ require_once('chat_end.html');
 
 
 //Függvények
-
-function sec2time($seconds)
-{
-	$days = floor($seconds / (60 * 60 * 24));
-
-	$divisor_for_hours = $seconds % (60 * 60 * 24);
-	$hours = floor($divisor_for_hours / (60 * 60));
-
-	$divisor_for_minutes = $divisor_for_hours % (60 * 60);
-	$minutes = floor($divisor_for_minutes / (60));
-
-	$divisor_for_seconds = $divisor_for_minutes % (60);
-	$seconds = ceil($divisor_for_seconds);
-
-	$ido = $hours . "." . $minutes . "." . $seconds;
-	return $ido;
-}
 
 function ujuzenet()
 {
