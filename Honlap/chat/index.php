@@ -11,7 +11,7 @@ if (isset($_SESSION['nev']))
 
 if(isset($_POST["s_nev_sub"]))
 {
-	$_SESSION['nev']=$_POST["s_nev"];
+	$_SESSION['nev']=htmlspecialchars($_POST["s_nev"], ENT_QUOTES, 'UTF-8'); // ne lehessen HTML vagy Javascript injection
 
 	header("Location: szoba.php");
 	exit();

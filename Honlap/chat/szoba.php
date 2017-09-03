@@ -24,16 +24,15 @@ require_once("titkosit.php");
 if(isset($_POST["s_szoba_sub"]) and !empty($_POST["s_szoba"]))
 {
 
-	$_SESSION['szoba']=($_POST["s_szoba"]);
+	$_SESSION['szoba']=otlenites(htmlspecialchars($_POST["s_szoba"], ENT_QUOTES, 'UTF-8')); // ne lehessen HTML vagy Javascript injection
 	if (!empty($_POST["s_szoba_pw"]))
 	{
-		$_SESSION['szoba_pw']=$_POST["s_szoba_pw"]; //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
+		$_SESSION['szoba_pw']=otlenites($_POST["s_szoba_pw"]); //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
 	}
 	else
 	{
 		unset($_SESSION['szoba_pw']);
 	}
-	
 
 	header("Location: chat.php");
 	exit;	
