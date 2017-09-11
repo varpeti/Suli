@@ -1,32 +1,145 @@
 <?php
+session_start();
 
-function ujuzenet ($uzenet, $nev, $db)
+//Adatok meglétének ellenörzése
+if (!isset($_SESSION['nev'])) 
 {
-	$db = new SQLite3('sqlitedb.db');
-	$ido = date("h:i:s");
-
-	$db->exec("INSERT INTO uzenetek (uzenet, nev, ido) VALUES ('$uzenet', '$nev', '$ido')" );
-	$db->exec("DELETE FROM uzenetek WHERE ROWID IN (SELECT ROWID FROM uzenetek ORDER BY ROWID DESC LIMIT -1 OFFSET 20)");
-
+	header("Location: index.php");
+	exit;
 }
 
-function megjelenit($db)
+if (!isset($_SESSION['szoba']))
 {
-	require_once('chat_begin.html');
-			
-	$result = $db->query('SELECT uzenet, nev, ido FROM uzenetek');
-	while($sor = $result->fetchArray()){
-		echo "<div data-role='header'>\n\t<div data-role='main'>";
-		echo $sor[2];
-		echo "	|	";
-		echo $sor[1];
-		echo ":	";
-		echo $sor[0];
-		echo "\n</div>\n";
+	header("Location: szoba.php");
+	exit;
+}
+
+//Vissza, kilépés bisztosítása
+require_once("viki.php"); 
+visszakilepes();
+
+require_once("titkosit.php");
+require_once("egyszerlink.php");
+
+ujuzenet();
+
+if (file_exists("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba") and $db= fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", "r")) 
+{
+	//Jelszó vizsgálata
+	$sor = fgets($db);
+	fclose($db);
+	if (!isset($_SESSION['szoba_pw']) or $_SESSION['szoba_pw'] != dekodol($sor,$_SESSION['szoba_pw'])) //Ha nem jó, vagy nincs jelszó
+	{
+		if ($_SESSION['szoba']=='public') // Ha a public szobába akart belépni beálítja
+		{
+			$_SESSION['szoba_pw']="PublicPublicPubl";
+		}
+		else // Ha nem jó a jelszó, és nem public szobába akart belépni kilép
+		{
+			unset($_SESSION['szoba']);
+			unset($_SESSION['szoba_pw']);
+
+			header("Location: szoba.php");
+			exit;
+		}
 	}
-		
+	// Jó jelszó, vagy public szoba
+
+	//Chat és az üzenetek megjelenítése
+	require_once('chat_begin.html');
+	echo "<div id='header'><h1 style='padding-bottom: 40px; text-align: center'>" . $_SESSION['szoba'] . "</h2></div>\n<div id='CONTENT'>\n\t<div id='TEXT'>";
 	require_once('chat_input.html');
-	require_once('chat_end.html');
+
+	//Üzenetek olvasása
+	require_once('beolvas.php'); // Hogy akinek le van tiltva az ajax is tudja használni.
+
+} else { // Nemlétezik ilyen nevű szoba
+
+	ujszoba();
+	
 }
-			
+
+require_once('chat_end.html');
+
+
+//Függvények
+
+function ujuzenet()
+{
+	if(isset($_POST["s_kuld"]))
+  	{ 
+  		$nev = $_SESSION['nev']; 
+		$uzenet = htmlspecialchars($_POST["s_szoveg"], ENT_QUOTES, 'UTF-8'); // ne lehessen HTML vagy Javascript injection
+		$sec = time();
+		
+		$uzenet = parancsok($uzenet);
+  
+		$_POST["s_szoveg"]=""; 
+
+		$uzenet = titkosit($nev . "¶" . $sec . "¶" . $uzenet,$_SESSION['szoba_pw'])."\n";
+
+		//Berakja az üzenetet a file elejére, a header mögé.
+		$file = file("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba");
+		$header = array_shift($file);  // kiszedi az első sort
+		array_unshift($file, $uzenet); // berakja az üzenetet
+		array_unshift($file, $header); // vissza a header
+
+		$db = fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", 'w'); // Visszaírj az egész fájlt.
+		fwrite($db, implode("", $file));     
+		fclose($db);
+ 	}
+}
+
+function ujszoba()
+{
+	//spacek kiszedése
+	$_SESSION['szoba'] = str_replace(' ', '', $_SESSION['szoba']);
+
+	//szoba létrehozása
+	$db= fopen("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba", "w");
+	$megj = false;
+	if(!isset($_SESSION['szoba_pw'])) 
+	{
+		$_SESSION['szoba_pw'] = substr(crypt(openssl_random_pseudo_bytes(16)), -16); // Megbízható 16 karakteres jelszó.
+		$megj=true;
+	} 
+
+	fwrite($db,titkosit($_SESSION['szoba_pw'],$_SESSION['szoba_pw'])."\n");
+	fclose($db);
+
+	//Chat megjelenítése
+	require_once('chat_begin.html');
+	echo "<div id='header'><h1 style='padding-bottom: 40px; text-align: center'>" . $_SESSION['szoba'] . "</h2></div>\n<div id='CONTENT'>\n\t<div id='TEXT'>";
+	if ($megj) { print("<br>A szoba [jelszo]: [".$_SESSION['szoba_pw']."]"); }
+	print("<br>".ujlink($_SESSION['szoba'],$_SESSION['szoba_pw']));
+	print("<br>Elerheto parancsok: /help");
+	require_once('chat_input.html');
+}
+
+function parancsok($uzenet)
+{
+	if ($uzenet=="/help") 
+	{
+		$uzenet="Parancsok:<br>/help - kiirja ezt.<br>/del - torli a szobat.<br>/link - ad egy linket a szobahoz.<br>/img pelda.jpg - megjeleniti a kepet.";
+	}
+	elseif ($uzenet=="/del") // Törli a szobát
+	{ 
+		unlink("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba");
+
+		unset($_SESSION['szoba']);
+		unset($_SESSION['szoba_pw']);
+		exit('<meta http-equiv="refresh" content="1">');
+	}
+	elseif ($uzenet=="/link") 
+	{
+		$uzenet=ujlink($_SESSION['szoba'],$_SESSION['szoba_pw']); // Uj egyszer hasznalhato link
+	}
+	elseif ( strpos($uzenet,"/img ") !== false )
+	{
+		$uzenet="<img src=".substr($uzenet,5).">";
+	}
+
+	return $uzenet;
+}
+
 ?>

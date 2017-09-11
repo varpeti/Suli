@@ -2,7 +2,7 @@
 
 sshfs varpe8@users.itk.ppke.hu:public_html /home/itep/Dokumentumok/Suli/Honlap/szero
 
-cp -a -u $1/ szero/ 2>/dev/null
+cp -a -u $1/ szero/ #2>/dev/null
 
 find szero/ -type d -exec chmod 755 {} \;
 find szero/ -type f -exec chmod 644 {} \;

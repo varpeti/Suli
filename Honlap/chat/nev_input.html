@@ -1,13 +1,28 @@
-<script>
-function ujratolt() {
-    location.reload();
-}
-</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../styles.css" rel="stylesheet" type="text/css" />
 
-<form class="submit_form" method="post" action="index.php" autocomplete="off">
-	<div data-role="page" style="text-align: left">
-		Nev:
-		<input type="text" name="s_nev" autofocus="true"/>
-		<input type="submit" value="Kuldes" name="s_gnev"/>
+<div id="CONTENT">
+	<div id="TEXT">
+		<form class="submit_form" method="post" action="index.php" autocomplete="off">
+			<div style="text-align: left">
+				<table>
+					<tr>
+						<td>Nev:</td>
+						<td><input name="s_nev" tabindex="1" type="text"></td>
+						<td colspan="2"><input name="s_nev_sub" value="Belepes" tabindex="3" type="submit"></td>
+					</tr>
+					<!--
+					<tr>
+						<td>Jelszo:</td>
+						<td><input name="s_nev_pw" tabindex="2" type="password"></td>
+					</tr> 
+					<tr>
+						<td colspan="2"><input name="s_nev_sub" value="Belepes" tabindex="3" type="submit"></td>
+					</tr>
+					-->
+					
+				</table>
+			</div>
+		</form>
 	</div>
-</form>
+</div>
