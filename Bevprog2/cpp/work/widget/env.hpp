@@ -52,6 +52,7 @@ class OBJ // Az szülő
 		virtual void getter(ostream& ki) const {}; // Adatok kiadására jó.
 		virtual void setter(istream& be) {} // Adatok változtatására jó.
 		virtual void addObj(OBJ* obj);
+		void delObj(OBJ* obj);
 
 		// Azért nem hülyeség a getter és setter mert SEXYBB mint a mezők :D | Egyébként az adatok főleg párosával vannak.
 		void setPosition(double x,double y);
@@ -82,6 +83,17 @@ void OBJ::ObjKiemel(OBJ *obj)
 			objektumok.erase(objektumok.begin()+i);
 			return;
 		}
+}
+
+void ENV::delObj(OBJ *obj)
+{	
+	int id;
+	for (int i = 0; i < objektumok.size(); ++i) // Megekerssük az ID-jét
+	{
+		if (objektumok[i]==obj) {id=i;break;}
+	}
+	delete obj;
+	objektumok.erase(objektumok.begin()+id);
 }
 
 void OBJ::setPosition(double ux,double uy)

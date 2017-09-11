@@ -38,7 +38,7 @@ bool TEXTBOX::supdate(event ev, double X0, double Y0, KAMERA kamera)
 void TEXTBOX::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
 {
 	double ux,uy,usx,usy,ukx,uky;
-	ux=x+X0;uy=y+Y0;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky;
+	ux=x+X0;uy=y+Y0;usx=sx;usy=sy;ukx=kx;uky=ky;
 	kamera.getKamCoords(ux,uy);
 	//if (ux+usx<Xb or ux>Xb+Xj or uy<Yb or uy+usy>Yb+Yj) return; // Akkor is kilép ha felül vagy alul kilógna.
 	if (ux+usx<Xb or ux>Xb+Xj or uy+usy<Yb or uy>Yb+Yj) return;
@@ -62,7 +62,7 @@ void TEXTBOX::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb
 	c.transparent(true);
 
 	string ki = szoveg;
-	c << color(szin2.rr,szin2.gg,szin2.bb) << move_to(0,0+gout.cascent()) << text(ki);
+	c << color(rszin2.rr,rszin2.gg,rszin2.bb) << move_to(0,0+gout.cascent()) << text(ki);
 	ux=x+X0; uy=y+Y0;
 	kamera.getKamCoords(ux,uy);
 	gout << stamp(c,ux,uy);

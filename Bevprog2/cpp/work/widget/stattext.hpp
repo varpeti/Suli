@@ -18,7 +18,7 @@ class STATTEXT : public ABLAK
 	public:
 
 	STATTEXT(double x, double y, SZIN szin, SZIN szin2, string szoveg)
-		: ABLAK(x,y,gout.twidth(szoveg)+TEXT_RAHAGYAS,gout.cascent(),szin,false), szin2(szin2), szoveg(szoveg)
+		: ABLAK(x,y,gout.twidth(szoveg)+TEXT_RAHAGYAS,gout.cascent()+TEXT_RAHAGYAS*2,szin,false), szin2(szin2), szoveg(szoveg)
 	{}
 
 	virtual void srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const;
@@ -31,7 +31,7 @@ class STATTEXT : public ABLAK
 void STATTEXT::srajzol(canvas &Tkepek, double X0, double Y0, double Xb, double Yb, double Xj, double Yj, KAMERA kamera, bool focus) const
 {
 	double ux,uy,usx,usy,ukx,uky;
-	ux=x+X0;uy=y+Y0;usx=sx;usy=sy+gout.cascent()/2;ukx=kx;uky=ky;
+	ux=x+X0;uy=y+Y0;usx=sx;usy=sy;ukx=kx;uky=ky;
 	kamera.getKamCoords(ux,uy);
 	//if (ux+usx<Xb or ux>Xb+Xj or uy<Yb or uy+usy>Yb+Yj) return; // Akkor is kilép ha felül vagy alul kilógna.
 	if (ux+usx<Xb or ux>Xb+Xj or uy+usy<Yb or uy>Yb+Yj) return;
