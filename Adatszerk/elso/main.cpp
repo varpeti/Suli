@@ -38,7 +38,7 @@ int main()
 	{
 		cout << t[i] << " ";
 	}
-	cout << alma << endl;
+	//cout << alma << endl;
 	getchar();
 	return 0;
 }
