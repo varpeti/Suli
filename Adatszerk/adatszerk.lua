@@ -13,3 +13,11 @@ Típus: egy adat által felvehető értékek és az adaton értelmezett művelet
 		típus érték halmaz
 		típus műveletek
 		
+--[[17.09.26
+]]
+
+Gyémát öröklődés:
+http://www.learncpp.com/cpp-tutorial/128-virtual-base-classes/
+
+Friend fv, class:
+http://www.cplusplus.com/doc/tutorial/inheritance/
