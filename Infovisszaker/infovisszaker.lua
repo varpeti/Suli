@@ -213,8 +213,6 @@ TF-IDF:
 
 --------------
 
---A TxD mátrixot ZH-n fordítva kell reprezentálni!!
-
 
 TxD = {	
 	{0,1,0,1,1,0,1},
