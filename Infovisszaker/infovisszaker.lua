@@ -259,3 +259,10 @@ Hasnolősági mértékek:
 					SUM(i=1, n,   (TxD[i][j]+Q[i])		)
 					   (		--------------------	)
 					   (		(2^( TxD[i][j]*Q[i])	)
+
+
+---------------------
+
+Bizonytalanság:
+	U = -SUM(j=1,m, p[j]*log(p[j]) )
+		p[j] = R[j]/SUM(k=1,m,R[k])
