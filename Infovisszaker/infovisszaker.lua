@@ -181,6 +181,7 @@ W[i][j]= az a 0 és 1 közötti súly a T[i] x D[j] mátrixban --(D[j] felül)
 Skálafüggetlen hálózat: Hatványfüggvény eloszlás. F(x)=C*x^(-A)
 
 
+TF-IDF:
 W[i][j] = f[i][j] * log(m/F[i])
 	f[i][j]		i. dokumentum j. kifejezés előfordulása
 	m 			dokumentumok száma
@@ -222,11 +223,39 @@ TxD = {
 	{0,1,1,0,0,0,0},
 	{1,0,0,1,0,0,0},
 	{0,0,0,0,1,1,0},
-	{1,0,0,1,0,0,0}
+	{0,0,1,1,0,0,0},
+	{1,0,0,1,0,0,0},
 }
 
 
 Q = {0,1/q(5),0,0,1/q(5),1/q(5),1/q(5),1/q(5),0}
 
-Számolsá, Eredmény: td01.lua
+Számolás, Eredmény: td01.lua
 
+--------------------
+
+Hasnolősági mértékek:
+	
+	Skalár, dot mérték:
+		Minden D[j] dokumentumra:
+			R[j] = SUM(i=1, n, TxD[i][j]*Q[i]) 
+				-- SUM(futó,max,skalár)
+				-- R[j] a D[j] dokumentum a kérdésre adott válasz
+
+	Cosinusz mérték:
+		u.a
+
+	Dice mérék:
+		Minden D[j] dokumentumra:
+			R[j] = 2*SUM(i=1, n, TxD[i][j]*Q[i]) / SUM(i=1, n, TxD[i][j]+Q[i])
+
+	Jaccard együttható:
+		Minden D[j] dokumentumra:
+			R[j] = SUM(i=1, n, TxD[i][j]*Q[i]) / SUM(i=1, n, (TxD[i][j]+Q[i]) / 2^( TxD[i][j]*Q[i] ) )
+
+
+					     SUM(i=1, n, TxD[i][j]*Q[i]) 
+			R[j]=	-------------------------------------
+					SUM(i=1, n,   (TxD[i][j]+Q[i])		)
+					   (		--------------------	)
+					   (		(2^( TxD[i][j]*Q[i])	)

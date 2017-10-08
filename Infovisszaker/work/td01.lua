@@ -6,10 +6,11 @@ local TxD = {
 	{0,1,1,0,0,0,0},
 	{1,0,0,1,0,0,0},
 	{0,0,0,0,1,1,0},
-	{1,0,0,1,0,0,0}
+	{0,0,1,1,0,0,0},
+	{1,0,0,1,0,0,0},
 }
 
-local Q = {0,1/math.sqrt(5),0,0,1/math.sqrt(5),1/math.sqrt(5),1/math.sqrt(5),1/math.sqrt(5)}
+local Q = {0,1/math.sqrt(5),0,0,1/math.sqrt(5),1/math.sqrt(5),1/math.sqrt(5),1/math.sqrt(5),0}
 
 
 function TFN(TxD) -- TFN normált
@@ -40,20 +41,39 @@ end
 
 function Dice(TxD,Q)
 	local R = {}
-	local o = 0
 	local n,m = #TxD,#TxD[1]
 	for j=1,m do
-		local oo = 0
-		for i=1,n do
-			o = o + TxD[i][j]+Q[i]
+		local o, oo = 0,0
+		for i=1,n do --Szumma
+			o 	= o  + TxD[i][j]*Q[i] --Skaláris szorzás
+			oo 	= oo + TxD[i][j]+Q[i]
 		end
-		for i=1,n do
-			oo = oo + TxD[i][j]*Q[i] --Skaláris szorzás
-		end
-		R[j]=oo / math.sqrt(o)
+		R[j] = 2*o / oo
 	end
 	return R
 end
+
+function Jaccard(TxD,Q)
+	local R = {}
+	local n,m = #TxD,#TxD[1]
+	for j=1,m do
+		local o,oo = 0,0
+		for i=1,n do --Szumma
+			o 	= o  + TxD[i][j] * Q[i]
+			oo 	= oo + (TxD[i][j]+Q[i])/( 2^(TxD[i][j] * Q[i]) )
+		end
+		R[j]=o/oo
+	end
+	return R
+end
+
+TFN(TxD)
+R = {}
+R.cos = Cosin(TxD,Q)
+R.dice = Dice(TxD,Q)
+R.jaccard = Jaccard(TxD,Q)
+
+
 
 function deep_pretty_print(data,szint)
 	szint = szint or 0
@@ -69,12 +89,6 @@ function deep_pretty_print(data,szint)
 	end
 	return r
 end
-
-TFN(TxD)
-R = {}
-R.cos = Cosin(TxD,Q)
-R.dice = Dice(TxD,Q)
-
 
 print(deep_pretty_print(R))
 
