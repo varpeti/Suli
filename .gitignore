@@ -1,3 +1,4 @@
 bin/
 *.run
 Honlap/gittutu/*.png
+.svn/

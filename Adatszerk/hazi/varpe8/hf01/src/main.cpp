@@ -1,9 +1,7 @@
 #include "skiplist.hpp"
+#define skiplist SKIPLIST //Hogy fusson a tesztel
 
-#define skiplist SKIPLIST
-
-
-//*/ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
 #include <iostream>
 #include <set>
