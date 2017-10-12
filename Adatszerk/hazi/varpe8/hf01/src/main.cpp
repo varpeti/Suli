@@ -1,5 +1,13 @@
 #include "skiplist.hpp"
-#define skiplist SKIPLIST //Hogy fusson a tesztel
+
+struct skiplist
+{
+    SKIPLIST<int,int> slist;
+    void insert(int value) {slist.insert(value,value);}
+    void erase(int value) {slist.erase(value);}
+    bool contains(int value) {return slist.contains(value);}
+    int size(){return slist.size();}
+};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>

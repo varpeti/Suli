@@ -1,5 +1,6 @@
 /*/
-	A munkámat a "A Skip List Cookbook - William Pugh - 1990" alapján készítettem.
+	+	A munkámat a "A Skip List Cookbook - William Pugh - 1990" alapján készítettem.
+	+	Templeate kiegészítés: bármi lehet key aminek a "<" definiálva van.
 /*/
 
 
@@ -13,15 +14,17 @@
 
 //DEF//
 
+template<typename TK, typename TV>
 class SKIPLIST
 {
 	private:
 		struct NODE
 		{
-			NODE(int _x);
+			NODE(TK _key, TV _value);
 			~NODE();
 
-			int value;
+			TK key;
+			TV value;
 			NODE *Pnext[MAXSZINT];
 		};
 
@@ -34,38 +37,42 @@ class SKIPLIST
 	public:
 		SKIPLIST();
 		~SKIPLIST();
-		void insert(int value);
-		void erase(int value);
-		bool contains(int searchKey);
+		void insert(TK key,TV value);
+		void erase(TK key);
+		bool contains(TK key);
+		TV get(TK key);
 		int size();
 
 };
 
 //HEAD
-
-SKIPLIST::NODE::NODE(int _x)
+template<typename TK, typename TV>
+SKIPLIST<TK,TV>::NODE::NODE(TK _key, TV _value)
 {
-	//std::cout << "Letrejottem: " << _x << " " << this << "\n";
-	value = _x;
+	//std::cout << "Letrejottem: " << _key << " " << _value << " " << this << "\n";
+	value = _value;
+	key = _key;
 	for (int i = 0; i < MAXSZINT; ++i)
 	{
 		Pnext[i]=nullptr;
 	}
-	
 }
 
-SKIPLIST::NODE::~NODE()
+template<typename TK, typename TV>
+SKIPLIST<TK,TV>::NODE::~NODE()
 {
-	//std::cout << "Megszuntem: " << value << " " << this << "\n";
+	//std::cout << "Megszuntem: " << key << " " << value << " " << this << "\n";
 }
 
-SKIPLIST::SKIPLIST()
+template<typename TK, typename TV>
+SKIPLIST<TK,TV>::SKIPLIST()
 {
-	header = new NODE(0);
+	header = new NODE(TK(),TV());
 	meret = 0;
 }
 
-SKIPLIST::~SKIPLIST()
+template<typename TK, typename TV>
+SKIPLIST<TK,TV>::~SKIPLIST()
 {
 	
 	NODE *x = header;
@@ -74,15 +81,15 @@ SKIPLIST::~SKIPLIST()
 	{
 		while (x->Pnext[i]!=nullptr)
 		{
-			erase(x->Pnext[i]->value); //Kitörlöm a legkisebbtől kezdve az egészet.
+			erase(x->Pnext[i]->key); //Kitörlöm a legkisebbtől kezdve az egészet.
 		}
 	}
 	delete header; //Majd a headert is.
 }
 
 //PRIV//
-
-int SKIPLIST::randomLevel() // Ezt késöbb át lehet írni optimálisabbra mint a véletlen.
+template<typename TK, typename TV>
+int SKIPLIST<TK,TV>::randomLevel() // Ezt késöbb át lehet írni optimálisabbra mint a véletlen.
 {
 	int lvl = 1; // lvl1 től indul mivel a 0. szintnek mindenképp létre kell jönnie.
 	while (rand() %2 == 0 and lvl<MAXSZINT)
@@ -96,49 +103,53 @@ int SKIPLIST::randomLevel() // Ezt késöbb át lehet írni optimálisabbra mint
 //PROT//
 
 //PUB//
-
-void SKIPLIST::insert(int value)
+template<typename TK, typename TV>
+void SKIPLIST<TK,TV>::insert(TK key, TV value)
 {
 	NODE *update[MAXSZINT];
 	NODE *x = header;
 
 	for (int i = MAXSZINT-1; i >= 0; --i) // Megkeresi az szigoróan kissebb értékűt (x), és a keresztül mutatókat (update).
 	{
-		while (x->Pnext[i]!=nullptr and x->Pnext[i]->value < value)
+		while (x->Pnext[i]!=nullptr and x->Pnext[i]->key < key)
 		{
 			x = x->Pnext[i];
 		}
 		update[i]=x;
 	}
 	x = x->Pnext[0];
-	if (x==nullptr or x->value != value) // Ha nem létezik,
+	if (x==nullptr or x->key != key) // Ha nem létezik,
 	{
 		int newLevel = randomLevel();
-		x = new NODE(value);
+		x = new NODE(key,value);
 		for (int i = 0; i < newLevel; ++i) // Létrehozom a szintjeivel együtt,
 		{
 			x->Pnext[i]=update[i]->Pnext[i]; // amire mutatott az elötte lévő arra fog mutatni,
 			update[i]->Pnext[i]=x; // és az elötte lévő rámutat.
 		}
 		meret++;
+	}else	// Ha létezik
+	{
+		x->value=value; //Módosítja az értékét
 	}
 }
 
-void SKIPLIST::erase(int value)
+template<typename TK, typename TV>
+void SKIPLIST<TK,TV>::erase(TK key)
 {
 	NODE *update[MAXSZINT];
 	NODE *x = header;
 
 	for (int i = MAXSZINT-1; i >= 0; --i)
 	{
-		while (x->Pnext[i]!=nullptr and x->Pnext[i]->value < value)
+		while (x->Pnext[i]!=nullptr and x->Pnext[i]->key < key)
 		{
 			x = x->Pnext[i];
 		}
 		update[i]=x;
 	}
 	x = x->Pnext[0];
-	if (x!=nullptr and x->value == value) // Ha létezik és megegyezik az értéke
+	if (x!=nullptr and x->key == key) // Ha létezik és megegyezik az értéke
 	{
 		for (int i = 0; i < MAXSZINT; ++i) //Minden szinten
 		{
@@ -151,22 +162,40 @@ void SKIPLIST::erase(int value)
 
 }
 
-bool SKIPLIST::contains(int searchKey)
+template<typename TK, typename TV>
+bool SKIPLIST<TK,TV>::contains(TK key)
 {
 	NODE *x = header;
 	for (int i = MAXSZINT-1; i >= 0; --i)
 	{
-		while (x->Pnext[i]!=nullptr and x->Pnext[i]->value < searchKey)
+		while (x->Pnext[i]!=nullptr and x->Pnext[i]->key < key)
 		{
 			x = x->Pnext[i];
 		}
 	}
 	x=x->Pnext[0];
-	if (x!=nullptr and x->value==searchKey) return true;
+	if (x!=nullptr and x->key==key) return true;
 	return false;
 }
 
-int SKIPLIST::size()
+template<typename TK, typename TV>
+TV SKIPLIST<TK,TV>::get(TK key)
+{
+	NODE *x = header;
+	for (int i = MAXSZINT-1; i >= 0; --i)
+	{
+		while (x->Pnext[i]!=nullptr and x->Pnext[i]->key < key)
+		{
+			x = x->Pnext[i];
+		}
+	}
+	x=x->Pnext[0];
+	if (x!=nullptr and x->key==key) return x->value;
+	return TV();
+}
+
+template<typename TK, typename TV>
+int SKIPLIST<TK,TV>::size()
 {
 	return meret;
 }
