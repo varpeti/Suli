@@ -16,7 +16,7 @@ U0=10       --V
     
     ebből:
 
-    +R*i  +dif(L[1],i,1) +(1/C[1])*int(0,t,i,r) -V0 = 0
+    +R*i  +dif(L,i,1) +(1/C)*int(0,t,i,r) -V0 = 0
 
     ebből diffegyenlet:
 
