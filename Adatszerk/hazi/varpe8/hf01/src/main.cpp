@@ -83,7 +83,7 @@ struct measurement_controller {
 #define CHECK_EQ(val, expr) \
     if (cntr.ok) { \
         try { \
-            cntr.ok = val == (expr); \
+            cntr.ok = (val) == (expr); \
         } catch (...) { \
             cntr.ok = false; \
             std::cout << ">>> unexpected exception" << std::endl; \

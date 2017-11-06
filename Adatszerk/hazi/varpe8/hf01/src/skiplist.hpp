@@ -29,7 +29,7 @@ class SKIPLIST
 		};
 
 		NODE *header;
-		int meret;
+		size_t meret;
 
 		int randomLevel();
 
@@ -41,7 +41,7 @@ class SKIPLIST
 		void erase(TK key);
 		bool contains(TK key);
 		TV get(TK key);
-		int size();
+		size_t size();
 
 };
 
@@ -195,9 +195,9 @@ TV SKIPLIST<TK,TV>::get(TK key)
 }
 
 template<typename TK, typename TV>
-int SKIPLIST<TK,TV>::size()
+size_t SKIPLIST<TK,TV>::size()
 {
-	return meret;
+	return meret; //Gyorsabb mint bejárni.
 }
 
 #endif
