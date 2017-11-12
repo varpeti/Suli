@@ -1,110 +1,208 @@
+/*
+    Irányított=1
+    Súlyott=1   Súlyozás=unsigned int
+    Hurokél=1
+    Töbszörösél=1
+*/
+
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
 #include <iostream>
-#include <map>
 #include <vector>
+#include <map>
 
+template<class K,class V>
 class GRAPH
 {
 private:
-    struct Pont
+    struct Node
     {
-        std::map<Pont*,unsigned int> szomszedok; // unsigned int a súlya
-
-        //Pont() {std::cout << "L" << this << std::endl;}
-        //~Pont(){std::cout << "M" << this << std::endl;}
+        V value;
+        struct Line
+        {
+            Node* node;
+            unsigned int weight;
+        };
+        std::vector<Line> Pnext;
     };
-    std::map<unsigned int,Pont*> pontok;
-
-    bool letezik(unsigned int id);
+    std::map<K, Node*> nodes;
 public:
     GRAPH();
     ~GRAPH();
 
-    void insert(unsigned int id);
-    void add_szomszed(unsigned int id,unsigned int nid,unsigned int suly);
-    unsigned int get_tav(unsigned int a,unsigned int b);
+    void add_node(K key,V value);
+    void add_line(K key1, K key2,unsigned int weight); // Összeköti key1-et key2-vel weight súlyal, de fordítva nem.
+    /*TODO
+    void del_node(K key);
+    void del_line(K key1, K key2);
+    */
+    void print(); //TODO: remove 
+    void print_dijkstra(K key); //TODO: remove
+
+
+    struct Path
+    {
+        unsigned int dist;
+        std::vector<V> Pnode;
+        Path() {dist = -1;}
+    };
+    Path dijkstra(K key1, K key2);
 };
 
-GRAPH::GRAPH()
+template<class K,class V>
+GRAPH<K,V>::GRAPH()
 {
 
 }
 
-GRAPH::~GRAPH()
+template<class K,class V>
+GRAPH<K,V>::~GRAPH()
 {
-    for (std::map<unsigned int,Pont*>::iterator i = pontok.begin(); i != pontok.end(); ++i)
-    {
-        delete pontok[i->first];
-        pontok.erase(i->first);
+
+}
+
+template<class K,class V>
+void GRAPH<K,V>::add_node(K key, V value)
+{
+    if ( nodes.find(key) == nodes.end() ) { // Ha nincs hozzáadja
+        Node* node = new Node;
+        node->value = value;
+        nodes[key] = node;
+    }else{                                  // Ha van megváltoztatka
+        nodes[key]->value=value;
     }
 }
 
-bool GRAPH::letezik(unsigned int id)
+template<class K,class V>
+void GRAPH<K,V>::add_line(K key1, K key2,unsigned int weight)
 {
-    std::map<unsigned int,Pont*>::const_iterator it = pontok.find(id);
-    return it!=pontok.end();
+    if ( nodes.find(key1) == nodes.end() or nodes.find(key2) == nodes.end() ) return; // Ha nincs ilyen node kilép
+    typename Node::Line line;
+    line.node = nodes[key2];
+    line.weight = weight;
+    nodes[key1]->Pnext.push_back(line); // Hozzácsatolja a key1-eshez a key2-est.
 }
 
-
-void GRAPH::insert(unsigned int id)
+template<class K,class V>
+typename GRAPH<K,V>::Path GRAPH<K,V>::dijkstra(K key1, K key2)
 {
-    if (letezik(id)) return;
-    pontok[id] = new Pont;
-}
+    if ( nodes.find(key1) == nodes.end() or nodes.find(key2) == nodes.end()) return Path(); // Ha nincs ilyen node kilép
 
-void GRAPH::add_szomszed(unsigned int id,unsigned int nid,unsigned int suly)
-{
-    if (!letezik( id)) insert( id); //foolproof
-    if (!letezik(nid)) insert(nid);
+    std::map<Node*, unsigned int> dist; // Távolság
+    std::map<Node*, bool> vis;  // Láttuk-e már
+    std::map<Node*, Node*> prev; // Útvisszakereséshez.
 
-    pontok[id]->szomszedok[pontok[nid]]=suly;
-}
-
-unsigned int GRAPH::get_tav(unsigned int a, unsigned int b)
-{
-    std::map<Pont*, unsigned int> tavolsag;
-    std::map<Pont*,Pont*> elozo;
-    std::vector<Pont*> Q;
-
-    for (std::map<unsigned int,Pont*>::iterator i = pontok.begin(); i != pontok.end(); ++i)
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
     {
-        tavolsag[i->second] = -1; // alulcsordul
-        elozo[i->second] = nullptr;
-        Q.push_back(i->second);
+        dist[i->second]=-1;
+        vis[i->second]=false;
+        prev[i->second]=nullptr;
     }
 
-    tavolsag[pontok[a]] = 0; // 0 a kezdő táv.
+    dist[nodes[key1]] = 0;
 
-    while (!Q.empty())
-    {   
-        Pont *u = Q[0];
-        unsigned int j = 0;
-        for (unsigned int i = 0; i < Q.size(); ++i)// A legkisebb távolsággal rendelkező Q-ban lévő Pont
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
+    {
+        Node* a = i->second;
+        vis[a] = true;
+
+        if (a->Pnext.empty()) continue;
+        Node* cur = a->Pnext[0].node;
+
+        if (a == nodes[key2]) break; //Kilépünk ha megvan.
+
+        for (unsigned int j = 0; j < a->Pnext.size(); ++j)
         {
-           if (tavolsag[Q[i]]<tavolsag[u]) {u=Q[i];j=i;}
-        }
-
-        Q[j] = Q[Q.size()-1]; Q.pop_back(); // Cserés törlés
-
-        if (u == pontok[b]) { // Ha megvan a keresett táv.
-            std::vector<Pont*> S;
-        }
-
-        for (std::map<Pont*,unsigned int>::iterator i = u->szomszedok.begin(); i != u->szomszedok.end(); ++i)
-        {
-            unsigned int tav = tavolsag[u] + i->second;
-            if (tav < tavolsag[i->first]) 
-            {
-                tavolsag[i->first] = tav;
-                elozo[i->first] = i->first;
+            Node* b = a->Pnext[j].node;
+            if (vis[b]) continue;
+            unsigned int alt = ( dist[a]==(unsigned int)(-1) ? -1 : dist[a]+a->Pnext[j].weight );
+            if (alt < dist[b]){
+                dist[b] = alt;
+                prev[b] = a;
             }
         }
     }
-    return 0
-}
     
+    Path p;
+    p.dist = dist[nodes[key2]];
+    Node* x = nodes[key2];
+    while (prev[x]!=nullptr)
+    {
+        p.Pnode.push_back(x->value);
+        x = prev[x]; 
+    }
+    return p;
+}
+
+
+
+//////////////////DEBUG////////////////// TODO: remove
+
+template<class K,class V>
+void GRAPH<K,V>::print()
+{
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
+    {
+        std::cout << i->first << ": ";
+        for (unsigned int j = 0; j < i->second->Pnext.size(); ++j)
+        {
+            std::cout << i->second->Pnext[j].node->value << " " <<  i->second->Pnext[j].weight << " | ";
+        }
+        std::cout << "\n";
+    }
+}
+
+template<class K,class V>
+void GRAPH<K,V>::print_dijkstra(K key)
+{
+    if ( nodes.find(key) == nodes.end()) return; // Ha nincs ilyen node kilép
+
+    std::map<Node*, unsigned int> dist; // Távolság
+    std::map<Node*, bool> vis;  // Láttuk-e már
+    std::map<Node*, Node*> prev; // Útvisszakereséshez.
+
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
+    {
+        dist[i->second]=-1;
+        vis[i->second]=false;
+        prev[i->second]=nullptr;
+    }
+
+    dist[nodes[key]] = 0;
+
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
+    {   
+        Node* a = i->second;
+        vis[a] = true;
+
+        if (a->Pnext.empty()) continue;
+        Node* cur = a->Pnext[0].node;
+
+        for (unsigned int j = 0; j < a->Pnext.size(); ++j)
+        {
+            Node* b = a->Pnext[j].node;
+            if (vis[b]) continue;
+            unsigned int alt = ( dist[a]==(unsigned int)(-1) ? -1 : dist[a]+a->Pnext[j].weight );
+            if (alt < dist[b]){
+                dist[b] = alt;
+                prev[b] = a;
+            }
+        }
+    }
+    
+    for (typename std::map<K,Node*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
+    {
+        std::cout << i->first << " " << dist[i->second] << ": ";
+        Node* x = i->second;
+        while (prev[x]!=nullptr)
+        {
+            std::cout << x->value << " ";
+            x = prev[x]; 
+        }
+        std::cout << "\n";
+    }
+}
 
 
 #endif

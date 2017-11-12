@@ -7,7 +7,7 @@
 using namespace std;
 
 
-void beolvas(ifstream& be,GRAPH &graf)
+void beolvas(ifstream& be,GRAPH<int,int> &graf)
 {   
     int mennyi;
     string line;
@@ -22,10 +22,11 @@ void beolvas(ifstream& be,GRAPH &graf)
         int id,nid,suly;
         str >> id;
 
-        graf.insert(id);
+        graf.add_node(id,id);
         while (str >> nid and str >> suly)
         {
-            graf.add_szomszed(id,nid,suly);
+            graf.add_node(nid,nid); // hozzáadom, ha nem létezne.
+            graf.add_line(id,nid,suly);
         }
     }
 }
@@ -33,14 +34,20 @@ void beolvas(ifstream& be,GRAPH &graf)
 int main()
 {   
     {
-        GRAPH graf;
+        GRAPH<int,int> graf;
 
         ifstream be ("graph.txt");
             beolvas(be,graf);
         be.close();
-
-        graf.get_tav(0,3);
-
+        graf.print();
+        graf.print_dijkstra(0);
+        GRAPH<int,int>::Path p = graf.dijkstra(0,3);
+        cout << p.dist << ": ";
+        for (auto const& node: p.Pnode)
+        {
+            cout << node << " ";
+        }
+        cout << endl;
     }
     getchar();
     return 0;
