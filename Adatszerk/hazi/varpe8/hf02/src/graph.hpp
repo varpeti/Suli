@@ -112,7 +112,7 @@ typename GRAPH<K,V>::Path GRAPH<K,V>::dijkstra(K key1, K key2)
     {
         Node* a = Q[0];
         K id = 0;
-        for (int i = 0; i < Q.size(); ++i) // Kiválasztja az eddig ismert legközelebbit.
+        for (unsigned int i = 0; i < Q.size(); ++i) // Kiválasztja az eddig ismert legközelebbit.
         {   
             if (dist[Q[i]]<dist[a]) { a = Q[i]; id = i;}
         }
@@ -120,7 +120,6 @@ typename GRAPH<K,V>::Path GRAPH<K,V>::dijkstra(K key1, K key2)
         Q.pop_back();
 
         if (a->Pnext.empty()) continue;
-        Node* cur = a->Pnext[0].node;
 
         if (a == nodes[key2]) break; //Kilépünk ha megvan.
 

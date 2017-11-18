@@ -6,7 +6,7 @@
 ##################A projekt paraméterei:################
 fordito="g++"
 projectfileok="main.cpp"
-parameterek="-std=c++11" #-Werror -Wall -Wextra -pedantic"
+parameterek="-std=c++11 -Werror -Wall -Wextra -pedantic"
 nev="main.run"
 futtatas=true
 ########################################################
