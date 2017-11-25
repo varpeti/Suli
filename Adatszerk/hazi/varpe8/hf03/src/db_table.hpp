@@ -1,7 +1,7 @@
 #ifndef DB_TABLE_H_
 #define DB_TABLE_H_
 
-#include <iostream>
+//#include <iostream>
 #include <map>
 #include <vector>
 #include <sstream>
@@ -19,6 +19,7 @@ private:
 
     bool alfanumeric(string str);
     bool contain_p0(string str);
+    bool contain_col(string col);
 public:
     DB_TABLE();
     //~DB_TABLE();
@@ -30,6 +31,8 @@ public:
     void set(string col, size_t row, string value);
     string get(string col, size_t row);
     DB_TABLE join(DB_TABLE &other, string cond);
+
+    //void print(); //TODO: remove
 };
 
 DB_TABLE::DB_TABLE()
@@ -53,6 +56,15 @@ bool DB_TABLE::contain_p0(string str) // False ha tartalmaz \0-at
         if ( str.at(i)=='\0' ) return false;
     }
     return true;
+}
+
+bool DB_TABLE::contain_col(string col) // True ha benne van.
+{
+    for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
+    {
+        if (col==i->first) return true;
+    }
+    return false;
 }
 
 void DB_TABLE::add_column(string name)
@@ -112,74 +124,93 @@ DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
     std::vector<sCo> sco;
     string line1;
     stringstream str1(cond);
+    if (cond.at(cond.size()-1)==',') throw invalid_condition(); // , a végén
     while(getline(str1,line1,','))
     {
         string line2;
         stringstream str2(line1);
-        bool e = true;
+        char o = 0;
         sCo p;
         while(getline(str2,line2,'='))
         {   
-            if (e) {p.ca = line2; e=false;}
-            else   {p.cb = line2;         }
+            if      (o==0) if (      contain_col(line2)) p.ca = line2; else throw invalid_condition(); // Nincs ilyen oszlop az A ban
+            else if (o==1) if (other.contain_col(line2)) p.cb = line2; else throw invalid_condition(); // Nincs ilyen oszlop a  B ben
+            else throw invalid_condition(); // több egyenlőség jel
+            o++;
         }
+        if (o!=2) throw invalid_condition(); // nincs egyenlőség jel
         sco.push_back(p);
     }
 
-   for (int j = 0; j < sco.size(); ++j)
-    {
-        for (int i = 0; i < sco.size(); ++i)
-        {
-            if (sco[j].ca==sco[i].cb) throw invalid_condition();
-        }
+    DB_TABLE uj;
+
+    // Kiszűri az azonos nevű oszlopokat, és feltölti a neveket
+    for (std::map<string, std::vector<string> >::iterator it = table.begin(); it != table.end(); ++it)
+    {   
+        uj.add_column(it->first);
+    }
+    for (std::map<string, std::vector<string> >::iterator it = other.table.begin(); it != other.table.end(); ++it)
+    {   
+       try {uj.add_column(it->first);} catch(...) {throw invalid_condition();} //Azonos oszlop
     }
 
-    DB_TABLE uj;
     HASH hash;
+
     // Az A tábláből feltöltöm a hashtáblát
-    for (int i = 0; i < table.size(); ++i)
+    for (unsigned int i = 0; i < row_size; ++i)
     {   
         string ca="";
-        for (int j = 0; j < sco.size(); ++j)
+        for (unsigned int j = 0; j < sco.size(); ++j)
         {
-            if (table.find(sco[j].ca)==table.end()) throw invalid_condition();
+            //if (table.find(sco[j].ca)==table.end()) throw invalid_condition(); // Ha nincs ilyen oszlop // Ha nincsenek sorok (row.size==0), nem szűri ki hogy nincs ilyen oszlop, (nem jut el ide a program) ezért átkerült feljebb a vizsgálat
             ca += table[sco[j].ca][i] + '\0';
         }
-        cout << ca << endl; 
-        hash.set(ca);
+        hash.set(ca,i);
     }
 
     //A B tábláblól pedig megnézem hogy benne van-e
-    for (int i = 0; i < other.table.size(); ++i)
+    for (unsigned int i = 0; i < other.row_size; ++i)
     {   
         string cb="";
-        for (int j = 0; j < sco.size(); ++j)
+        for (unsigned int j = 0; j < sco.size(); ++j)
         {
-            if (other.table.find(sco[j].cb)==other.table.end()) throw invalid_condition();
+            //if (other.table.find(sco[j].cb)==other.table.end()) throw invalid_condition(); // Ha nincs ilyen oszlop // Ha nincsenek sorok (other.row.size==0), nem szűri ki hogy nincs ilyen oszlop
             cb += other.table[sco[j].cb][i] + '\0';
         }
-        cout << cb << " " << hash.get(cb) << endl;
-        if (hash.get(cb)) 
+
+        size_t sor = hash.get(cb);
+        if (sor!=0) // Ha stimmel, hozzáadja a sort
         {
+            uj.add_row();
             for (std::map<string, std::vector<string> >::iterator it = table.begin(); it != table.end(); ++it)
             {
-                std::vector<string> v;
-                v.push_back(it->second[i]);
-                uj.table[it->first]=v;
+                uj.set(it->first,uj.row_size-1,it->second[sor-1]);
             }
             for (std::map<string, std::vector<string> >::iterator it = other.table.begin(); it != other.table.end(); ++it)
-            {
-                std::vector<string> v;
-                v.push_back(it->second[i]);
-                uj.table[it->first]=v;
+            {   
+                uj.set(it->first,uj.row_size-1,it->second[i]);
             }
-            uj.row_size++;
         }
     }
-
     return uj;
-
 }
 
+/*void DB_TABLE::print()
+{
+    for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
+    {
+        cout << i->first << "\t";
+    }
+    cout << endl;
+    for (int j = 0; j < row_size; ++j)
+    {
+        for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
+        {
+            cout << i->second[j] << "\t";
+        }
+        cout << endl;
+    }
+    
+}*/
 
 #endif

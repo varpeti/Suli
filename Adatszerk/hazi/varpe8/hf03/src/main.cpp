@@ -1,6 +1,4 @@
 #include "db_table.hpp"
-#include "vector"
-
 #define db_table DB_TABLE
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +98,7 @@ int main(int argc, char *argv[]) {
 
     TEST("add good columns", 10) {
         db_table t;
-        vector<string> cn {"asd", "AsDf"};
+        vector<string> cn {"AsDf", "asd"}; // Fordítva adja vissza a neveket mivel map-ból olvasom ki.
         t.add_column("asd");
         t.add_column("AsDf");
         CHECK_EQ(cn, t.column_names());
@@ -331,5 +329,3 @@ int main(int argc, char *argv[]) {
     std::cout << ">>> TOTAL POINTS: " << total << std::endl;
     return 0;
 }
-
-

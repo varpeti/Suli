@@ -10,35 +10,40 @@ using namespace std;
 class HASH
 {
 private:
-    string htable[256];
+    struct stressor
+    {
+        string str;
+        size_t sor;
+    };
+    stressor htable[256];
     unsigned char _set(string &str);
 public:
     HASH();
     //~HASH();
-    void set(string str); // Belerak
-    bool get(string str); // Benne van-e?
-    void test(); //TODO: törlés
+    void set(string str,size_t sor); // Belerak
+    size_t get(string str); // Benne van-e? x=0 nem, x>0 akk x-1=sor
 };
 
 HASH::HASH()
 {
     for (int i = 0; i < 256; ++i)
     {
-        htable[i]="";
+        htable[i].str="";
+        htable[i].sor=0;
     }
 }
 
 unsigned char HASH::_set(string &str)
 {
     unsigned int c = 1;
-    for (int i = 0; i < str.size(); ++i)
+    for (unsigned int i = 0; i < str.size(); ++i)
     {
         c = (c*256+(unsigned char)str.at(i));
     }
     return c%257%256;
 }
 
-void HASH::set(string str)
+void HASH::set(string str,size_t sor)
 {
     unsigned int it=0;
     unsigned char hid; 
@@ -47,15 +52,16 @@ void HASH::set(string str)
         u+=(unsigned char)it;
         hid = _set(u);
         it++;
-    } while(htable[hid]!="" and htable[hid]!=str and it<256);
+    } while(htable[hid].str!="" and htable[hid].str!=str and it<256);
 
     if (it==256) {throw EXP("HASH_betelt"); }
 
     //cout << str << " " << it << " " << (int)hid << endl;
-    htable[hid]=str;
+    htable[hid].str=str;
+    htable[hid].sor=sor;
 }
 
-bool HASH::get(string str)
+size_t HASH::get(string str)
 {
     unsigned int it=0;
     unsigned char hid; 
@@ -64,26 +70,11 @@ bool HASH::get(string str)
         u+=(unsigned char)it;
         hid = _set(u);
         it++;
-    } while(htable[hid]!=str and htable[hid]!="" and it<256);
+    } while(htable[hid].str!=str and htable[hid].str!="" and it<256);
 
     //cout << it << endl;
-    if (htable[hid]!=str) return false;
-    return true;
-}
-
-void HASH::test()
-{
-    string str = " ";
-    for (int i = 0; i < 32; ++i) //Átfordulás
-    {
-        string u = str;
-        u+=(unsigned char)i;
-        htable[_set(u)]="-";
-    }
-    for (int i = 0; i < 256; ++i)
-    {
-        if (htable[i]=="-") cout << i << endl;
-    }
+    if (htable[hid].str!=str) return 0;
+    return htable[hid].sor+1;
 }
 
 #endif
