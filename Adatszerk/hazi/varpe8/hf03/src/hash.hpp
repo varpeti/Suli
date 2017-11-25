@@ -2,7 +2,6 @@
 #define HASH_H_
 
 #include <string>
-#include <iostream> // TODO: kivenni
 #include "exp.hpp"
 
 using namespace std;
@@ -56,7 +55,6 @@ void HASH::set(string str,size_t sor)
 
     if (it==256) {throw EXP("HASH_betelt"); }
 
-    //cout << str << " " << it << " " << (int)hid << endl;
     htable[hid].str=str;
     htable[hid].sor=sor;
 }
@@ -72,7 +70,6 @@ size_t HASH::get(string str)
         it++;
     } while(htable[hid].str!=str and htable[hid].str!="" and it<256);
 
-    //cout << it << endl;
     if (htable[hid].str!=str) return 0;
     return htable[hid].sor+1;
 }
