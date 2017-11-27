@@ -1,7 +1,6 @@
 #ifndef DB_TABLE_H_
 #define DB_TABLE_H_
 
-//#include <iostream>
 #include <map>
 #include <vector>
 #include <sstream>
@@ -17,22 +16,19 @@ private:
     std::map<string, vector<string> > table;
     size_t row_size;
 
-    bool alfanumeric(string str);
-    bool contain_p0(string str);
-    bool contain_col(string col);
+    bool alfanumeric(const string &str) const;
+    bool contain_p0(const string &str) const;
+    bool contain_col(const string &col) const;
 public:
     DB_TABLE();
-    //~DB_TABLE();
     
     void add_column(string name);
-    std::vector<string> column_names();
+    std::vector<string> column_names() const;
     void add_row();
     size_t row_count();
     void set(string col, size_t row, string value);
-    string get(string col, size_t row);
-    DB_TABLE join(DB_TABLE &other, string cond);
-
-    //void print(); //TODO: remove
+    string get(string col, size_t row) const;
+    DB_TABLE join(const DB_TABLE &other, string cond) const;
 };
 
 DB_TABLE::DB_TABLE()
@@ -40,7 +36,7 @@ DB_TABLE::DB_TABLE()
     row_size = 0;
 }
 
-bool DB_TABLE::alfanumeric(string str) // Trua ha csak szám vagy betű van benne
+bool DB_TABLE::alfanumeric(const string &str) const // Trua ha csak szám vagy betű van benne
 {
     for (unsigned int i = 0; i < str.size(); ++i)
     {   //                 numbers                                 UPCASE                               letters         
@@ -49,7 +45,7 @@ bool DB_TABLE::alfanumeric(string str) // Trua ha csak szám vagy betű van benn
     return true;
 }
 
-bool DB_TABLE::contain_p0(string str) // False ha tartalmaz \0-at
+bool DB_TABLE::contain_p0(const string &str) const // False ha tartalmaz \0-at
 {
     for (unsigned int i = 0; i < str.size(); ++i)
     {      
@@ -58,9 +54,9 @@ bool DB_TABLE::contain_p0(string str) // False ha tartalmaz \0-at
     return true;
 }
 
-bool DB_TABLE::contain_col(string col) // True ha benne van.
+bool DB_TABLE::contain_col(const string &col) const // True ha benne van.
 {
-    for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
+    for (std::map<string, std::vector<string> >::const_iterator i = table.cbegin(); i != table.cend(); ++i)
     {
         if (col==i->first) return true;
     }
@@ -77,10 +73,10 @@ void DB_TABLE::add_column(string name)
     table[name]=v;
 }
 
-std::vector<string> DB_TABLE::column_names()
+std::vector<string> DB_TABLE::column_names() const
 {
     std::vector<string> names;
-    for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
+    for (std::map<string, std::vector<string> >::const_iterator i = table.cbegin(); i != table.cend(); ++i)
     {
         names.push_back(i->first);
     }
@@ -108,14 +104,15 @@ void DB_TABLE::set(string col, size_t row, string value)
     table[col][row]=value;
 }
 
-string DB_TABLE::get(string col, size_t row)
+string DB_TABLE::get(string col, size_t row) const
 {
     if ( table.find(col)==table.end() or row>row_size ) throw invalid_index();
-    return table[col][row];
+    return table.at(col)[row];
 }
 
-DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
+DB_TABLE DB_TABLE::join(const DB_TABLE &other, string cond) const
 {   
+	//cond feldolgozása, hibák kiszűrése 
     struct sCo
     {
         string ca;
@@ -145,11 +142,11 @@ DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
     DB_TABLE uj;
 
     // Kiszűri az azonos nevű oszlopokat, és feltölti a neveket
-    for (std::map<string, std::vector<string> >::iterator it = table.begin(); it != table.end(); ++it)
+    for (std::map<string, std::vector<string> >::const_iterator it = table.cbegin(); it != table.cend(); ++it)
     {   
         uj.add_column(it->first);
     }
-    for (std::map<string, std::vector<string> >::iterator it = other.table.begin(); it != other.table.end(); ++it)
+    for (std::map<string, std::vector<string> >::const_iterator it = other.table.cbegin(); it != other.table.cend(); ++it)
     {   
        try {uj.add_column(it->first);} catch(...) {throw invalid_condition();} //Azonos oszlop
     }
@@ -163,7 +160,7 @@ DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
         for (unsigned int j = 0; j < sco.size(); ++j)
         {
             //if (table.find(sco[j].ca)==table.end()) throw invalid_condition(); // Ha nincs ilyen oszlop // Ha nincsenek sorok (row.size==0), nem szűri ki hogy nincs ilyen oszlop, (nem jut el ide a program) ezért átkerült feljebb a vizsgálat
-            ca += table[sco[j].ca][i] + '\0';
+            ca += table.at(sco[j].ca)[i] + '\0'; //Így is működik (nálam) ha mégse: ca += table.at(sco[j].ca)[i]; ca.push_back('\0');
         }
         hash.set(ca,i);
     }
@@ -175,18 +172,18 @@ DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
         for (unsigned int j = 0; j < sco.size(); ++j)
         {
             //if (other.table.find(sco[j].cb)==other.table.end()) throw invalid_condition(); // Ha nincs ilyen oszlop // Ha nincsenek sorok (other.row.size==0), nem szűri ki hogy nincs ilyen oszlop
-            cb += other.table[sco[j].cb][i] + '\0';
+            cb += other.table.at(sco[j].cb)[i] + '\0'; //Így is működik (nálam) ha mégse: ca += table.at(sco[j].ca)[i]; ca.push_back('\0');
         }
 
         size_t sor = hash.get(cb);
         if (sor!=0) // Ha stimmel, hozzáadja a sort
         {
             uj.add_row();
-            for (std::map<string, std::vector<string> >::iterator it = table.begin(); it != table.end(); ++it)
+            for (std::map<string, std::vector<string> >::const_iterator it = table.cbegin(); it != table.cend(); ++it)
             {
                 uj.set(it->first,uj.row_size-1,it->second[sor-1]);
             }
-            for (std::map<string, std::vector<string> >::iterator it = other.table.begin(); it != other.table.end(); ++it)
+            for (std::map<string, std::vector<string> >::const_iterator it = other.table.cbegin(); it != other.table.cend(); ++it)
             {   
                 uj.set(it->first,uj.row_size-1,it->second[i]);
             }
@@ -194,23 +191,5 @@ DB_TABLE DB_TABLE::join(DB_TABLE &other, string cond)
     }
     return uj;
 }
-
-/*void DB_TABLE::print()
-{
-    for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
-    {
-        cout << i->first << "\t";
-    }
-    cout << endl;
-    for (int j = 0; j < row_size; ++j)
-    {
-        for (std::map<string, std::vector<string> >::iterator i = table.begin(); i != table.end(); ++i)
-        {
-            cout << i->second[j] << "\t";
-        }
-        cout << endl;
-    }
-    
-}*/
 
 #endif

@@ -18,7 +18,7 @@ private:
     unsigned char _set(string &str);
 public:
     HASH();
-
+    //~HASH();
     void set(string str,size_t sor); // Belerak
     size_t get(string str); // Benne van-e? x=0 nem, x>0 akk x-1=sor
 };
