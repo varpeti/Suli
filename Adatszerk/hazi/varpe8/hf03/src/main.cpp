@@ -98,10 +98,12 @@ int main(int argc, char *argv[]) {
 
     TEST("add good columns", 10) {
         db_table t;
-        vector<string> cn {"AsDf", "asd"}; // Fordítva adja vissza a neveket mivel map-ból olvasom ki.
+        set<string> cn {"asd", "AsDf"};
         t.add_column("asd");
         t.add_column("AsDf");
-        CHECK_EQ(cn, t.column_names());
+        auto vec = t.column_names();
+        set<string> st(vec.begin(), vec.end());
+        CHECK_EQ(cn, st);
     }
 
     TEST("add bad columns", 5) {
