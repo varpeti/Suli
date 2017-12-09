@@ -99,6 +99,19 @@ struct measurement_controller {
         } \
     }
 
+#define CHECK_ANY_EXC(code) \
+    if (cntr.ok) { \
+        try { \
+            code; \
+            cntr.ok = false; \
+            std::cout << ">>> expected exception" << std::endl; \
+        } catch (...) { \
+        } \
+        if (!cntr.ok) { \
+            std::cout << #code << " failed at" << __LINE__ << std::endl; \
+        } \
+    }
+
 #define MEASURE(label, var) \
     std::chrono::nanoseconds var; \
     for (measurement_controller mcntr(label, var); mcntr.run; mcntr.run = false)
@@ -114,8 +127,17 @@ int main(int argc, char *argv[]) {
         test_no = std::atoi(argv[1]);
     }
 
-    TEST("Rendezettet megtartja-e", 10) {
+    TEST("Rendezettet megtartja-e", 5) {
        int array[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+       rendezo_halozat(array,16);
+       for (int i = 1; i < 16; ++i)
+       {
+            CHECK_EQ((array[i]>array[i-1]),true);
+       }
+    }
+
+    TEST("Forditott", 5) {
+       int array[16] = {8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7};
        rendezo_halozat(array,16);
        for (int i = 1; i < 16; ++i)
        {
@@ -141,7 +163,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    TEST("Nagy random", 50) {
+    TEST("Exception teszt", 20) {
+        const int size = 13;
+        int array[size];
+        for (int i = 0; i < size; ++i) array[i]=rand() % size;
+
+        CHECK_ANY_EXC(rendezo_halozat(array,size))
+        
+    }
+
+    TEST("Nagy random", 30) {
         const int size = 32768;
         int array[size];
         for (int i = 0; i < size; ++i) array[i]=rand() % size;
@@ -152,6 +183,8 @@ int main(int argc, char *argv[]) {
             CHECK_EQ((array[i]>=array[i-1]),true);
         }
     }
+
+    
 
     TEST("Ido teszt", 0) {
         const int kicsi_size = 1024;
