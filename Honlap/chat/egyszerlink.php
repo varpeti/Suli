@@ -10,57 +10,77 @@ require_once("titkosit.php");
 
 if( strlen($token)>=32 )
 {
-	$szoba = '';
-	$kod = '';
-	$ok = false;
-	
-	$file = "../../private_html/chat/linkek.lnk";
-	
-	$lines = file($file); // file beolvasás
-	
-	$f = fopen($file,"w");
-	
-	flock($f,LOCK_EX); //lock
-	
-	// Végigmegy az összes tokenen a fileba.
-	for( $i = 0; $lines[$i]; $i++ )
-	{	
-		list($dat, $ido) = explode('::', $lines[$i], 2);
-		$dat = dekodol($dat,$token);
-		list($tok, $szoba, $kod) = explode('::', $dat, 3);
-		if (time()-$ido<60*60*24) // Ha nem járt le.
+	require_once("egyszerlink.html");
+	echo '				<input name="s_token" value="'. $token .'" type="hidden">
+			</div>
+		</form>
+	</div>
+</div>';
+
+}else
+{
+	if (isset($_POST["s_ktok"]))
+	{
+		$token = $_POST["s_token"];
+
+		if (strlen($token)<32)
 		{
-			if ($tok === $token) // Ha megvan.
-			{
-				if (strlen($szoba)>=1) {$ok = true;}
-			}
-			else // Visszaírjuk ami nem egyezik.
-			{
-				fwrite($f,$lines[$i]);
-			}
+			header("Location: index.php");
+			exit;
 		}
-
-	}
 	
-	flock($f,LOCK_UN); //unlock
+		$szoba = '';
+		$kod = '';
+		$ok = false;
+		
+		$file = "../../private_html/chat/linkek.lnk";
+		
+		$lines = file($file); // file beolvasás
+		
+		$f = fopen($file,"w");
+		
+		flock($f,LOCK_EX); //lock
+		
+		// Végigmegy az összes tokenen a fileba.
+		for( $i = 0; $lines[$i]; $i++ )
+		{	
+			list($dat, $ido) = explode('::', $lines[$i], 2);
+			$dat = dekodol($dat,$token);
+			list($tok, $szoba, $kod) = explode('::', $dat, 3);
+			if (time()-$ido<60*60*24) // Ha nem járt le.
+			{
+				if ($tok === $token) // Ha megvan.
+				{
+					if (strlen($szoba)>=1) {$ok = true;}
+				}
+				else // Visszaírjuk ami nem egyezik.
+				{
+					fwrite($f,$lines[$i]);
+				}
+			}
 	
-	fclose($f);
+		}
+		
+		flock($f,LOCK_UN); //unlock
+		
+		fclose($f);
+		
+		if( $ok ) //ha van
+		{
+			$_SESSION['szoba']=trim($szoba);
+			$_SESSION['szoba_pw']=trim($kod);
+		
+			header("Location: index.php");
+			exit();
+		}
+		else // Ha nincs ilyen token.
+		{
+			$_SESSION['szoba']='';
+			$_SESSION['szoba_pw']='';
 	
-	if( $ok ) //ha van
-	{
-		$_SESSION['szoba']=trim($szoba);
-		$_SESSION['szoba_pw']=trim($kod);
-	
-		header("Location: index.php");
-		exit();
-	}
-	else // Ha nincs ilyen token.
-	{
-		$_SESSION['szoba']='';
-		$_SESSION['szoba_pw']='';
-
-		header("Location: index.php");
-		exit();
+			header("Location: index.php");
+			exit();
+		}
 	}
 }
 
