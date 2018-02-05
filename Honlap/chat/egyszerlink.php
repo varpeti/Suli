@@ -1,5 +1,7 @@
 <?php
 
+require_once('forcehttps.php');
+
 session_start();
 
 $token = $_GET['q']; // Url beolvasás
@@ -22,17 +24,15 @@ if( strlen($token)>=32 )
 	
 	// Végigmegy az összes tokenen a fileba.
 	for( $i = 0; $lines[$i]; $i++ )
-	{		
-		$dat = dekodol(strtok($lines[$i],"¶"),$token); // {token¶szoba¶pw}¶ido
-		$ido = strtok("¶");
-		$tok = strtok($dat,"¶");
+	{	
+		list($dat, $ido) = explode('::', $lines[$i], 2);
+		$dat = dekodol($dat,$token);
+		list($tok, $szoba, $kod) = explode('::', $dat, 3);
 		if (time()-$ido<60*60*24) // Ha nem járt le.
 		{
-			if( $tok === $token) // Ha megvan.
+			if ($tok === $token) // Ha megvan.
 			{
-				$szoba = strtok("¶"); 
-				$kod= strtok("¶");
-				if (strlen($szoba)>=1) {$ok = true; }
+				if (strlen($szoba)>=1) {$ok = true;}
 			}
 			else // Visszaírjuk ami nem egyezik.
 			{
@@ -77,7 +77,7 @@ function ujlink($szoba, $kod)
 	flock($f,LOCK_EX); //lock
 
 	require_once("titkosit.php");
-	fwrite($f,titkosit($token."¶".$szoba."¶".$kod,$token)."¶".time()."\n");
+	fwrite($f,titkosit($token."::".$szoba."::".$kod,$token)."::".time()."\n");
 
 	flock($f,LOCK_UN); //unlock
 	
@@ -86,7 +86,7 @@ function ujlink($szoba, $kod)
 	$cwd = substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],"/"));
 	
 	
-	return "Egyszer hasznalhato URL: <a href='http://".$_SERVER['HTTP_HOST']."$cwd/egyszerlink.php?q=$token'>http://".$_SERVER['HTTP_HOST']."$cwd/egyszerlink.php?q=$token</a>";
+	return "Egyszer hasznalhato URL: <a href='https://".$_SERVER['HTTP_HOST']."$cwd/egyszerlink.php?q=$token'>https://".$_SERVER['HTTP_HOST']."$cwd/egyszerlink.php?q=$token</a>";
 
 }
 

@@ -1,4 +1,7 @@
 <?php
+
+require_once('forcehttps.php');
+
 session_start();
 
 //Adatok meglétének ellenörzése
@@ -15,8 +18,7 @@ if (!isset($_SESSION['szoba']))
 }
 
 //Vissza, kilépés bisztosítása
-require_once("viki.php"); 
-visszakilepes();
+require_once("viki.php");
 
 require_once("titkosit.php");
 require_once("egyszerlink.php");
@@ -69,14 +71,14 @@ function ujuzenet()
 	if(isset($_POST["s_kuld"]))
   	{ 
   		$nev = $_SESSION['nev']; 
-		$uzenet = htmlspecialchars($_POST["s_szoveg"], ENT_QUOTES, 'UTF-8'); // ne lehessen HTML vagy Javascript injection
+		$uzenet = $_POST["s_szoveg"]; //htmlspecialchars($_POST["s_szoveg"], ENT_QUOTES); // ne lehessen HTML vagy Javascript injection - majd kliens oldalon
 		$sec = time();
 		
 		$uzenet = parancsok($uzenet);
   
 		$_POST["s_szoveg"]=""; 
 
-		$uzenet = titkosit($nev . "¶" . $sec . "¶" . $uzenet,$_SESSION['szoba_pw'])."\n";
+		$uzenet = titkosit($nev . "::" . $sec . "::" . $uzenet,$_SESSION['szoba_pw']) . "\n";
 
 		//Berakja az üzenetet a file elejére, a header mögé.
 		$file = file("../../private_html/chat/szobak/" . $_SESSION['szoba'] . ".szoba");
@@ -128,7 +130,7 @@ function parancsok($uzenet)
 
 		unset($_SESSION['szoba']);
 		unset($_SESSION['szoba_pw']);
-		exit('<meta http-equiv="refresh" content="1">');
+		exit('<script>location.replace("");</script>');
 	}
 	elseif ($uzenet=="/link") 
 	{

@@ -1,5 +1,7 @@
 <?php 
 
+require_once('forcehttps.php');
+
 session_start();
 
 //Adatok meglétének ellenörzése, vissza, előre navigálás
@@ -17,17 +19,16 @@ if (isset($_SESSION['szoba']) and !empty($_SESSION['szoba']))
 
 //Vissza, kilépés bisztosítása
 require_once("viki.php");
-visszakilepes();
 
 require_once("titkosit.php");
 
 if(isset($_POST["s_szoba_sub"]) and !empty($_POST["s_szoba"]))
 {
 
-	$_SESSION['szoba']=otlenites(htmlspecialchars($_POST["s_szoba"], ENT_QUOTES, 'UTF-8')); // ne lehessen HTML vagy Javascript injection
+	$_SESSION['szoba']=htmlspecialchars($_POST["s_szoba"], ENT_QUOTES); // ne lehessen HTML vagy Javascript injection
 	if (!empty($_POST["s_szoba_pw"]))
 	{
-		$_SESSION['szoba_pw']=otlenites($_POST["s_szoba_pw"]); //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
+		$_SESSION['szoba_pw']=$_POST["s_szoba_pw"]; //Nem túl szép így tárolni, de ez nem a felhasználó személyes jelszava.
 	}
 	else
 	{
@@ -40,7 +41,7 @@ if(isset($_POST["s_szoba_sub"]) and !empty($_POST["s_szoba"]))
 	
 require_once('szoba_begin.html');
 
-echo 'Udv ' . $_SESSION['nev'] . '!<br>Elerheto szobak: ';
+echo 'Üdv ' . $_SESSION['nev'] . '!<br>Elérhető szobák: ';
 foreach(glob('../../private_html/chat/szobak/*') as $file) {
 	
 	
@@ -64,8 +65,6 @@ if (!file_exists("../../private_html/chat/szobak/public.szoba")) //Public szoba 
 	fclose($db);
 }
 echo 'public';
-echo '<br>Uj szoba letrehozasahoz, csak irj be egy uj szoba nevet. Ha nem adsz meg jelszot, general egyet.<br>24 oraig nem hasznalt szobak, es linkek torlodnek!';
-
 
 require_once('szoba_input.html');
 require_once('szoba_end.html');
