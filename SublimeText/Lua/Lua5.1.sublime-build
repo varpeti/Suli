@@ -1,0 +1,5 @@
+    {
+    "cmd" : ["lua5.1", "${file_name}"],     		
+    "selector": "source.lua",
+    "working_dir" : "$file_path"
+    }

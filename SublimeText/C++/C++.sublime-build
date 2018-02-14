@@ -1,0 +1,37 @@
+{
+	"cmd" : ["g++ $file_name -std=c++14 -o ${file_base_name}"], //nem futtat
+	"shell": true,
+	"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
+	"selector": "source.c, source.c++",
+	"working_dir" : "$file_path",
+
+	"variants":
+	[
+		{
+			"name": "Run in terminal",
+			//"cmd" : ["g++ $file_name -std=c++14 -o ${file_base_name} && timeout 4s gnome-terminal -x ./${file_base_name}"]
+			"cmd" : ["g++ $file_name -std=c++14 -o ${file_base_name}.run && timeout 4s gnome-terminal -e 'bash -c \"./${file_base_name}.run;echo;echo;echo Nyomj ENTER-t a folytatashoz!;read line;exit;exec bash\"'"]
+		},
+		{
+			"name": "CV Run",
+			"cmd" : ["g++ $file_name -std=c++14 -o '${file_base_name}.run' `pkg-config --cflags --libs opencv` && timeout 4s gnome-terminal -x './${file_base_name}.run'"],
+			"selector": "source.c, source.c++",
+			"shell": true,
+			"working_dir" : "$file_path"
+		},
+		{
+			"name": "PG Run",
+			"cmd" : ["g++ '$file_name' -std=c++14 -o '${file_base_name}.run' -lgraphics -lSDL -lSDL_ttf -L. && timeout 4s gnome-terminal -x './${file_base_name}.run'"],
+			"selector": "source.c, source.c++",
+			"shell": true,
+			"working_dir" : "$file_path"
+		},
+		{
+			"name": "Project",
+			"cmd" : ["./linker '$file_name' '${file_base_name}'"],
+			"selector": "source.c, source.c++",
+			"shell": true,
+			"working_dir" : "$file_path"
+		}
+	]
+}
