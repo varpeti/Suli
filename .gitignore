@@ -1,4 +1,5 @@
 bin/
 *.run
-Honlap/gittutu/*.png
+Honlap/tutuk/gittutu/*.png
+Honlap/tutuk/SQLcl/*.png
 .svn/
