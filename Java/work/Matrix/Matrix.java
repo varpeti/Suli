@@ -1,16 +1,16 @@
 package Matrix;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Matrix {
-    public Vector< Vector<Integer> > m = new Vector< Vector<Integer> >();
+    public ArrayList< ArrayList<Integer> > m = new ArrayList< ArrayList<Integer> >();
 
     public Matrix add(Matrix other)
     {
         Matrix ret = new Matrix();
         for (int y = 0;y<this.m.size();y++) {
-            Vector<Integer> seg = new Vector<Integer>();
+            ArrayList<Integer> seg = new ArrayList<Integer>();
             for (int x = 0;x<this.m.get(0).size();x++) {
                 seg.add( this.m.get(y).get(x)+other.m.get(y).get(x) );
             }
@@ -19,13 +19,10 @@ public class Matrix {
         return ret;
     }
 
-    public void new_col(int[] x)
+    public void new_col(Integer[] x)
     {
-        Vector<Integer> seg = new Vector<Integer>();
-        for (int i=0;i<x.length;i++) 
-        {
-            seg.add(x[i]);    
-        }
+        ArrayList<Integer> seg = new ArrayList<Integer>();
+        seg.addAll(Arrays.asList(x));
         this.m.add(seg);
     }
 
@@ -36,12 +33,7 @@ public class Matrix {
 
     public void print()
     {
-        for (int y = 0;y<this.m.size();y++) {
-            for (int x = 0;x<this.m.get(0).size();x++) {
-                System.out.print(this.m.get(y).get(x) + " ");
-            }
-            System.out.println();
-        }
+        System.out.println(this.m);
     }
 
     public Matrix()

@@ -1,5 +1,24 @@
 {
-   "shell_cmd": "javac \"$file\" && java \"$file_base_name\"",
-   "file_regex": "^(...*?):([0-9]*):?([0-9]*)",
-   "selector": "source.java",
+	"shell_cmd": "javac -d . \"$file\" && java \"$file_base_name\"",
+	"file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+	"selector": "source.java",
+	"working_dir" : "$file_path",
+
+	"variants":
+	[
+		{
+			"name": " Csak Fordit",
+			"shell_cmd": "javac -d . \"$file\"",
+			"file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+			"selector": "source.java",
+			"working_dir" : "$file_path",
+		},
+		{
+			"name" : "Projekt",
+			"shell_cmd" : "./linker '$file_name' '${file_base_name}'",
+			"file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+			"selector": "source.java",
+			"working_dir" : "$file_path"
+		}
+	]
 }
