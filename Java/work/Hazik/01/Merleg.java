@@ -75,6 +75,6 @@ public class Merleg {
     public Merleg(Integer[] _sulyok)
     {
         this.sulyok.addAll(Arrays.asList(_sulyok)); // arrayból arraylistet csinál.
-        System.out.println(this + " " + sulyok);
+        //System.out.println(this + " " + sulyok);
     }
 }
