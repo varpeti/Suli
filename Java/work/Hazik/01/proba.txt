@@ -53,7 +53,5 @@ t02,02:
 Megoldás:
 20 20 1 1
 
-Van még egy off: (off mert az eddigi megoldás jobb)
-
 
 
