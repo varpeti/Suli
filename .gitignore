@@ -3,3 +3,4 @@ bin/
 Honlap/tutuk/gittutu/*.png
 Honlap/tutuk/SQLcl/*.png
 .svn/
+*.class

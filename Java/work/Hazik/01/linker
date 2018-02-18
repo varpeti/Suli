@@ -6,7 +6,7 @@
 ##################A projekt paraméterei:################
 fordito="javac"
 projectfileok="*.java"
-parameterek="-d ."
+parameterek=""
 futtato="java"
 nev="Main"
 futtatas=true
@@ -15,10 +15,13 @@ futtatas=true
 
 
 ################Fordítás és futtatás:###################
+if [[ ! -d "bin" ]]; then
+	mkdir "bin"
+fi
 
-$fordito $parameterek $projectfileok
+$fordito -d bin $parameterek $projectfileok
 
 if [[ "$futtatas" = true ]]; then
-	$futtato $nev
+	$futtato -cp bin $nev
 fi
 ########################################################
