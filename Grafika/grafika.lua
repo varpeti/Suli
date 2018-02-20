@@ -1,4 +1,33 @@
---[[ 02.13
+--[[ 02.20 előad
+]]
+
+Raszter
+    pixel, voxel
+    gazdag színvilág
+    Megjelenítők többsége
+
+Vektor
+    skálázhatóság
+    egyszerű vonalas ábrák
+    egyszerű képeket gyorsabban jelenít meg
+
+Vektrografikusan érdemes dolgozni, és az utolsó pillanatban, a megjelenítés elött raszterizálni.
+
+Színábrázolás
+    szürkeárnyalatos
+    színes kép: 3 szürkeárnyalatos egymásban
+
+LUTs
+    indexelve vannak a színek előre
+
+-----
+
+gl   - opengl
+glu  - opengl utils
+glut - opengl util tools
+
+
+--[[ 02.13 előad
 ]]
 Honlapok:
     grafika.itk.ppke.hu
