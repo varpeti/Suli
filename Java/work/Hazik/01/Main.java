@@ -12,10 +12,13 @@ public class Main
         System.out.println("Targy súlya: "+suly+"g,");
         System.out.print("Felhasználható súlyok: ");
         for (int i=0;i<sulyok.length;i++) System.out.print(sulyok[i]+"g, ");
-        System.out.print("\nFelhasznált súlyok: ");
-        for (int i=0;i<megoldas.length-1;i++) if (megoldas[i]>0) System.out.print(megoldas[i]+"db "+sulyok[i]+"g, ");
-        System.out.println("\nÖsszesen: "+megoldas[megoldas.length-1]+"db súly lett felhasználva.");
-        System.out.println();
+        if (megoldas[megoldas.length-1]>0) {
+            System.out.print("\nFelhasznált súlyok: ");
+            for (int i=0;i<megoldas.length-1;i++) if (megoldas[i]>0) System.out.print(megoldas[i]+"db "+sulyok[i]+"g, ");
+            System.out.println("\nÖsszesen: "+megoldas[megoldas.length-1]+"db súly lett felhasználva.\n");
+        } else {
+            System.out.println("\nNincs megoldás.\n");
+        }
     }
 
 
@@ -36,6 +39,12 @@ public class Main
         {   //Nincs 1
             Integer[] sulyok = {2,3,5,7};
             kiir(sulyok,11);
+            kiir(sulyok,15);
+        }
+
+        {   //Nem lehet
+            Integer[] sulyok = {7};
+            kiir(sulyok,13);
             kiir(sulyok,15);
         }
         
