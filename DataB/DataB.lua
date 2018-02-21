@@ -15,7 +15,7 @@ primary key      - "chosen candidate key"
 
 entity relationsip model
     entity set              - "single layered rectangle"
-    weak entity set         - "duble layered rectangle"
+    weak entity set         - "duble layered rectangle"  --Csak a kapcsolaton keresztül van értelme
     attribute               - "single layered oval"
     derivered attribute     - "dotted line oval"
     multi valued attribute  - "multi valued attribute"   --ugyan abból több

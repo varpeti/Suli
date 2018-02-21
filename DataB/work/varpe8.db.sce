@@ -1,28 +1,44 @@
-board (entity)
+t1 (table)
+
+message (weak table)
+
+MessageRoom (table)
+    id (id pk)
+
+privateMessageRoom (table)
+    id (id pk)
+
+Board (table)
+    id (id pk)
     name (string)
-    id (string){pk}
+    permissionlevel (integer)
 
-thread (entity)
-    id (integer){pk}
+Room (table)
+    id (id pk)
+    name (string)
+    islocked (boolean)
+    datetime (composite attribute)
+        date (date)
+        time (time)
 
-post (entity)
-    id (integer){pk}
+Post (table)
+    id (id pk)
     message (string)
+    datetime (composite attribute)
+        date (date)
+        time (time)
 
-postInfo (entity)
-    id (integer){pk}
-    user (string)
-    date (date)
-    time (time)
-    picture (boolean)
-        
-replies (ISA|post)
-    backlink (integer)
+Comment (table)
+    id (id pk)
 
-board_thread (relation|o2m)
+AbsUser (table)
+    name (string id pk)
+    pw (string)
 
-thread_post (relation|o2o)
+User (ISP|absUser)
+    registration (composite attribute)
+        date (date)
+        time (time)
 
-post_postInfo (relation|o2o)
-
-thread_replies (relation|o2m)
+Admin (ISP|absUser)
+    permissionlevel (integer)
