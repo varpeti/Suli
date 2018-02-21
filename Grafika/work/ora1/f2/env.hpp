@@ -29,7 +29,7 @@ struct Skoord
     double operator|(Skoord);
 
     Skoord forgat(double alpha, double beta, double gamma);
-    Skoord lekepzes();
+    Skoord lekepzes(double kx,double ky,double kz);
 };
 
 Skoord Skoord::operator+(Skoord b)
@@ -86,6 +86,12 @@ Skoord Skoord::forgat(double alpha, double beta, double gamma)
     return f;
 }
 
+Skoord Skoord::lekepzes(double kx,double ky,double kz) // kx ky kz - a világ nagysága
+{
+    double mz = (kz/2 + z)/(kz/2) *12; if (mz<3) mz=3; // Mekkora legyen ; minumum 3
+    return Skoord(x + z/2 + kx/2,y + z/2 + ky/2,mz); // a Z koordináta a nagyságát adja meg
+}
+
 struct Sszin
 {
     unsigned char rr;
@@ -107,51 +113,33 @@ struct Sszin
 
 struct Svonal
 {
-private:
-    Skoord* a;
-    Skoord* b;
-public:
+    Skoord a;
+    Skoord b;
     unsigned int meret;
     Sszin szin;
     Svonal()
     {
-        a= new Skoord();
-        b= new Skoord();
+        a=Skoord();
+        b=Skoord();
         meret=1;
         szin=Sszin();
     }
-    Svonal(Skoord* _a, Skoord* _b, unsigned int _meret, Sszin _szin)
+    Svonal(Skoord _a, Skoord _b, unsigned int _meret, Sszin _szin)
     {
         a=_a;
         b=_b;
         meret=_meret;
         szin=_szin;
     }
-    ~Svonal()
+
+    Skoord* getAp()
     {
-        delete a;
-        delete b;
+        return &a;
     }
 
-    void setA(Skoord _a)
+    Skoord* getBp()
     {
-        a->x=_a.x;
-        a->y=_a.y;
-    }
-    void setB(Skoord _b)
-    {
-        b->x=_b.x;
-        b->y=_b.y;
-    }
-
-    Skoord* getA()
-    {
-        return a;
-    }
-
-    Skoord* getB()
-    {
-        return b;
+        return &b;
     }
 };
 

@@ -1,8 +1,7 @@
 /*
- * File:   main_stepByStep.cpp
- * Author: polpe
- *
- * Created on February 10, 2014, 3:24 PM
+ * File:  main.cpp
+ * Author: Vp
+ * Date: 17.02.21 (big endian)
  */
 
 #include <cstdlib>
@@ -15,41 +14,54 @@
 
 #include "env.hpp"
 
+  //-----------------//
+ //Globális változók//
+//-----------------//
 
 //Vonal vector
-std::vector<Svonal> vonalak;
+std::vector<Svonal*> vonalak;
 //Tárolja h le van e nyomva
 bool blent;
 bool jlent;
 //Kövi vastagsága
 unsigned int vastag;
-
+//Arrébb mozgatandó pont
+Skoord * arrab;
 
 //Ablakméret:
-int wH=400;
-int wW=400;
+int XX=800;
+int YY=600;
 
-Skoord* getClosestPoint(Skoord* c)
+  //----------//
+ //Függvények//
+//----------//
+
+//Megkersesi a vonalak végei között melyik van a legközelebb, és vissza adja
+Skoord* getClosestPoint(Skoord c)
 {
-    double mint = *vonalak[0].getA()|*c;
+    if (vonalak.size()<1) return nullptr;
+    double mint = vonalak[0]->a|c;
     double mini = 0;
     bool   mina = true;
     for (int i = 0; i < vonalak.size(); ++i)
     {
-        double tav = *vonalak[i].getA()|*c;
+        double tav = vonalak[i]->a|c;
         if (tav<mint) {mint=tav; mini=i; mina=true;}
-        tav = *vonalak[i].getB()|*c;
+        tav = vonalak[i]->b|c;
         if (tav<mint) {mint=tav; mini=i; mina=false;}
     }
 
+    return mina ? vonalak[mini]->getAp() : vonalak[mini]->getBp();
 }
 
+  //------------------//
+ //Esemeny függvények//
+//------------------//
 
-//Ide írj, ha van saját inicializálási feladat
 void SajatInit() {
     vastag = 2;
+    arrab = nullptr;
 }
-
 
 //Újrarajzolás
 void ReDraw( ) {
@@ -58,32 +70,32 @@ void ReDraw( ) {
 
     for (int i = 0; i < vonalak.size(); ++i)
     {
-        glLineWidth(vonalak[i].meret);
-        glColor3d(vonalak[i].szin.rr/255.0, vonalak[i].szin.gg/255.0, vonalak[i].szin.bb/255.0);
+        glLineWidth(vonalak[i]->meret);
+        glColor3d(vonalak[i]->szin.rr/255.0, vonalak[i]->szin.gg/255.0, vonalak[i]->szin.bb/255.0);
         glBegin(GL_LINES);
-            glVertex2d(vonalak[i].getA()->x, vonalak[i].getA()->y);
-            glVertex2d(vonalak[i].getB()->x, vonalak[i].getB()->y);
-        glEnd( );
+            glVertex2d(vonalak[i]->a.x, vonalak[i]->a.y);
+            glVertex2d(vonalak[i]->b.x, vonalak[i]->b.y);
+        glEnd();
     }
 
-
-    glFlush( );
+    glFlush();
 }
-
-
-
-
 
 //Egér mozgára aktiválódik, kurzorpozíció koordinátáit kapja bemenetnek
 void Motion(int x, int y) {
     if (blent)
     {
-        vonalak[vonalak.size()-1].setB(Skoord(x,y));
+        vonalak[vonalak.size()-1]->b = Skoord(x,y);
+        glutPostRedisplay();
+    }
+    if (jlent && arrab!=nullptr)
+    {
+        arrab->x = x;
+        arrab->y = y;
         glutPostRedisplay();
     }
     
 }
-
 
 void MouseFunction(int button, int state, int x,int y)
 {
@@ -91,10 +103,10 @@ void MouseFunction(int button, int state, int x,int y)
     //bal gomb lenyomására
     if (button == GLUT_LEFT_BUTTON) {
         if  (state == GLUT_DOWN) { //le
-            vonalak.push_back( Svonal( new Skoord(x,y), new Skoord(x,y),vastag,Sszin(rand()%256,rand()%256,rand()%256)) );
+            vonalak.push_back( new Svonal(Skoord(x,y),Skoord(x,y),vastag,Sszin(rand()%256,rand()%256,rand()%256)) );
             blent=true;
         } else { //fel
-            //vonalak[vonalak.size()-1].setB(Skoord(x,y));
+            vonalak[vonalak.size()-1]->b = Skoord(x,y);
             blent=false;
         }
     }
@@ -102,8 +114,10 @@ void MouseFunction(int button, int state, int x,int y)
     //jobb gomb lenyomására/felengedésére (lásd 2.2 feladat)
     if (button == GLUT_RIGHT_BUTTON) {
         if  (state == GLUT_DOWN) { //le
+            arrab = getClosestPoint(Skoord(x,y));
             jlent=true;
         } else { //fel
+            arrab=nullptr;
             jlent=false;
         }
     }
@@ -112,8 +126,6 @@ void MouseFunction(int button, int state, int x,int y)
     glutPostRedisplay();
 }
 
-
-
 void Keyboard(unsigned char key, int x, int y) {
 
     switch(key) {
@@ -121,7 +133,7 @@ void Keyboard(unsigned char key, int x, int y) {
             vonalak.clear();
             break;
          case 'z':
-            vonalak.pop_back();
+            if (vonalak.size()>0) vonalak.pop_back();
             break;
         case 27:
             exit(0);
@@ -130,23 +142,23 @@ void Keyboard(unsigned char key, int x, int y) {
             break;
     }
     if (key>48 and key<60) vastag=key-48;
+
     //A képernyő újrarajzolása (azaz redraw hívása)
     glutPostRedisplay();
 }
 
-
-
-//--------------------------
-//  Keret (nem kell módosítani)
+  //-----//
+ //Keret//
+//-----//
 
 //Inicializálás
 void Init(){
-    glViewport(0, 0, wW, wH);
+    glViewport(0, 0, XX, YY);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity( );
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity( );
-    gluOrtho2D(0.0, wW, wH, 0.0);
+    gluOrtho2D(0.0, XX, YY, 0.0);
     SajatInit();
 }
 
@@ -155,20 +167,18 @@ void reshape(int w, int h) {
     glViewport(0,0,(GLsizei)w,(GLsizei)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(0.0, wW, wH, 0.0);
-    wW=w;
-    wH=h;
+    gluOrtho2D(0.0, w, h, 0.0);
+    XX=w;
+    YY=h;
 }
 
 int main(int argc, char* argv[])
 {
-    wW=400;
-    wH=400;
-    glutInitWindowSize(wW, wH);
+    glutInitWindowSize(XX, YY);
     glutInitWindowPosition(100, 100);
     glutInit(&argc, argv);
     glutInitDisplayMode( GLUT_RGB );
-    glutCreateWindow("DrawLine");
+    glutCreateWindow("DrawLine by Vp");
     Init();
 
     glutKeyboardFunc( Keyboard );
