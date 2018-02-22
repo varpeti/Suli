@@ -14,5 +14,6 @@ public class Main
         System.out.println(s.sum(v.toArray(new Integer[v.size()])));
 
         Vector< Vector<Integer> > m = new Vector< Vector<Integer> >();
+        while(true);
     }
 }

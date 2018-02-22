@@ -29,6 +29,6 @@ else
 fi
 
 if [[ "$futtatas" = true ]]; then
-	$futtato -cp bin $nev
+	gnome-terminal -x $futtato -cp bin $nev
 fi
 ########################################################
