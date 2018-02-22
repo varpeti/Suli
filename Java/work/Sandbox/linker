@@ -5,8 +5,9 @@
 
 ##################A projekt paraméterei:################
 fordito="javac"
-projectfileok="*.java"
-parameterek="-d ."
+projectfileok=""
+findall=true        # ha false akkor csak az (elérési úttal) beírt projectfileokat fordítja
+parameterek=""
 futtato="java"
 nev="Main"
 futtatas=true
@@ -15,10 +16,19 @@ futtatas=true
 
 
 ################Fordítás és futtatás:###################
+if [[ ! -d "bin" ]]; then
+	mkdir "bin"
+fi
 
-$fordito $parameterek $projectfileok
+if [[ "$findall" = true ]]; then
+    find -name "*.java" > sources.txt
+    $fordito -d bin $parameterek @sources.txt
+    rm sources.txt
+else
+    $fordito -d bin $parameterek $projectfileok
+fi
 
 if [[ "$futtatas" = true ]]; then
-	$futtato $nev
+	$futtato -cp bin $nev
 fi
 ########################################################

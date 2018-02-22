@@ -1,4 +1,5 @@
-import stat.Statisztika;
+import Matek.Statisztika;
+import Matek.Komplex;
 import java.util.Vector;
 import java.util.Arrays;
 

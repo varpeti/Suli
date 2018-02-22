@@ -1,4 +1,4 @@
-package stat;
+package Matek;
 
 public class Statisztika {
     public int sum(Integer[] a)
