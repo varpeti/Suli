@@ -1,4 +1,4 @@
-package Matrix;
+package Matek;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,13 +31,12 @@ public class Matrix {
         return this.m.get(y).get(x);
     }
 
-    public void print()
+    public String toString()
     {
-        System.out.println(this.m);
+        return this.m.toString();
     }
 
     public Matrix()
     {
-        System.out.println(this);
     }
 }
