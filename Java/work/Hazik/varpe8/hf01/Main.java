@@ -47,6 +47,6 @@ public class Main
             kiir(sulyok,13);
             kiir(sulyok,15);
         }
-        
+        while(true); 
     }
 }
