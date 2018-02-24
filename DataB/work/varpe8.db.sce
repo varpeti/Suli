@@ -20,22 +20,22 @@ Comment (table)
 ChatRoom (table)
     name (string pk)
 
-Message (weak table)
+Message (table)
     id (id pk)
     msg (string)
     datetime (datetime)
 
 AbsUser (table)
-    name (string id pk)
+    name (string pk)
     pw (string)
 
-User (ISP|absUser)
+User (ISA|absUser)
     regdate (datetime)
 
-Admin (ISP|absUser)
+Admin (ISA|absUser)
     permissionlevel (integer)
 
-Userwall (table)
+Userwall (weak table)
     id (id pk)
 
 Board_Room (relation|om)
@@ -44,9 +44,9 @@ Room_Post (relation|om)
 
 Post_Comment (relation|om)
 
-MessageRoom_Message (relation|mo)
+ChatRoom_Message (relation|mo)
 
-MessageRoom_AbsUser (relation|mm)
+ChatRoom_AbsUser (relation|mm)
 
 Board_Admin (relation|mo)
 
@@ -68,16 +68,16 @@ Userwall_Post (relation|mm)
                |  |                                                             |             |
                |  |  +---------------------------+                              |             |
                |  |  |                           |                              v             v
-[:Message:]<==[AbsUser]-----+                    +---->[Room    ]---------->[Post    ]--->[Comment ]
-(_id_     )   (_name_ )     |                          (_name_  )           (_id_    )    (_id_    )
-(datetime )   (pw     )     |                          (datetime)           (datetime)    (datetime)
-(msg      )    |            |                          (islocked)           (message )    (message )
-    /\         |            |                              ^                     ^
-    ||         |            |                              |                     |
-    ||         |            |                              |                     |
+[Message ]<---[AbsUser]-----+                    +---->[Room    ]---------->[Post    ]--->[Comment ]
+(_id_    )    (_name_ )     |                          (_name_  )           (_id_    )    (_id_    )
+(datetime)    (pw     )     |                          (datetime)           (datetime)    (datetime)
+(msg     )     ^            |                          (islocked)           (message )    (message )
+     ^         |            |                              ^                     ^
+     |         |            |                              |                     |
+     |         |            |                              |                     |
 [ChatRoom]<----+          {ISA}---[Admin          ]--->[Board          ]         |
 (_id_    )                  |     ((permissionlvl))    (_name_         )         |
                             |                          ((permissionlvl))         |
                             |                                                    |
-                            +-----[User   ]<---------->[UserWall]----------------+
-                                  (regdate)            (_id_    )
+                            +-----[User   ]============[:UserWall:]--------------+
+                                  (regdate)            (_id_      )
