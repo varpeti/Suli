@@ -1,5 +1,4 @@
-import java.util.Vector;
-import java.util.Arrays;
+import java.util.*;
 
 import Merleg.Merleg;
 
@@ -31,9 +30,9 @@ public class Main
         }
 
         {   //Nagy számok
-            Integer[] sulyok = {1,2,5,10,20,50,100,200};
-            kiir(sulyok,231);
-            kiir(sulyok,247);
+            Integer[] sulyok = {1,2,5,163,4546,35412};
+            kiir(sulyok,35422);
+            kiir(sulyok,34234451);
         }
 
         {   //Nincs 1
@@ -44,9 +43,10 @@ public class Main
 
         {   //Nem lehet
             Integer[] sulyok = {7};
-            kiir(sulyok,13);
+            kiir(sulyok,0);
+            kiir(sulyok,6);
             kiir(sulyok,15);
         }
-        while(true); 
+        try{System.in.read();}catch(Exception e){}
     }
 }
