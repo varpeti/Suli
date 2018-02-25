@@ -44,8 +44,6 @@ Room_Post (relation|om)
 
 Post_Comment (relation|om)
 
-ChatRoom_Message (relation|mo)
-
 ChatRoom_AbsUser (relation|mm)
 
 Board_Admin (relation|mo)
@@ -81,3 +79,4 @@ Userwall_Post (relation|mm)
                             |                                                    |
                             +-----[User   ]============[:UserWall:]--------------+
                                   (regdate)            (_id_      )
+
