@@ -48,7 +48,7 @@ This is an ISA subclass of AbsUser. It has permission level, and a **Log**ger.
 - **UserWall:**
 This is belongs to a **User**. Other **User**s can **Post** their opinions here.
 
-- **Log**
+- **Log:**
 This is a weak table. It is belongs to an **Admin** and cointains every modifications an **Admin** done.
 
 
