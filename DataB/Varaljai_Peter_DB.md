@@ -15,61 +15,50 @@ I would like to create a small database to show examples of all types of entitie
 ## Description
 
 - **Board:**
-Figurarly this is the "main menu" every Room is listed under different board. It can be created or modified by any admin who has a right permission level.
+Figurarly this is the "main menu" every **Room** is listed under different **Board**. It can be created or modified by any **Admin** who has a right permission level.
 
 - **Room:**
-Rooms are attached to boards. Every room contain different post from different useres. It can be created by any user. It has creation time, and it can be locked by any admin.
+**Room**s are attached to **Board**s. Every **Room** contain different **Post** from different **User**s. It can be created by any **User**. It has creation time, and it can be locked by any **Admin**.
 
 - **Post:**
-Post are attached to rooms or user walls. Users can comment any posts (except if the room is locked).
-It has creation time, belongs to an user, and contains a message.
+**Post** are attached to **Room**s or **UserWall**s. Users can **Comment** any **Post**s (except if the **Room** is locked).
+It has creation time, belongs to an **User**, and contains a message.
 
 - **Comment:**
-Every user can comment their/other users post.
-It has creation time, belongs to an user, and contains a message.
+Every **User** can **Comment** their/other **User**s **Post**.
+It has creation time, belongs to an **User**, and contains a message.
 
 - **ChatRoom:**
-Chatrooms are automaticaly created rooms where users and admins can send messages to each other.
-Multiple users can be in the same chat room, and users can be in multiple rooms.
+**Chatroom**s are automaticaly created rooms where **User**s and **Admin**s can send **Message**s to each other.
+Multiple **User**s can be in the same **ChatRoom**, and **User**s can be in multiple **ChatRoom**s.
 
 - **Message:**
-Every user can send messages to other users are in the same room.
-It has creation time, belongs to a user, and contains a message.
+Every **User** can send **Message**s to other **User**s are in the same **ChatRoom**.
+It has creation time, belongs to a **User**, and contains a message.
 
 - **AbsUser:**
 This is the abstract user. It stores username and hashed and encrypted password.
 
 - **User:**
-This is an ISA subclass of AbsUser. It has registration date.
+This is an ISA subclass of AbsUser. It has registration date and **UserWall**.
 
 - **Admin:**
-This is an ISA subclass of AbsUser. It has permission level.
+This is an ISA subclass of AbsUser. It has permission level, and a **Log**ger.
 
 - **UserWall:**
-This is a weak entity, it belongs to a user.
+This **UserWall** is belongs to a **User**. Other **User**s can **Post** their opinions here.
+
+- **Log**
+This is a weak table. It is belongs to an **Admin** and cointains every modifications an **Admin** done.
+
 
 
 ## E/R Diagramm
 
-```
-               +------------------------------------------------------------------------------+
-               |                                                                              |
-               |  +-------------------------------------------------------------+             |
-               |  |                                                             |             |
-               |  |  +---------------------------+                              |             |
-               |  |  |                           |                              v             v
-[Message ]<---[AbsUser]-----+                    +---->[Room    ]---------->[Post    ]--->[Comment ]
-(_id_    )    (_name_ )     |                          (_name_  )           (_id_    )    (_id_    )
-(datetime)    (pw     )     |                          (datetime)           (datetime)    (datetime)
-(msg     )     ^            |                          (islocked)           (message )    (message )
-     ^         |            |                              ^                     ^
-     |         |            |                              |                     |
-     |         |            |                              |                     |
-[ChatRoom]<----+          {ISA}---[Admin          ]--->[Board          ]         |
-(_id_    )                  |     ((permissionlvl))    (_name_         )         |
-                            |                          ((permissionlvl))         |
-                            |                                                    |
-                            +-----[User   ]============[:UserWall:]--------------+
-                                  (regdate)            (_id_      )
+###### work in progress
 
-```
+![ER Diagramm](./ER_diagram.png "ER Diagramm")
+
+
+
+

@@ -10,7 +10,7 @@ create table Room (
     islocked number(1),
     dattime number,
 
-    rBoard foregin key references Board(name)
+    rBoard foregin key references Board(name)    
 );
 
 create table Post (
@@ -18,7 +18,8 @@ create table Post (
     message varchar2,
     dattime number,
 
-    rRoom foregin key references Room(name)
+    rRoom foregin key references Room(name),
+    rUserWall foregin key references UserWall(name)
 );
 
 create table Comment (
@@ -63,8 +64,10 @@ create table Admin (
 );
 
 create table UserWall (
-    id varchar2(20) primary key references User(name) on delete cascade,
+    id varchar2(20) primary key references User(name) on delete cascade
+);
 
-    rPost foregin key references Post(id)
+create table Log (
+    id foregin key primary key references Admin(name)
 );
 
