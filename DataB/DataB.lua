@@ -17,9 +17,9 @@ entity relationsip model
     entity set              - "single layered rectangle"
     weak entity set         - "duble layered rectangle"  --Csak a kapcsolaton keresztül van értelme
     attribute               - "single layered oval"
-    derivered attribute     - "dotted line oval"
-    multi valued attribute  - "multi valued attribute"   --ugyan abból több
-    composite attribute     - "composite attribute"      --több részegységből van
+    derivered attribute     - "dotted line oval"         --számolt
+    multi valued attribute  - "duble line oval"          --ugyan abból több
+    composite attribute     - "attribute's attributes"   --több részegységből van
     primary key             - "under line"
     discriminator           - "dotted under line"
     relation                - "diamond"
