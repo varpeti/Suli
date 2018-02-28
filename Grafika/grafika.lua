@@ -1,3 +1,19 @@
+--[[ 02.27
+]]
+
+Modellezés
+    Geometria
+        2D
+            pont vonal síkidom
+        3D 
+            test 
+        Magasabb dimmenzió 
+            -> leképzés
+        Tört dimmenzió
+            fraktálok
+
+
+
 --[[ 02.20 előad
 ]]
 
@@ -32,6 +48,9 @@ glut - opengl util tools
 Honlapok:
     grafika.itk.ppke.hu
     mplab.sztaki.hu/~bcsaba
+
+Gyak email:
+    balazs.nagy.it@gmail.com
 
 Lézerszkennelés
     pontmegjelenés

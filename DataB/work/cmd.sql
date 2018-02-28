@@ -1,6 +1,6 @@
 create table Board (
     name varchar2(20) primary key, 
-    permissionlevel number,
+    permissionlvl number,
 
     rAdmin foregin key references Admin(name)
 );
@@ -9,7 +9,6 @@ create table Room (
     name varchar2(20) primary key,
     islocked number(1),
     dattime number,
-    noofopost number,
 
     rBoard foregin key references Board(name)    
 );
@@ -18,7 +17,6 @@ create table Post (
     id number primary key,
     message varchar2,
     dattime number,
-    noofomment number,
 
     rRoom foregin key references Room(name),
     rUserWall foregin key references UserWall(name)
