@@ -13,7 +13,9 @@ create table Room (
     time number,
 
     rBoard varchar2(20),
-    foreign key (rBoard) references Board(name)    
+    foreign key (rBoard) references Board(name),
+    rAbsUser varchar2(20),
+    foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table Post (
@@ -23,9 +25,11 @@ create table Post (
     time number,
 
     rRoom varchar2(20),
-    rUserWall varchar2(20),
     foreign key (rRoom) references Room(name),
-    foreign key (rUserWall) references UserWall(name)
+    rUserWall varchar2(20),
+    foreign key (rUserWall) references UserWall(name),
+    rAbsUser varchar2(20),
+    foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table Comment (
@@ -35,7 +39,9 @@ create table Comment (
     time number,
 
     rPost number,
-    foreign key (rPost) references Post(name)
+    foreign key (rPost) references Post(name),
+    rAbsUser varchar2(20),
+    foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table ChatRoom (
@@ -44,19 +50,20 @@ create table ChatRoom (
 
 create table ChatRoom_AbsUser(
     rChatRoom varchar2(20),
-    rAbsUser varchar2(20),
     foreign key (rChatRoom) references ChatRoom(name),
+    rAbsUser varchar2(20),
     foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table Message (
-    id primary key,
+    id number primary key,
     message varchar2,
-    dattime number,
+    date number,
+    time number,
 
     rChatRoom varchar2(20),
-    rAbsUser varchar2(20),
     foreign key (rChatRoom) references ChatRoom(name),
+    rAbsUser varchar2(20),
     foreign key (rAbsUser) references AbsUser(name)
 );
 
@@ -81,6 +88,7 @@ create table UserWall (
 );
 
 create table Log (
-    id varchar(20) primary key references Admin(name) on delete cascade
+    id varchar(20) primary key references Admin(name) on delete cascade,
+    message varchar2
 );
 
