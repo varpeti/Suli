@@ -2,32 +2,40 @@ create table Board (
     name varchar2(20) primary key, 
     permissionlvl number,
 
-    rAdmin foregin key references Admin(name)
+    rAdmin varchar2(20),
+    foreign key (rAdmin) references Admin(name)
 );
 
 create table Room (
     name varchar2(20) primary key,
     islocked number(1),
-    dattime number,
+    date number,
+    time number,
 
-    rBoard foregin key references Board(name)    
+    rBoard varchar2(20),
+    foreign key (rBoard) references Board(name)    
 );
 
 create table Post (
     id number primary key,
     message varchar2,
-    dattime number,
+    date number,
+    time number,
 
-    rRoom foregin key references Room(name),
-    rUserWall foregin key references UserWall(name)
+    rRoom varchar2(20),
+    rUserWall varchar2(20),
+    foreign key (rRoom) references Room(name),
+    foreign key (rUserWall) references UserWall(name)
 );
 
 create table Comment (
     id number primary key,
     message varchar2,
-    dattime number,
+    date number,
+    time number,
 
-    rPost foregin key references Post(name)
+    rPost number,
+    foreign key (rPost) references Post(name)
 );
 
 create table ChatRoom (
@@ -35,8 +43,10 @@ create table ChatRoom (
 );
 
 create table ChatRoom_AbsUser(
-    rChatRoom foregin key references ChatRoom(name),
-    rAbsUser foregin key references AbsUser(name)
+    rChatRoom varchar2(20),
+    rAbsUser varchar2(20),
+    foreign key (rChatRoom) references ChatRoom(name),
+    foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table Message (
@@ -44,8 +54,10 @@ create table Message (
     message varchar2,
     dattime number,
 
-    rChatRoom foregin key references ChatRoom(name),
-    rAbsUser foregin key references AbsUser(name)
+    rChatRoom varchar2(20),
+    rAbsUser varchar2(20),
+    foreign key (rChatRoom) references ChatRoom(name),
+    foreign key (rAbsUser) references AbsUser(name)
 );
 
 create table AbsUser (
@@ -55,7 +67,8 @@ create table AbsUser (
 
 create table User (
     iAbsUser varchar2(20) primary key references AbsUser(name), 
-    regdate number
+    regdate number,
+    regtime number
 );
 
 create table Admin (
@@ -64,10 +77,10 @@ create table Admin (
 );
 
 create table UserWall (
-    id varchar2(20) primary key references User(name) on delete cascade
+    id varchar2(20) primary key references User(name)
 );
 
 create table Log (
-    id foregin key primary key references Admin(name)
+    id varchar(20) primary key references Admin(name) on delete cascade
 );
 
