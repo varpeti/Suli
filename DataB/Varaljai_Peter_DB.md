@@ -52,10 +52,7 @@ This is belongs to a **User**. Other **User**s can **Post** their opinions here.
 This is a weak table. It is belongs to an **Admin** and cointains every modifications an **Admin** done.
 
 
-
 ## E/R Diagramm
-
-###### work in progress
 
 ![ER Diagramm](./ER_diagram.png "ER Diagramm")
 
