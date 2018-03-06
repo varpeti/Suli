@@ -1,3 +1,23 @@
+--[[ 03.06
+]]
+
+AndOr
+    X and true  = X
+    X and false = false
+    X and X     = X
+    X or  true  = true
+    X or  false = X
+    X or  X     = X
+
+Alapműveletek
+    1 SELECT        "sigma"     -- Sor kiválasztás
+    2 PROJECTION    "pi"        -- Oszlop kiválasztás
+    3 Cross Product "¤"         -- Descartes szorzat, x
+    4 Rename        "ro"        --
+    5 Union         "U"         --
+    6 Intersect     "^"         -- metszet, fordított u
+
+
 --[[ 02.20 Gyak
 ]]
 
