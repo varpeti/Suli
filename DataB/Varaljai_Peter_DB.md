@@ -57,5 +57,33 @@ This is a weak table. It is belongs to an **Admin** and cointains every modifica
 ![ER Diagramm](./ER_diagram.png "ER Diagramm")
 
 
+## Relational model
+`primary key(s)`
 
+**Board**(`name`, permissionlvl, rAdmin)
 
+**Plvl_Board**(`rBoard`,`lvl`)
+
+**Room**(`name`, islocked, date, time, rBoard, rAdmin)
+
+**Post**(`id`, message, date, time, rRoom, rUserWall, rAbsUser)
+
+**Comment**(`id`, message, date, time, rPost, rAbsUser)
+
+**ChatRoom**(`id`)
+
+**ChatRoom_AbsUser**(`rChatRoom`,`rAbsUser`)
+
+**Message**(`id`, message, date, time, rChatroom, rAbsUser)
+
+**AbsUser**(`name`, pw)
+
+**User**(`iAbsUser`, regdate, regtime)
+
+**Admin**(`iAbsUser`, permissionlvl)
+
+**Plvl_Admin**(`rAdmin`,`lvl`)
+
+**UserWall**(`rUser`)
+
+**Log**(`rAdmin`,message)
