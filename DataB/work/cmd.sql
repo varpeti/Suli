@@ -84,11 +84,11 @@ create table Admin (
 );
 
 create table UserWall (
-    id varchar2(20) primary key references User(name)
+    rUser varchar2(20) primary key references User(name)
 );
 
 create table Log (
-    id varchar(20) primary key references Admin(name) on delete cascade,
+    rAdmin varchar(20) primary key references Admin(name) on delete cascade,
     message varchar2
 );
 
