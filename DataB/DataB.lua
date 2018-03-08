@@ -1,3 +1,27 @@
+--[[ 03.08
+]]
+
+Budapest, 2
+New_York, 20
+Lincoln, 0.2
+
+sigma(cities.pop > towns.pop, cities¤town)
+
+Budapest, Budapest  - 0
+Budapest, New_York  - 0
+Budapest, Lincoln   - 1
+New_York, Budapest  - 1
+New_York, New_York  - 0
+New_York, Lincoln   - 1
+Lincoln,  Budapest  - 0
+Lincoln,  New_York  - 0
+Lincoln,  Lincoln   - 0
+
+
+pi(customer_name ,( account (X) depositor ) % pi(branch_name, sigma(barnchcity=Brooklyn, branch) ) )
+
+
+
 --[[ 03.06
 ]]
 
@@ -14,8 +38,14 @@ Alapműveletek
     2 PROJECTION    "pi"        -- Oszlop kiválasztás
     3 Cross Product "¤"         -- Descartes szorzat, x
     4 Rename        "ro"        --
-    5 Union         "U"         --
+    5 Union         "u"         --
     6 Intersect     "^"         -- metszet, fordított u
+
+Műveletek
+
+    (X) - "natural join"    - sigma(r.b=s.b, r¤b)
+    /   - "division"        - pi(a-b,A) - pi(a-b, (pi(a-b,A)¤B)-A )
+
 
 
 --[[ 02.20 Gyak
