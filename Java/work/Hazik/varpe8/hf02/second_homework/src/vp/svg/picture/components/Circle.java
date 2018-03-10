@@ -1,26 +1,25 @@
 package vp.svg.picture.components;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Writer;
+
+import java.io.*;
+
+import vp.io.BuffWriter;
 
 public class Circle implements Component {
+    float x,y,r;
 
-    public Circle(float centerX, float centerY, float radius)
+    public Circle(float _x, float _y, float _r)
     {
-        System.out.println("Circle: x:"+centerX+" y:"+centerY+" r:"+radius);
+        x=_x; y=_y; r=_r;
+        System.out.println("Circle: x:"+x+" y:"+y+" r:"+r);
     }
 
     public void write(Writer output) throws IOException 
     {
-        BufferedWriter bufferedWriter = new BufferedWriter(output);
-        String code = "<circle cx='" + getCenterX() + "' cy='" + getCenterY() + "' r='" +
-            getRadius() + "' stroke='black' fill='black' />";
-        bufferedWriter.write(code, 0, code.length());
-        bufferedWriter.newLine();
-        bufferedWriter.flush();
+        BuffWriter.addNewLine(output,"<circle cx='" + getCenterX() + "' cy='" + getCenterY() + "' r='" + getRadius() + "' stroke='black' fill='black' />");
     }
-    public float getCenterX(){return (float)0.0;}
-    public float getCenterY(){return (float)0.0;}
-    public float getRadius(){return (float)0.0;}
+
+    public float getCenterX(){return x;}
+    public float getCenterY(){return y;}
+    public float getRadius(){return r;}
 }
