@@ -36,7 +36,7 @@ public class Picture {
     {
     }
 
-    public Boolean addComponent(String command) throws SyntaxErrorException //A Szövegből kiszedi hogy melyik command és a paramétereket.
+    private void s2c(String command) throws SyntaxErrorException //A egy sorból kiszedi a commandot és a paramétereket.
     {   
         for (int i=0;i<patterns.size();i++) 
         {
@@ -47,7 +47,7 @@ public class Picture {
             {
                 if (!Objects.equals( pcom.get(j), m.group(1) ) ) continue;
 
-                if (j!=3 && groups.size()<1) throw new SyntaxErrorException("ERROR at line 1: A group is missing!"); // Ha még nincs group
+                if (j!=3 && groups.size()<1) throw new SyntaxErrorException("A group is missing!"); //Ha még nincs group
                 
                 switch (j) 
                 {
@@ -70,21 +70,34 @@ public class Picture {
                     case 6:
                         break;
                 }
-                return true;
+                return;
             }
         }
-        return false;
+        throw new SyntaxErrorException("Unrecognizable command or missing/invaild parameters.");
     } 
 
-    public void buid(String filename) throws IOException
+    public void build(String filename) throws IOException
     {
-
+        try ( BufferedReader br = new BufferedReader(new FileReader(filename)) ) //Elég idióta a szintaxisa, lényeg h bezárja ha minden jól megy.
+        { 
+            String line;
+    
+            while ( (line = br.readLine()) != null)
+            {
+               try{
+                    System.out.println(line);
+                    s2c(line);
+                    System.out.println("");
+                }catch (SyntaxErrorException e) {
+                    e.printStackTrace();
+                } 
+            }
+        }
     }
 
     public void write(String filename) throws IOException
     {
         FileWriter out = new FileWriter(filename);
-
         
         BuffWriter.addNewLine(out,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
         BuffWriter.addNewLine(out,"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");

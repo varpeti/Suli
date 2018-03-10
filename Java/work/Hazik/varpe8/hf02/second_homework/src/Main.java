@@ -7,10 +7,8 @@ public class Main
     {
         Picture picture = new Picture();
         try{
-            picture.addComponent("new_group");
-            picture.addComponent("add_circle -5 10 10");
-            picture.addComponent("add_rectangle 20 10.5 5 5");
-            picture.write("out.svg");
+            picture.build(args[0]);
+            picture.write(args[1]);
         }catch (Exception e) {
             e.printStackTrace();
         }
