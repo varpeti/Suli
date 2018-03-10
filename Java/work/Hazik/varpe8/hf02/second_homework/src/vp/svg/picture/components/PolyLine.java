@@ -1,4 +1,4 @@
-package hu.ppke.itk.java.homework.second.picture.components;
+package vp.svg.picture.components;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

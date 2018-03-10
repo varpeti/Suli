@@ -1,9 +1,10 @@
-package hu.ppke.itk.java.homework.second.picture.components;
+package vp.svg.picture.components;
 
-import java.io.Writer;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
-interface Component {
+public interface Component {
    public void write(Writer output) throws IOException;
    default public void translate(float dx, float dy){};
    default public void flipHorizontal(float axis){};
