@@ -5,7 +5,7 @@ import java.io.*;
 import vp.io.BuffWriter;
 
 public class Rectangle implements Component {
-    float x,y,w,h;
+    private float x,y,w,h;
 
     public Rectangle(float _x, float _y, float _w, float _h)
     {

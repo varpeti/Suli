@@ -6,7 +6,7 @@ import java.io.*;
 import vp.io.BuffWriter;
 
 public class Circle implements Component {
-    float x,y,r;
+    private float x,y,r;
 
     public Circle(float _x, float _y, float _r)
     {
