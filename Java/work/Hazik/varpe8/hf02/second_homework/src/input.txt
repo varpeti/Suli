@@ -15,3 +15,14 @@ add_line_segments 0.0 -100.0 96.1826 27.3663 -52.6432 85.0217 -67.3696 -73.9009 
 add_circle 0 0 30
 translate 104 104
 merge
+ 
+alma
+
+# Komment
+
+add_line_segments 100 100 110 120 120 130 130 140 140 150 160 160 Nem dob hibát ha utánna írsz valamit az addlinenak
+
+add_circle itt se dob hibát 110 110 10
+
+# Egyel kevesebb koordináta van, ezér dob hibát:
+add_line_segments 100 100 110 120 120 130 130 140 140 asd 160 160

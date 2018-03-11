@@ -22,6 +22,9 @@ public class Picture {
         add("(flip_horizontal)(.*)");
         add("(merge)(.*)");
         add("(undo)(.*)");
+        add("\\s+"); // 9 csak whitespace van benne
+        add("#.*"); // 10 komment
+        add(".*"); //  11 teljesen üres sor
     }};
     static private ArrayList<String> parg = new ArrayList<String>() 
     {{
@@ -47,6 +50,10 @@ public class Picture {
             Matcher mc = Pattern.compile(pcom.get(i)).matcher(command); //Megtalálható-e command benne
             if (!mc.find()) continue;
 
+            if (i==10 || i==9) return; // komment vagy csak whitespace
+            if (i==11) { if (mc.group(0).length()==0) return; else continue;} // Teljesen üres sor, vagy felismerhetetlen kommand
+          
+
             Matcher ma = Pattern.compile(parg.get(i)).matcher(mc.group(2)); // Argumentumok
             
             if (!ma.find()) throw new SyntaxErrorException("Invalid arguments!");
@@ -65,7 +72,7 @@ public class Picture {
                     while(mta.find())  //Azokat is bearakja
                         try{ args.add(Float.parseFloat(mta.group())); }catch (Exception e) {}
 
-                    if (args.size()%2==1) throw new SyntaxErrorException("Invalid arguments! (Odd number of args)");
+                    if (args.size()%2==1) throw new SyntaxErrorException("Invalid arguments!");
                         
                     groups.get(groups.size()-1).addComponent( new PolyLine(args) );
                     break;
@@ -84,6 +91,8 @@ public class Picture {
                     break;
                 case 6:
                     break;
+                case 7:
+                    break;
             }
             return;
         }
@@ -95,16 +104,18 @@ public class Picture {
         try ( BufferedReader br = new BufferedReader(new FileReader(filename)) ) //Elég idióta a szintaxisa, lényeg h bezárja ha minden jól megy.
         { 
             String line;
+            int i = 1; //Egy file sorai 1-től vannak indexelve.
     
             while ( (line = br.readLine()) != null)
             {
-               try{
-                    System.out.println(line);
+                try{
+                    //System.out.println(line);
                     s2c(line);
-                    System.out.println("");
+                    //System.out.println("");
                 }catch (SyntaxErrorException e) {
-                    e.printStackTrace();
+                    System.out.println("ERORR at line: "+i+" "+e.getMessage()+" | "+line);
                 } 
+                i++;
             }
         }
     }
