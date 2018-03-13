@@ -95,6 +95,9 @@ public class Picture {
                     groups.get(groups.size()-1).flipHorizontal(Float.parseFloat(ma.group(1)));
                     break;
                 case 7:
+                    if (groups.size()<2) throw new SyntaxErrorException("Can't merge: A group is missing!");
+                    groups.get(groups.size()-2).addComponent( groups.get(groups.size()-1) );
+                    groups.remove(groups.size()-1);
                     break;
                 case 8:
                     break;
