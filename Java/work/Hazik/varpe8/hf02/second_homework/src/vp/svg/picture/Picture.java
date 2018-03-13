@@ -50,7 +50,7 @@ public class Picture {
             Matcher mc = Pattern.compile(pcom.get(i)).matcher(command); //Megtalálható-e command benne
             if (!mc.find()) continue;
 
-            if (i==10 || i==9) return; // komment vagy csak whitespace
+            if (i==10 || i==9) return; // komment ésvagy csak whitespace
             if (i==11) { if (mc.group(0).length()==0) return; else continue;} // Teljesen üres sor, vagy felismerhetetlen kommand
           
 
@@ -72,7 +72,7 @@ public class Picture {
                     while(mta.find())  //Azokat is bearakja
                         try{ args.add(Float.parseFloat(mta.group())); }catch (Exception e) {}
 
-                    if (args.size()%2==1) throw new SyntaxErrorException("Invalid arguments!");
+                    if (args.size()%2==1) throw new SyntaxErrorException("Invalid arguments!"); //Ha nem páros
                         
                     groups.get(groups.size()-1).addComponent( new PolyLine(args) );
                     break;
@@ -86,12 +86,17 @@ public class Picture {
                     groups.add(new Group() );
                     break;
                 case 4:
+                    groups.get(groups.size()-1).translate(Float.parseFloat(ma.group(1)), Float.parseFloat(ma.group(2)));
                     break;
                 case 5:
+                    groups.get(groups.size()-1).flipVertical(Float.parseFloat(ma.group(1)));
                     break;
                 case 6:
+                    groups.get(groups.size()-1).flipHorizontal(Float.parseFloat(ma.group(1)));
                     break;
                 case 7:
+                    break;
+                case 8:
                     break;
             }
             return;

@@ -22,4 +22,8 @@ public class Circle implements Component {
     public float getCenterX(){return x;}
     public float getCenterY(){return y;}
     public float getRadius(){return r;}
+
+    public void translate(float dx,float dy){x+=dx;y+=dy;}
+    public void flipHorizontal(float axis){y=flip(y,axis);}
+    public void flipVertical(float axis){x=flip(x,axis);}
 }

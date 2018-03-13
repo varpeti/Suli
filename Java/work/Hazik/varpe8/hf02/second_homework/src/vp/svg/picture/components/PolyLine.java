@@ -34,4 +34,21 @@ public class PolyLine implements Component {
     public float getPointY(int i){return (float)coords.get(i*2+1);}
     public int getNumberOfPoints(){return coords.size()/2;}
 
+    public void translate(float dx, float dy)
+    {
+        for (int i=0;i<coords.size();i+=2) 
+        {
+            coords.set(i,   coords.get(i)   + dx); 
+            coords.set(i+1, coords.get(i+1) + dy);
+        }
+    }
+    public void flipHorizontal(float axis)
+    {
+        for (int i=0;i<coords.size();i+=2) flip((float)coords.get(i),axis);
+    }
+    public void flipVertical(float axis)
+    {
+        for (int i=1;i<coords.size();i+=2) flip((float)coords.get(i),axis);
+    }
+
 }

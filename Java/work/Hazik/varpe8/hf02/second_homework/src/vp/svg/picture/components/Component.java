@@ -6,8 +6,13 @@ import java.io.Writer;
 
 public interface Component {
    public void write(Writer output) throws IOException;
-   default public void translate(float dx, float dy){};
-   default public void flipHorizontal(float axis){};
-   default public void flipVertical(float axis){};
+   public void translate(float dx, float dy);
+   public void flipHorizontal(float axis);
+   public void flipVertical(float axis);
+
+   default public float flip(float a, float da)
+   {
+        return (a>da) ? a+2*(da-a) : a-2*(a-da);
+   }
 
 }

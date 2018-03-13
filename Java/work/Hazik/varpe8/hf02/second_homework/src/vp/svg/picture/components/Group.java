@@ -30,4 +30,8 @@ public class Group implements Component {
     {
         components.add(comp);
     }
+
+    public void translate(float dx, float dy){for (int i=0;i<components.size();i++){components.get(i).translate(dx,dy);}}
+    public void flipHorizontal(float axis){for (int i=0;i<components.size();i++){components.get(i).flipHorizontal(axis);}}
+    public void flipVertical(float axis){for (int i=0;i<components.size();i++){components.get(i).flipVertical(axis);}}
 }

@@ -45,6 +45,25 @@ Műveletek
 
     (X) - "natural join"    - sigma(r.b=s.b, r¤b)
     /   - "division"        - pi(a-b,A) - pi(a-b, (pi(a-b,A)¤B)-A )
+        Példa:            
+         A      B   A/B
+        a b     b    a
+        1 1     2    1
+        1 2     4    2
+        1 3
+        1 4
+        2 2
+        2 4
+        3 2
+        3 3
+        4 4
+        4 5
+
+    MIN/MAX - "min max" -
+        1) Copy -> ro
+        2) Cross Product -> ¤
+        3) Selection -> New/Old
+        4) Difference
 
 
 

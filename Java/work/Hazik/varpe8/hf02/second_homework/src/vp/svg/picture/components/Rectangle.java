@@ -23,4 +23,8 @@ public class Rectangle implements Component {
     public float getTopLeftY(){return y;}
     public float getHeight(){return w;}
     public float getWidth(){return h;}
+
+    public void translate(float dx,float dy){x+=dx;y+=dy;}
+    public void flipHorizontal(float axis){y=flip(y,axis);}
+    public void flipVertical(float axis){x=flip(x,axis);}
 }
