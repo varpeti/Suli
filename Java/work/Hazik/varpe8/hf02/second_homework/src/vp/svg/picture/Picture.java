@@ -98,6 +98,7 @@ public class Picture {
                     if (groups.size()<2) throw new SyntaxErrorException("Can't merge: A group is missing!");
                     groups.get(groups.size()-2).addComponent( groups.get(groups.size()-1) );
                     groups.remove(groups.size()-1);
+                    System.out.println("Merge");
                     break;
                 case 8:
                     break;
@@ -121,19 +122,30 @@ public class Picture {
                     s2c(line);
                     //System.out.println("");
                 }catch (SyntaxErrorException e) {
-                    System.out.println("ERORR at line: "+i+" "+e.getMessage()+" | "+line);
+                    System.err.println("ERORR at line: "+i+" "+e.getMessage()+" | "+line); //stderr-re írja ki
                 } 
                 i++;
             }
         }
     }
 
-    public void write(String filename) throws IOException
+    public void write(String filename, Boolean isHTML) throws IOException
     {
-        FileWriter out = new FileWriter(filename);
+        Writer out;
+        Writer fout = null;
+
+        if (isHTML) 
+        {
+            fout = new FileWriter(filename);
+            BuffWriter.addNewLine(fout,"<html><body><img height='100%' width='100%' src=\"data:image/svg+xml;base64,");
+            out = new StringWriter();
+        } 
+        else out = new FileWriter(filename);
         
-        BuffWriter.addNewLine(out,"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-        BuffWriter.addNewLine(out,"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");
+        
+        
+        BuffWriter.addNewLine(out,"<?xml version='1.0' encoding='UTF-8' ?>");
+        BuffWriter.addNewLine(out,"<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>");
         
         
         for (int i=0;i<groups.size();i++) 
@@ -142,5 +154,10 @@ public class Picture {
         }
 
         BuffWriter.addNewLine(out,"</svg>");
+
+        if (isHTML) {
+            BuffWriter.addNewLine(fout,new String( Base64.getEncoder().encode(out.toString().getBytes()) ) );
+            BuffWriter.addNewLine(fout,"\" /></body></html>");
+        }
     }
 }

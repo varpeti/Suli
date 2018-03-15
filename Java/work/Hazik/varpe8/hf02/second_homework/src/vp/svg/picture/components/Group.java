@@ -31,7 +31,19 @@ public class Group implements Component {
         components.add(comp);
     }
 
-    public void translate(float dx, float dy){for (int i=0;i<components.size();i++){components.get(i).translate(dx,dy);}}
-    public void flipHorizontal(float axis){for (int i=0;i<components.size();i++){components.get(i).flipHorizontal(axis);}}
-    public void flipVertical(float axis){for (int i=0;i<components.size();i++){components.get(i).flipVertical(axis);}}
+    public void translate(float dx, float dy)
+    {
+        for (int i=0;i<components.size();i++){components.get(i).translate(dx,dy);}
+        System.out.println("Translate: x:"+dx+" y:"+dy);
+    }
+    public void flipHorizontal(float axis)
+    {
+        for (int i=0;i<components.size();i++){components.get(i).flipHorizontal(axis);}
+        System.out.println("FlipHorizontal: "+axis);
+    }
+    public void flipVertical(float axis)
+    {
+        for (int i=0;i<components.size();i++){components.get(i).flipVertical(axis);}
+        System.out.println("FlipVertical: "+axis);
+    }
 }

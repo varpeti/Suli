@@ -19,13 +19,13 @@ public class PolyLine implements Component {
 
     public void write(Writer output) throws IOException 
     {
-        StringBuilder codeBuilder = new StringBuilder("<polyline points=\"");
+        StringBuilder codeBuilder = new StringBuilder("<polyline points='");
         codeBuilder.append(getPointX(0)).append(',').append(getPointY(0));
         for (int i = 1; i < getNumberOfPoints(); i++) 
         {
             codeBuilder.append(' ').append(getPointX(i)).append(',').append(getPointY(i));
         }
-        codeBuilder.append("\" style='fill:none;stroke:black;stroke-width:2'/>");
+        codeBuilder.append("' style='fill:none;stroke:black;stroke-width:2'/>");
         
         BuffWriter.addNewLine(output,codeBuilder.toString());
     }
