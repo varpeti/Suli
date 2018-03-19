@@ -99,7 +99,7 @@ void ReDraw( ) {
 
     for (int i = 0; i < vonal.size(); ++i)
     {
-        glColor3d(0, 1, 0);
+        glColor3d(1, 0, 0);
         glBegin(GL_POLYGON);
             glVertex2d(vonal[i]->x-5, vonal[i]->y-5);
             glVertex2d(vonal[i]->x+5, vonal[i]->y-5);
