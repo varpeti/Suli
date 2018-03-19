@@ -58,6 +58,7 @@ This is a weak table. It is belongs to an **Admin** and cointains every modifica
 
 
 ## Relational model
+
 `primary key(s)`
 
 **Board**(`name`, permissionlvl, rAdmin)
