@@ -11,9 +11,10 @@ create table Admin (
 );
 
 create table Log (
+    id number,
     rAdmin varchar(20) not null references Admin(iAbsUser) on delete cascade,
     message varchar2(255),
-    primary key (rAdmin)
+    primary key (id,rAdmin)
 );
 
 create table User2 (
