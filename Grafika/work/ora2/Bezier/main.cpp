@@ -50,20 +50,22 @@ Skoord* getClosestPoint(Skoord c)
     return vonal[mini];
 }
 
-double L(double t,const std::vector<Skoord*> &pontok) 
+double Bt(int i,double t,int db)
 {
-    double ret = 0;
-    for (int i = 0; i < pontok.size(); ++i)
-    {
-        double sz = 1.0;
-        for (int j = 0; j < pontok.size(); j++) 
-        {
-            if (i != j) sz *= (t - pontok[j]->x) / (pontok[i]->x -pontok[j]->x);
-        }
-        ret = ret + pontok[i]->y*sz;
-    }
-    
+    double ret = 1.0;
+    for(int j = 1; j <= i; j++) ret *= t * (db-j)/j;
+    for(int j=i+1 ; j < db; j++) ret *= (1-t);
     return ret;
+}
+
+Skoord B(double t,const std::vector<Skoord*> &pontok)
+{
+    Skoord actPT(0.0,0.0);
+    for(int i = 0; i < pontok.size(); i++) {
+        actPT.x+=pontok[i]->x*Bt(i,t,pontok.size());
+        actPT.y+=pontok[i]->y*Bt(i,t,pontok.size());
+    }
+    return actPT;
 }
 
   //------------------//
@@ -80,20 +82,19 @@ void ReDraw( ) {
     glClearColor(0.0, 0.0, 0.0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    Skoord e;
-    e.x=0;
-    e.y=L(0,vonal);
-
-    for (int i = 1; i < XX; i+=4)
+    for(int i=0; i<vonal.size(); i++)
     {
+        Skoord e = B(0,vonal);
 
-        glLineWidth(3);
-        glColor3d(1, 1, 1);
-        glBegin(GL_LINES);
-            glVertex2d(e.x, e.y);
-            e.x=i; e.y=L(e.x,vonal);
-            glVertex2d(e.x, e.y);
-        glEnd();
+        for(double j=0.01; j<=1; j+=0.01)
+        {
+            glColor3d(1, 1, 1);
+            glBegin(GL_LINES);
+                glVertex2d(e.x,e.y);
+                e=B(j,vonal);
+                glVertex2d(e.x,e.y);
+            glEnd();
+        }
     }
 
     for (int i = 0; i < vonal.size(); ++i)

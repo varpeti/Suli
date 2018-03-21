@@ -50,20 +50,28 @@ Skoord* getClosestPoint(Skoord c)
     return vonal[mini];
 }
 
-double L(double t,const std::vector<Skoord*> &pontok) 
+void drawNurbs(const std::vector<Skoord*> &pontok)
 {
-    double ret = 0;
-    for (int i = 0; i < pontok.size(); ++i)
+    const int ORDER = 3;
+    GLfloat knots[pontok.size()+ORDER];
+    GLfloat ctrlpoints[pontok.size()/2][3];
+
+    for(int i=0; i<pontok.size(); i++)
     {
-        double sz = 1.0;
-        for (int j = 0; j < pontok.size(); j++) 
-        {
-            if (i != j) sz *= (t - pontok[j]->x) / (pontok[i]->x -pontok[j]->x);
-        }
-        ret = ret + pontok[i]->y*sz;
+        knots[i]=(float)i / (float(pontok.size()+ORDER));
+        ctrlpoints[i][0]=pontok[i]->x;
+        ctrlpoints[i][1]=pontok[i]->y;
+        ctrlpoints[i][2]=0;
     }
-    
-    return ret;
+
+    GLUnurbsObj *theNurb=gluNewNurbsRenderer();
+    glEnable(GLU_SAMPLING_TOLERANCE);
+    gluNurbsProperty(theNurb,GLU_SAMPLING_TOLERANCE, 25.0);
+    gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
+
+    gluBeginCurve(theNurb);
+        gluNurbsCurve(theNurb,pontok.size()+ORDER, knots,3,&ctrlpoints[0][0], ORDER, GL_MAP1_VERTEX_3);
+    gluEndCurve(theNurb);
 }
 
   //------------------//
@@ -80,21 +88,8 @@ void ReDraw( ) {
     glClearColor(0.0, 0.0, 0.0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    Skoord e;
-    e.x=0;
-    e.y=L(0,vonal);
-
-    for (int i = 1; i < XX; i+=4)
-    {
-
-        glLineWidth(3);
-        glColor3d(1, 1, 1);
-        glBegin(GL_LINES);
-            glVertex2d(e.x, e.y);
-            e.x=i; e.y=L(e.x,vonal);
-            glVertex2d(e.x, e.y);
-        glEnd();
-    }
+    glColor3d(1, 1, 1);
+    drawNurbs(vonal);
 
     for (int i = 0; i < vonal.size(); ++i)
     {
