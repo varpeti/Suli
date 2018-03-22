@@ -9,7 +9,7 @@ projectfileok=""
 findall=true        # ha false akkor csak az (elérési úttal) beírt projectfileokat fordítja
 parameterek=""
 futtato="java"
-nev="Main --html input.txt output.html" # a --help argumentumot a java args array végére rakja akkor is ha a file nevek elött vannak
+nev="Main input.txt output.svg" # a --help argumentumot a java args array végére rakja akkor is ha a file nevek elött vannak
 futtatas=true
 ########################################################
 

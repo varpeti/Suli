@@ -14,9 +14,9 @@ public class Circle implements Component {
         System.out.println("Circle: x:"+x+" y:"+y+" r:"+r);
     }
 
-    public void write(Writer output) throws IOException 
+    public void write(Writer output,int indent) throws IOException 
     {
-        BuffWriter.addNewLine(output,"<circle cx='" + getCenterX() + "' cy='" + getCenterY() + "' r='" + getRadius() + "' stroke='black' fill='black' />");
+        BuffWriter.addNewLine(output,"<circle cx='" + getCenterX() + "' cy='" + getCenterY() + "' r='" + getRadius() + "' stroke='black' fill='black' />",indent);
     }
 
     public float getCenterX(){return x;}

@@ -14,10 +14,13 @@ public class PolyLine implements Component {
     public PolyLine(ArrayList<Float> _coords)
     {
         coords = new ArrayList<Float>(_coords);
-        System.out.println("PolyLine: no:"+coords.size()/2);
+        System.out.println("PolyLine:");
+        for (int i=0;i<_coords.size();i+=2) {
+            System.out.println("\t"+i+". (x:"+_coords.get(i)+" y:"+_coords.get(i+1)+")");
+        }
     }
 
-    public void write(Writer output) throws IOException 
+    public void write(Writer output,int indent) throws IOException 
     {
         StringBuilder codeBuilder = new StringBuilder("<polyline points='");
         codeBuilder.append(getPointX(0)).append(',').append(getPointY(0));
@@ -27,7 +30,7 @@ public class PolyLine implements Component {
         }
         codeBuilder.append("' style='fill:none;stroke:black;stroke-width:2'/>");
         
-        BuffWriter.addNewLine(output,codeBuilder.toString());
+        BuffWriter.addNewLine(output,codeBuilder.toString(),indent);
     }
     
     public float getPointX(int i){return (float)coords.get(i*2);}

@@ -14,16 +14,16 @@ public class Group implements Component {
         System.out.println("Group");
     }
 
-    public void write(Writer output) throws IOException
+    public void write(Writer output, int indent) throws IOException
     {
-        BuffWriter.addNewLine(output,"<g>");
+        BuffWriter.addNewLine(output,"<g>",indent);
 
         for (int i=0;i<components.size();i++) 
         {
-            components.get(i).write(output);
+            components.get(i).write(output,indent+1);
         }
 
-        BuffWriter.addNewLine(output,"</g>");
+        BuffWriter.addNewLine(output,"</g>",indent);
     }
 
     public void addComponent(Component comp)

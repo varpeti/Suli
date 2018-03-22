@@ -14,9 +14,9 @@ public class Rectangle implements Component {
     }
 
 
-    public void write(Writer output) throws IOException 
+    public void write(Writer output,int indent) throws IOException 
     {
-        BuffWriter.addNewLine(output,"<rect x='" + getTopLeftX() + "' y='" + getTopLeftY() + "' " + "width='" + getWidth() + "' height='" + getHeight() + "' " + "stroke='black' " + "fill='black' />");
+        BuffWriter.addNewLine(output,"<rect x='" + getTopLeftX() + "' y='" + getTopLeftY() + "' " + "width='" + getWidth() + "' height='" + getHeight() + "' " + "stroke='black' " + "fill='black' />",indent);
     }
 
     public float getTopLeftX(){return x;}
