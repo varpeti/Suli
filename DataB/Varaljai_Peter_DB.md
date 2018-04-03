@@ -101,11 +101,11 @@ What are the top 10 most popular **Post**?
 select *
 from 
 ( 
-    select Post.id, count(Comment2.id) as noComments
+    select Post.id, count(Comment2.id) as Comments
     from Post, Comment2 
     where Comment2.rPost = Post.id
     group by Post.id
-    order by noComments desc
+    order by Comments desc
 )
 where rownum <=10
 ;
@@ -164,4 +164,76 @@ having  min(PnC.username) = ( select min(TheBigBosses.username) from TheBigBosse
 
 drop view TheBigBosses;
 drop view PnC;
+```
+
+### 4.
+
+Mennyi az **Admin**ok által készített tartalom összesen **Room**okra, **Post**okra és **Comment**ekre lebontva?
+
+How many contatnents made by the staff by **Room**s, **Post**s and **Comment**s? 
+
+```sql
+select count(*) as num_of_R_P_C
+from Comment2, Admin
+where Comment2.rAbsUser = Admin.iAbsUser
+union
+select count(*)
+from Post, Admin
+where Post.rAbsUser = Admin.iAbsUser
+union
+select count(*)
+from Room, Admin
+where Room.rAbsUser = Admin.iAbsUser
+;
+```
+
+### 5.
+
+Az "yyg" egy súlyos káromkodás, elég sokszor elrejtik egy szóban hogy ne tűnjön annyira durvának.
+Mellyek azok a **User**ek, akik nem **Admin**ok és "yyg"-vel káromkodtak?
+
+Who are the **User**s (aren't **Admin**s), used the bad word "yyg"?
+
+```sql
+select Comment2.rAbsUser as Wall_Of_Shame
+from Comment2 
+where Comment2.message like '%yyg%'
+union
+select Post.rAbsUser
+from Post
+where Post.message like '%yyg%'
+union
+select Message.rAbsUser
+from Message
+where Message.message like '%yyg%'
+minus
+select Admin.iAbsUser 
+from Admin
+;
+```
+
+### 6. 
+
+Mennyit **Post**ot írtak a **UserWall**jára az 5 legrégebbi tagnak?
+
+How many **Post**s written to the 5 oldest memeber of **Users**?
+
+```sql
+select UserName, count(Post.id) as Wall_Posts, (cast(days/365 as int)) as Age
+from Post, UserWall,
+(
+    select *
+    from
+    (
+        select User2.iAbsUser as UserName, (sysdate - User2.regdatetime) as days
+        from User2
+        order by days desc
+    )
+    where rownum <= 5
+)
+where Post.rUserWall = UserWall.rUser
+    and  UserWall.rUser = UserName
+group by UserName, days
+order by days desc 
+;
 ```
