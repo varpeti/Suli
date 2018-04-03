@@ -88,3 +88,80 @@ This is a weak table. It is belongs to an **Admin** and cointains every modifica
 **UserWall**(`rUser`)
 
 **Log**(`rAdmin`,message)
+
+## Querries
+
+### 1.
+
+Melyik az a top 10 **Post** aminek a legtöbb **Comment**je van?
+
+What are the top 10 most popular **Post**?
+
+```sql
+select *
+from 
+( 
+    select Post.id, count(Comment2.id) as noComments
+    from Post, Comment2 
+    where Comment2.rPost = Post.id
+    group by Post.id
+    order by noComments desc
+)
+where rownum <=10
+;
+```
+
+### 2.
+
+Mellyek azok a **Board**ok, és ki csinálta, amiket nem 6-os vagy 4-es jogú **Admin** készített?
+
+What are the name of the **Board**s and who are the creators, where the creator **Admin** permissionlvl isn't 6 nor 4?
+
+```sql
+select Board.name as BoardName, AbsUser.name as AdminName
+from AbsUser, Board
+where AbsUser.name like Board.rAdmin
+    and AbsUser.name != all 
+    (
+        select Admin.iAbsUser
+        from Admin
+        where permissionlevel = any (4,6)
+    )
+;
+```
+
+### 3.
+
+Mellyek azok a **Post**ok melyek alatt a 2 legfőbb Admin is **Comment**elt (mindekető)?
+
+What are the ids of the **Post**s, where the 2 Big Bosses are **Comment**ed (both)?   
+
+```sql
+create view TheBigBosses as
+    select *
+    from 
+    (
+        select Admin.iAbsUser as username
+        from Admin
+        order by Admin.permissionlevel desc
+    ) 
+    where rownum <=2
+;
+
+create view PnC as
+    select Post.id as pid, Comment2.id as cid, Comment2.rAbsUser as username
+    from Post, Comment2
+    where Comment2.rPost = Post.id
+;
+
+select PnC.pid
+from PnC, TheBigBosses
+where PnC.username = TheBigBosses.username
+group by PnC.pid
+having  min(PnC.username) = ( select min(TheBigBosses.username) from TheBigBosses )
+    and max(PnC.username) = ( select max(TheBigBosses.username) from TheBigBosses )
+;
+
+drop view TheBigBosses;
+drop view PnC;
+```

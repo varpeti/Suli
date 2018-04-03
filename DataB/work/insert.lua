@@ -45,7 +45,10 @@ local function randdate()
     local Y = ""..math.random(2000,2017)
     local M = ""..math.random(1,12) if M:len()<2 then M="0"..M end
     local D = ""..math.random(1,28) if D:len()<2 then D="0"..D end
-    return "TO_DATE('"..D.."/"..M.."/"..Y.."', 'DD/MM/YYYY')"
+    local H = ""..math.random(0,23) if H:len()<2 then H="0"..H end
+    local m = ""..math.random(0,59) if m:len()<2 then m="0"..m end
+    local S = ""..math.random(0,59) if S:len()<2 then S="0"..S end
+    return "TO_DATE('"..D.."/"..M.."/"..Y.." "..H..":"..m..":"..S.."', 'DD/MM/YYYY HH24:MI:SS')"
 end
 
 local Boards = {}
