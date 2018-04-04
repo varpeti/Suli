@@ -111,9 +111,27 @@ where rownum <=10
 ;
 ```
 
+Output:
+```bash
+        ID   COMMENTS
+---------- ----------
+ 263887968         40
+1318491853         35
+  56601904         34
+  56132275         33
+ 623349058         29
+ 264115052         29
+1344876445         28
+ 468665454         28
+ 404364516         27
+ 139001579         27
+```
+
+10 rows selected.
+
 ### 2.
 
-Mellyek azok a **Board**ok, és ki csinálta, amiket nem 6-os vagy 4-es jogú **Admin** készített?
+Melyek azok a **Board**ok, és ki csinálta, amiket nem 6-os vagy 4-es jogú **Admin** készített?
 
 What are the name of the **Board**s and who are the creators, where the creator **Admin** permissionlvl isn't 6 nor 4?
 
@@ -130,9 +148,19 @@ where AbsUser.name like Board.rAdmin
 ;
 ```
 
+Output:
+```bash
+BOARDNAME            ADMINNAME           
+-------------------- --------------------
+Atmg                 Hgkn5               
+rXmhxjUq             efmd09583           
+Vfiem                pyejoy0             
+dmxcjz               ngjrRcgyx           
+```
+
 ### 3.
 
-Mellyek azok a **Post**ok melyek alatt a 2 legfőbb Admin is **Comment**elt (mindekető)?
+Melyek azok a **Post**ok melyek alatt a 2 legfőbb Admin is **Comment**elt (mindekető)?
 
 What are the ids of the **Post**s, where the 2 Big Bosses are **Comment**ed (both)?   
 
@@ -166,6 +194,37 @@ drop view TheBigBosses;
 drop view PnC;
 ```
 
+Output:
+```bash
+View THEBIGBOSSES created.
+
+View PNC created.
+
+       PID
+----------
+ 453140951
+ 549571820
+ 946073490
+ 964047727
+1352258535
+  56601904
+  40506796
+1267821697
+1216134633
+  64251270
+ 579701661
+ 858015113
+ 380910673
+ 831785068
+1108668441
+
+15 rows selected. 
+
+View THEBIGBOSSES dropped.
+
+View PNC dropped.
+```
+
 ### 4.
 
 Mennyi az **Admin**ok által készített tartalom összesen **Room**okra, **Post**okra és **Comment**ekre lebontva?
@@ -173,24 +232,53 @@ Mennyi az **Admin**ok által készített tartalom összesen **Room**okra, **Post
 How many contatnents made by the staff by **Room**s, **Post**s and **Comment**s? 
 
 ```sql
-select count(*) as num_of_R_P_C
-from Comment2, Admin
+create table R_P_C (type varchar2(20));
+insert into R_P_C values ('Comments');
+insert into R_P_C values ('Posts');
+insert into R_P_C values ('Rooms');
+
+select type, count(rAbsUser) as num
+from Comment2, Admin, R_P_C
 where Comment2.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Comments'
+group by type
 union
-select count(*)
-from Post, Admin
+select type, count(rAbsUser)
+from Post, Admin, R_P_C
 where Post.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Posts'
+group by type
 union
-select count(*)
-from Room, Admin
+select type, count(rAbsUser)
+from Room, Admin, R_P_C
 where Room.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Rooms'
+group by type
 ;
+
+drop table R_P_C;
+```
+
+Output:
+```bash
+Table R_P_C created.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+
+TYPE                        NUM
+-------------------- ----------
+Comments                    970
+Posts                       196
+Rooms                         7
+
+Table R_P_C dropped.
 ```
 
 ### 5.
 
 Az "yyg" egy súlyos káromkodás, elég sokszor elrejtik egy szóban hogy ne tűnjön annyira durvának.
-Mellyek azok a **User**ek, akik nem **Admin**ok és "yyg"-vel káromkodtak?
+Melyek azok a **User**ek, akik nem **Admin**ok és "yyg"-vel káromkodtak?
 
 Who are the **User**s (aren't **Admin**s), used the bad word "yyg"?
 
@@ -210,6 +298,20 @@ minus
 select Admin.iAbsUser 
 from Admin
 ;
+```
+
+Output:
+```bash
+WALL_OF_SHAME       
+--------------------
+Fpkxol2895          
+Hwbin8              
+Vzrmj570            
+Yxfkf               
+dtvmpffnu           
+srpu3082            
+
+6 rows selected.
 ```
 
 ### 6. 
@@ -236,4 +338,55 @@ where Post.rUserWall = UserWall.rUser
 group by UserName, days
 order by days desc 
 ;
+```
+
+Output:
+```bash
+USERNAME             WALL_POSTS        AGE
+-------------------- ---------- ----------
+vvCpo43                      14         18
+netifqqbF                    11         18
+kpml8                        12         18
+Fpkxol2895                    2         17
+XrOsfsf690                   19         17
+```
+
+### 7.
+
+Kik azok akik benne vannak a top 20 legtöbbet **Comment**elők és a top 20 legtöbb **Message**t küldőkben is?
+
+Who are the **AbsUsers**, are in the top 20 most posted **Comment**s and in the top 20 most sent **Message**s group?
+
+```sql
+select *
+from 
+( 
+    select AbsUser.name
+    from AbsUser, Comment2 
+    where Comment2.rAbsUser = AbsUser.name
+    group by AbsUser.name
+    order by count(Comment2.id) desc
+)
+where rownum <=20
+intersect
+select *
+from 
+( 
+    select AbsUser.name
+    from AbsUser, Message 
+    where Message.rAbsUser = AbsUser.name
+    group by AbsUser.name
+    order by count(Message.id) desc
+)
+where rownum <=20
+;
+```
+
+Output:
+```bash
+NAME                
+--------------------
+Hgkn5               
+Woccvjdcv           
+pjmDhaqrg           
 ```

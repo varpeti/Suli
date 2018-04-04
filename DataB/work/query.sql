@@ -55,18 +55,31 @@ drop view PnC;
 
 
 
-select count(*) as num_of_R_P_C
-from Comment2, Admin
+create table R_P_C (type varchar2(20));
+insert into R_P_C values ('Comments');
+insert into R_P_C values ('Posts');
+insert into R_P_C values ('Rooms');
+
+select type, count(rAbsUser) as num
+from Comment2, Admin, R_P_C
 where Comment2.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Comments'
+group by type
 union
-select count(*)
-from Post, Admin
+select type, count(rAbsUser)
+from Post, Admin, R_P_C
 where Post.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Posts'
+group by type
 union
-select count(*)
-from Room, Admin
+select type, count(rAbsUser)
+from Room, Admin, R_P_C
 where Room.rAbsUser = Admin.iAbsUser
+    and R_P_C.type like 'Rooms'
+group by type
 ;
+
+drop table R_P_C;
 
 
 
@@ -87,6 +100,7 @@ from Admin
 ;
 
 
+
 select UserName, count(Post.id) as Wall_Posts, (cast(days/365 as int)) as Age
 from Post, UserWall,
 (
@@ -103,4 +117,29 @@ where Post.rUserWall = UserWall.rUser
     and  UserWall.rUser = UserName
 group by UserName, days
 order by days desc 
+;
+
+
+
+select *
+from 
+( 
+    select AbsUser.name
+    from AbsUser, Comment2 
+    where Comment2.rAbsUser = AbsUser.name
+    group by AbsUser.name
+    order by count(Comment2.id) desc
+)
+where rownum <=20
+intersect
+select *
+from 
+( 
+    select AbsUser.name
+    from AbsUser, Message 
+    where Message.rAbsUser = AbsUser.name
+    group by AbsUser.name
+    order by count(Message.id) desc
+)
+where rownum <=20
 ;
