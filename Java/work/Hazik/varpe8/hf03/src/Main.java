@@ -6,7 +6,7 @@ public class Main
 {
     public static void main(String[] args) throws InterruptedException
     {
-        Quests quests = new Quests(30); //30sec
+        Quests quests = new Quests(); 
         Equipments equipments = new Equipments();
         Leagues.setLeagues(quests,equipments);
 

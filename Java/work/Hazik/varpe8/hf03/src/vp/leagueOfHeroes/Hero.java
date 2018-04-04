@@ -4,17 +4,20 @@ import  vp.leagueOfHeroes.*;
 
 import java.util.*;
 
-public class Hero implements Runnable {
+public class Hero implements Runnable 
+{
     private String name = new String();
-    private Quests quests = new Quests();
+    private String league = new String();
+    private Quests quests;
     private Equipments equipments = new Equipments();
     private int repu = 0;
 
-    public void run() {
+    public void run() 
+    {
         int questid = -1;
         String itemsok = new String("");
         ArrayList<String> items = new ArrayList<String>();
-        while (!quests.isOver()) //30 másodperc után van még hős aki küldetésen van
+        while (!quests.isOver()) //30 másodperc után van még hős aki küldetésen van. Mivel hogy 30. másodpercben is jön ki 2 quest ezért ha valaki végig tudja vinni, végigviheti. De ha nem elég híres, vagy nincs bent a felszerelés akkor haza megy. 
         {
             //Tábla
             if (questid==-1) {
@@ -36,8 +39,8 @@ public class Hero implements Runnable {
             //Harc
             {   
                 try{Thread.sleep(quests.getQuestTime(questid));}catch(Exception e){}; // A véres küzdelem.
-                repu+=quests.getQuestRepu(questid); // Hírnév jutalom.
-                System.out.println(name+" végzett a csatával! A hírneve "+repu+"-ig emelkedett! Megtisztíja és vissza adja a felszerelést!\n");
+                repu+=quests.getQuestRepu(questid,league); // Hírnév jutalom.
+                System.out.println(name+" "+league+"-ból/ből végzett a csatával! A hírneve "+repu+"-ig emelkedett! Megtisztíja és vissza adja a felszerelést!\n");
                 equipments.putBack(items); // Becsületesen, megtisztítva vissza adja a felszerelést.
             }
 
@@ -48,9 +51,10 @@ public class Hero implements Runnable {
         System.out.println(name+" végzett mára és haza ment pihenni.\n");
     }
 
-    public Hero(String _name, Quests _quests,Equipments _equipments)
+    public Hero(String _name,String _league, Quests _quests, Equipments _equipments)
     {
         name = _name;
+        league = _league;
         quests = _quests;
         equipments = _equipments;
         repu = 0;

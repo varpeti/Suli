@@ -2,7 +2,8 @@ package vp.leagueOfHeroes;
 
 import java.util.*;
 
-public class Equipments {
+public class Equipments 
+{
     private static final String[] items = { // Túl sok gond van az enummal :D
         "magic wand",
         "null talisman",
@@ -103,8 +104,8 @@ public class Equipments {
         "eagle",
         "relic"
     };
-
     private ArrayList<Boolean> onJurney = new ArrayList<Boolean>(); //False = elérhető
+    private Object syn = new Object();
 
     public Equipments()
     {
@@ -128,24 +129,30 @@ public class Equipments {
 
     public synchronized String get(ArrayList<String> name) //Csak akkor adja ki ha mind bent van, hogy ne alakulhasson ki deadlock.
     {
-        int[] lock = new int[name.size()];
-        for (int i=0;i<name.size();i++) 
+        synchronized (syn) // nem lehet kérni ha épp beadnak valamit
         {
-            int id = getID(name.get(i));
-            if (onJurney.get(id)) return new String(name.get(i)); // Nincs raktáron
-            lock[i]=id;  
+            int[] lock = new int[name.size()];
+            for (int i=0;i<name.size();i++) 
+            {
+                int id = getID(name.get(i));
+                if (onJurney.get(id)) return new String(name.get(i)); // Nincs raktáron
+                lock[i]=id;  
+            }
+            //Mindegyik a raktáron van, akkor lefoglalja:
+            for (int i=0;i<lock.length;i++) onJurney.set(lock[i],new Boolean(true));
+            return new String("ok");
         }
-        //Mindegyik a raktáron van, akkor lefoglalja:
-        for (int i=0;i<lock.length;i++) onJurney.set(lock[i],new Boolean(true));
-        return new String("ok");
     }
 
     public synchronized void putBack(ArrayList<String> name)
     {
-        for (int i=0;i<name.size();i++) 
+        synchronized (syn) // nem lehet beadni ha épp kér valaki
         {
-            int id = getID(name.get(i));
-            onJurney.set(id,new Boolean(false)); // Visszarakja
+            for (int i=0;i<name.size();i++) 
+            {
+                int id = getID(name.get(i));
+                onJurney.set(id,new Boolean(false)); // Visszarakja
+            }
         }
     }
 }

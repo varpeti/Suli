@@ -125,9 +125,14 @@ Output:
  468665454         28
  404364516         27
  139001579         27
+
+ 10 rows selected.
 ```
 
-10 rows selected.
+Relational algebra:
+```
+σ rownum() > 0 and rownum() ≤ 10 ρ t1 ( τ Comments desc π Post.id, Comments γ Post.id; COUNT(Comment2.id)→Comments σ Comment2.rPost = Post.id Post ⨯ Comment2)
+```
 
 ### 2.
 
