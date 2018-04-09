@@ -29,10 +29,17 @@ public class Quests implements Runnable
             time.add(rand.nextInt(mC));
             minrep.add(rand.nextInt(mB*((i*mD)/number)+1)); //Növekszik idővel, az elején 0
             status.add(true);
-    
+        
+            //Random felszerelés a küldetéshez
             ArrayList<String> equs = new ArrayList< String>();
-            do {equs.add(Equipments.getRandom());} while (rand.nextInt(3)!=0); 
-            for (int k=0;k<equs.size();k++) for (int j=0;j<equs.size();j++) if (k!=j && equs.get(k)==equs.get(j)) equs.remove(j);
+            do 
+            {
+                String item = Equipments.getRandom();
+                boolean ok = true; 
+                for (int j=0;j<equs.size();j++) {if (Objects.equals(item,equs.get(j))) ok=false; break;}
+                if (ok) equs.add(Equipments.getRandom()); // Nincs még benne
+            } while (rand.nextInt(3)!=0); 
+            
             equipments.add(equs);
             
     
@@ -85,18 +92,27 @@ public class Quests implements Runnable
 
     public synchronized ArrayList<String> getItemList(int id)
     {
-        return equipments.get(id);
+        synchronized (lock)
+        {
+            return equipments.get(id);
+        }
     }
 
     public synchronized int getQuestTime(int id)
     {
-        return time.get(id);
+        synchronized (lock)
+        {
+            return time.get(id);
+        }
     }
 
     public synchronized int getQuestRepu(int id, String league)
     {
-        Leagues.addRepu(league,repu.get(id)); //Lejelenti a Quests iroda a Leagues irodának hogy a hős mennyi reput kap.
-        return repu.get(id);
+        synchronized (lock)
+        {
+            Leagues.addRepu(league,repu.get(id)); //Lejelenti a Quests iroda a Leagues irodának hogy a hős mennyi reput kap.
+            return repu.get(id);
+        }
     }
 
 }

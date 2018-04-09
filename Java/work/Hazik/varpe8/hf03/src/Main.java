@@ -10,6 +10,6 @@ public class Main
         Equipments equipments = new Equipments();
         Leagues.setLeagues(quests,equipments);
 
-        try{System.in.read();}catch(Exception e){} //TODO: earse me
+        //try{System.in.read();}catch(Exception e){} //TODO: earse me
     }
 }
