@@ -54,19 +54,22 @@ void drawNurbs(const std::vector<Skoord*> &pontok)
 {
     const int ORDER = 3;
     GLfloat knots[pontok.size()+ORDER];
-    GLfloat ctrlpoints[pontok.size()/2][3];
+    GLfloat ctrlpoints[pontok.size()*2][3];
 
-    for(int i=0; i<pontok.size(); i++)
+    for(int i=0; i<pontok.size()+ORDER; i++)
     {
         knots[i]=(float)i / (float(pontok.size()+ORDER));
-        ctrlpoints[i][0]=pontok[i]->x;
-        ctrlpoints[i][1]=pontok[i]->y;
-        ctrlpoints[i][2]=0;
+        if (i<pontok.size())
+        {
+            ctrlpoints[i][0]=pontok[i]->x;
+            ctrlpoints[i][1]=pontok[i]->y;
+            ctrlpoints[i][2]=0;
+        }
     }
 
     GLUnurbsObj *theNurb=gluNewNurbsRenderer();
     glEnable(GLU_SAMPLING_TOLERANCE);
-    gluNurbsProperty(theNurb,GLU_SAMPLING_TOLERANCE, 25.0);
+    gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 25.0);
     gluNurbsProperty(theNurb, GLU_DISPLAY_MODE, GLU_FILL);
 
     gluBeginCurve(theNurb);
