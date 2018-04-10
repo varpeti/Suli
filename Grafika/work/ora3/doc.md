@@ -19,6 +19,7 @@
 - Létrehoztam egy általános Obj osztályt ami 
     - egymáshoz képest bármely koordinátán eltolható
     - forgatható bármely tengely mentén
-    - eltolható bármely 
+    - kirajzolja magát
 - Begépeltem a magic numbberekkel a Objekteket.
+- Kirajzoltattam az összeset.
 - Bindeltem
