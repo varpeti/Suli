@@ -1,3 +1,32 @@
+--[[ 04.10
+]]
+
+F3 = {abc->d,d->a}
+a   = {a}
+b   = {b}
+c   = {c}
+d   = {d,a}
+ab  = {a,b}
+ac  = {a,c}
+ad  = {a,d}
+bc  = {b,c}
+bd  = {b,d}
+cd  = {c,d}
+abc = {a,b,c,d} a->a b->b b->c abc->d
+bcd = {a,b,c,d} d->a b->b c->c d->d
+
+F4 = {ab->c,ab->d,c->a,d->b}
+a = {a}
+b = {b}
+c = {c,a}
+d = {d,b}
+ab = {a,b,c,d} a->a b->b ab->c ab->d
+ac = {a,c}
+ad = {a,d,b,c} a->a d->d ab->c
+...
+
+
+
 --[[ 03.08
 ]]
 

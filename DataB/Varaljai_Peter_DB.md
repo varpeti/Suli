@@ -163,6 +163,11 @@ Vfiem                pyejoy0
 dmxcjz               ngjrRcgyx           
 ```
 
+Relational algebra:
+```
+ρ BoardName←Board.name, AdminName←AbsUser.name π Board.name, AbsUser.name σ AbsUser.name = Board.rAdmin and AbsUser.name not in ρ t1 ( π Admin.iAbsUser σ permissionlevel = 4 or permissionlevel = 6 Admin ) AbsUser ⨯ Board
+```
+
 ### 3.
 
 Melyek azok a **Post**ok melyek alatt a 2 legfőbb Admin is **Comment**elt (mindekető)?
@@ -228,6 +233,16 @@ View PNC created.
 View THEBIGBOSSES dropped.
 
 View PNC dropped.
+```
+
+Relational algebra:
+```
+TheBigBosses: σ rownum() > 0 and rownum() ≤ 2 ρ t1 ( τ Admin.permissionlevel desc ρ username←Admin.iAbsUser π Admin.iAbsUser, permissionlevel Admin)
+
+SnC: ρ pid←Post.id, cid←Comment2.id, username←Comment2.rAbsUser π Post.id, Comment2.id, Comment2.rAbsUser σ Comment2.rPost = Post.id Post ⨯ Comment2
+
+
+π username (SnC ÷ TheBigBosses)
 ```
 
 ### 4.
