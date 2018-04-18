@@ -1,3 +1,66 @@
+--[[ 04.17
+]]
+
+1NF no composite or multivalued attribute in the schema
+2NF there is no partial depedency on non primary attribute
+BCNF for all Alpha->Beta FD, Alpha is a SK
+
+Tabular method
+
+R(a,b,c,d,e,g)
+F = {a->bg,c->d,cd->e,g->e,c->e}
+
+L = a,c
+M = d,g
+R = b,e
+O = -
+
+L+O are CK 
+M might part of the CK 
+
+ac = {a,c,b,g,e,d} ist ok, if not all the attributes here, we need to add some attribute form M, and check. 
+
+1NF true
+2NF prime: a,c nonprime: b,d,e,g false cos a->bg violates
+...
+
+---
+
+1) Example for decomp to BCNF
+ 
+R(p,d,m) 
+F = {pd->m, m->d}
+
+CK: pd, pm
+prime: p,d,m
+nonprime: -
+
+1NF true
+2NF true
+BCNF false cos m->d violates
+
+R1(m,d)
+F1 = {m->d} m is CK so BCNF is true
+
+R2(m,p) 
+F2 = {} pm is CK so BCNF is true
+
+2) Better example for decomp to BCNF
+
+R(a,b,c,d,e,g)
+F = {a->bc,b->a,bd->eg,ab->c}
+
+L = d
+M = a,b,
+R = c,e,g
+O = -
+
+d+ = {d} is not CK so:
+
+ad+ = {a,d,b,c,e,g} is CK
+bd+ = {b,d,a,c,e,g} is CK
+
+
 --[[ 04.10
 ]]
 
