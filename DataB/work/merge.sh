@@ -16,3 +16,6 @@ cat insert.sql >> all.sql
 
 echo -e "\n\n" >> all.sql
 cat query.sql >> all.sql
+
+echo -e "\n\n" >> all.sql
+cat view.sql >> all.sql

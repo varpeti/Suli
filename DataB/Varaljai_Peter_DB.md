@@ -165,7 +165,7 @@ dmxcjz               ngjrRcgyx
 
 Relational algebra:
 ```
-ρ BoardName←Board.name, AdminName←AbsUser.name π Board.name, AbsUser.name σ AbsUser.name = Board.rAdmin and AbsUser.name not in ρ t1 ( π Admin.iAbsUser σ permissionlevel = 4 or permissionlevel = 6 Admin ) AbsUser ⨯ Board
+ρ BoardName←Board.name, AdminName←AbsUser.name π Board.name, AbsUser.name σ AbsUser.name = Board.rAdmin and AbsUser.name in ρ t1 ( π Admin.iAbsUser σ permissionlevel = 4 or permissionlevel = 6 Admin ) AbsUser ⨯ Board
 ```
 
 ### 3.
@@ -249,7 +249,7 @@ SnC: ρ pid←Post.id, cid←Comment2.id, username←Comment2.rAbsUser π Post.i
 
 Mennyi az **Admin**ok által készített tartalom összesen **Room**okra, **Post**okra és **Comment**ekre lebontva?
 
-How many contatnents made by the staff by **Room**s, **Post**s and **Comment**s? 
+How many contents made by the staff by **Room**s, **Post**s and **Comment**s? 
 
 ```sql
 create table R_P_C (type varchar2(20));
@@ -409,4 +409,40 @@ NAME
 Hgkn5               
 Woccvjdcv           
 pjmDhaqrg           
+```
+
+## View 
+
+Melyik **Board**okat használják legtöbbet, a **Room**ok (x5) és **Post**ok (x2) és **Comment**ek (x1) száma alapján?
+
+```sql
+drop view TopPosts;
+drop view TopRooms;
+drop view TopBoards;
+
+create view TopPosts as
+    select Post.id, count(Comment2.id) as num
+    from Post, Comment2 
+    where Comment2.rPost = Post.id
+    group by Post.id
+    order by num desc
+;
+
+create view TopRooms as
+    select Room.name, count(Post.id) as num
+    from Room, Post
+    where Post.rRoom = Room.name
+    group by Room.name
+    order by num desc
+;
+
+create view TopBoards as
+    select Board.name, (count(Room.name)*5+count(TopRooms.name)*2+count(TopPosts.id)) as num
+    from Board, Room, Post, TopPosts, TopRooms
+    where Post.id = TopPosts.id and Room.name = TopRooms.name and Room.rBoard = Board.name
+    group by Board.name
+    order by num desc
+;
+
+select * from TopBoards;
 ```

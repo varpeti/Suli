@@ -1,3 +1,41 @@
+--[[ 04.19 Saját gyak
+]]
+
+    Maximum kiválasztás
+        T-ből akarjuk a maximum pontot elért halgatót.
+
+        T1 <- pi[nev,pont](T)
+        T2 <- ro[new_nev=nev,new_pont=pont](T1)
+        Trossz <- szigma[pont>new_pont](T1 x T2)
+        Tmegoldas <- T1-ro[nev=new_nev,pont=new_pont]( pi[new_nev,new_pont](Trossz) )
+
+    Osztás  
+        R(nev,osztaly) osztva S(osztaly)
+
+        Trossz <- pi[nev](R) x S - pi[nev,osztaly](R)
+        Tmegoldas <- pi[nev](R) - pi[nev](S)
+
+    Axiomák
+
+        tranz a->b, b->c => a->c
+
+        relf abc->a mert a->a
+
+        kibőv (augmentattion) a->b => ac->bc
+
+    Következmény
+
+        Unio a->b, a->c => a->bc
+
+        Decomp a->bc => a->b, a->c
+
+        psedo tranzitivity a->b c->d => ac->bd
+            bizonyítás:
+                bővítés: ca->cb bc->db
+                tranzitivitás: ca->db
+
+
+
 --[[ 04.17
 ]]
 
