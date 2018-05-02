@@ -446,3 +446,197 @@ create view TopBoards as
 
 select * from TopBoards;
 ```
+
+## Normal forms
+
+The database should be normalized to avoid anomalies. Below I summarize the main normal forms. I will check my tables and decide in which normal form they are.
+
+
+### First Normal Form (**1NF**)
+
+In **First Normal Form**, any row must not have a column in which more than one value is saved, like separated with commas. Rather than that, we must separate such data into multiple rows.
+
+
+### Second Normal Form (**2NF**)
+
+A database is in **2NF** if it is in **First Normal Form** and all non-key attributes are fully functional dependent on any candidate key.
+
+
+### Boyce-Codd Normal Form (**BCNF**)
+
+A database is in **Boyce-Codd Normal Form** if it is in **2NF** and there is no transitive functional dependency and attributes depend only on any super key.
+**BCNF** is one of the most important normal form, because there is always a lossless decomposition in **BCNF**.
+
+## Normalization
+
+I will check the normal forms of all the tables. First, I write down the Functional Dependencies on the given table. After it, I can define in what normal form is the table.
+
+**AbsUser**(`name`, pw)
+
+F[**AbsUser**] {name->pw}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Admin**(`iAbsUser`, permissionlvl)
+
+F[**Admin**] = {iAbsUser->permissionlvl}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Log**(`timestm`,message)
+
+F[**Log**] = {timestm->message}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**User2**(`iAbsUser`, regdate, regtime)
+
+F[**User2**] = {iAbsUser->regdate, iAbsUser->regtime}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**UserWall**(`rUser`)
+
+F[**UserWall**] = {}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Board**(`name`, permissionlvl, rAdmin)
+
+F[**Board**] = {name->permissionlvl, name->rAdmin}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Room**(`name`, islocked, date, time, rBoard, rAdmin)
+
+F[**Room**] = {name->islocked, name->date, name->time, name->rBoard, name->rAdmin}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Post**(`id`, message, date, time, rRoom, rUserWall, rAbsUser)
+
+F[**Post**] = {id->message, id->date, id->time, id->rRoom, id->rUserWall, id->rAbsUser}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Comment2**(`id`, message, date, time, rPost, rAbsUser)
+
+F[**Comment2**] = {id->message, id->date, id->time, id->rPost, id->rAbsUser}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**ChatRoom**(`id`)
+
+F[**Chatroom**] = {}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**ChatRoom_AbsUser**(`rChatRoom`,`rAbsUser`)
+
+F[**ChatRoom_AbsUser**] = {}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+**Message**(`id`, message, date, time, rChatroom, rAbsUser)
+
+F[**Message**] = {id->message, id->date, id->time, id->rChatroom, id->rAbsUser}
+
+```bash
+1NF     true
+2NF     true
+BCNF    true
+```
+---
+
+### Trigger
+
+I create a logging trigger, so when I **insert**, **update**, or **delete** a row in the given table, the trigger will add a new row into my **Log** table.
+
+```sql
+drop table Log CASCADE CONSTRAINTS;
+
+create table Log (
+    timestm timestamp,
+    message varchar2(255),
+    rBoard varchar2(20),
+    foreign key(rBoard) references Board(name),
+    primary key (timestm)
+);
+
+create or replace trigger log_event
+    after
+        insert or
+        update or
+        delete
+    on Board
+    for each row
+begin
+    case
+        when INSERTING then
+            insert into Log values
+                (
+                    systimestamp,
+                    'INSERT',
+                    :NEW.name
+                );
+        when UPDATING then
+            insert into Log values
+                (
+                    systimestamp,
+                    'UPDATE',
+                    :NEW.name
+                );
+        when DELETING then
+            insert into Log values
+                (
+                    systimestamp,
+                    'DELETE',
+                    :OLD.name
+                );
+    end case;
+end;
+```
