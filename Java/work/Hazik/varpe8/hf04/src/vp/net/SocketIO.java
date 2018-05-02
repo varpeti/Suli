@@ -6,8 +6,8 @@ import java.io.*;
 public class SocketIO 
 {
     private DatagramSocket socket;
-    byte[] inputB = new byte[1024];
-    DatagramPacket inputPacket;
+    private byte[] inputB = new byte[1024];
+    private DatagramPacket inputPacket;
 
     public SocketIO(DatagramSocket _socket)
     {
@@ -24,17 +24,27 @@ public class SocketIO
     }
 
     //Visszaküld a kliensnek egy Stringet, elötte kell egy socketIO.receive() !!!
-    public void send(String data) throws IOException
+    public void send(String data) throws IOException, NullPointerException
     {
         byte[] outputB = new byte[1024]; 
         outputB = data.getBytes();
-        DatagramPacket outputPacket = new DatagramPacket(outputB, outputB.length, getAddress(), getPort());
+        DatagramPacket outputPacket = new DatagramPacket(outputB, outputB.length, getAddress(), getPort()); // NullPointerException
         socket.send(outputPacket);
     }
 
-    //Kérésre, válaszra vár.
-    public void receive() throws IOException
+    //Kérésre, válaszra vár, bármeddig (ajánlott: server)
+    public void receive() throws IOException, SocketTimeoutException
     {
+        socket.setSoTimeout(0);
+        inputB = new byte[1024];
+        inputPacket = new DatagramPacket(inputB, inputB.length);
+        socket.receive(inputPacket);
+    }
+
+    //Kérésre, válaszra vár, adott ideig. (ajánlott: cliens)
+    public void receive(int timeout) throws IOException, SocketTimeoutException
+    {
+        socket.setSoTimeout(timeout);
         inputB = new byte[1024];
         inputPacket = new DatagramPacket(inputB, inputB.length);
         socket.receive(inputPacket);
@@ -42,17 +52,17 @@ public class SocketIO
 
     // A socketIO.receive() által kapott adatok getterei, elötte kell a socketIO.receive() !!!
 
-    public InetAddress getAddress()
+    public InetAddress getAddress() throws NullPointerException
     {
         return inputPacket.getAddress();
     }
 
-    public int getPort()
+    public int getPort() throws NullPointerException
     {
         return inputPacket.getPort();
     }
 
-    public String getData()
+    public String getData() throws NullPointerException
     {
         return new String (inputB,0,inputPacket.getLength());
     }
