@@ -25,7 +25,7 @@ public class Client implements Runnable
                 
                 for (int i=0;i<output.size();i++) 
                 {
-                     socketIO.send(output.get(i).getMsg(),address,port); //Üzenet küldés
+                    socketIO.send(output.get(i).getMsg(),address,port); //Üzenet küldés
                 }
 
                 socketIO.receive(1000); //Válaszra várás

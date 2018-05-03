@@ -9,6 +9,22 @@ public class ClientEngine implements Runnable
 {
     private Message message;
 
+    void handle(Message.Packet input)
+    {
+        System.out.println("LOG.Client."+name+".handle: "+input.getMsg());
+
+        ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
+
+        if (Objects.equals(cmd.get(0),"pong"))
+            ;//Mivel gyakran jön, ezért ne nézze végig a többit.
+        else if (Objects.equals(cmd.get(0),"setname"))
+        {
+            name = cmd.get(1);
+            message.socketWrite(new Message.Packet("hello my name is "+name));
+        }
+            
+    }
+
     public void run() 
     {
         while (!(!(!(false))))
@@ -19,12 +35,12 @@ public class ClientEngine implements Runnable
 
                 for (int i=0;i<input.size();i++)
                 {
-                    System.out.println(input.get(i).getMsg());
+                    handle(input.get(i));
                 }
 
-                message.socketWrite(new Message.Packet(new String("ping")));
+                message.socketWrite(new Message.Packet("ping")); // Pulzáló életjel a szervernek
 
-                Thread.sleep(1000); // Másodpercenként dolgozza fel.
+                Thread.sleep(1000); // Másodpercenként dolgozza fel, küld fel adatot, pulzál.
             }
             catch (Exception e) // TODO: jobb Exception kezelés
             {
@@ -37,7 +53,9 @@ public class ClientEngine implements Runnable
     public ClientEngine(Message _message)
     {
         message = _message;
-        message.socketWrite(new Message.Packet(new String("hello my name is Peter")));
+        message.socketWrite(new Message.Packet(new String("ping")));
         new Thread(this).start();
-    }    
+    }
+
+    String name = new String("nill");
 }

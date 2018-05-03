@@ -10,7 +10,7 @@ public class ServerEngine implements Runnable
 
     void handle(Message.Packet input)
     {
-        System.out.println("Server.handle: "+input.getMsg()); //LOG
+        System.out.println("LOG.Server.handle: "+input.getMsg());
 
         ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
 
