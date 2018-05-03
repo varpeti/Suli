@@ -9,7 +9,7 @@ projectfileok=""
 findall=true        # ha false akkor csak az (elérési úttal) beírt projectfileokat fordítja
 parameterek=""
 futtato="java"
-nev="$2"
+nev="Main"
 futtatas=true
 ########################################################
 
