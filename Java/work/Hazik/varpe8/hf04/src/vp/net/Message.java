@@ -111,4 +111,9 @@ public class Message
             gui.add(add);
         }
     }
+
+    static public ArrayList<String> split(String str, String separator)
+    {
+        return new ArrayList<String>(Arrays.asList(str.split("\\s*"+separator+"\\s*")));
+    }
 }

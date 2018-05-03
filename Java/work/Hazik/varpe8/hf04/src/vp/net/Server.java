@@ -11,6 +11,11 @@ public class Server implements Runnable
     private Message message;
     static private DatagramSocket socket;
 
+    //Broadcasthoz tárolja az eddigi clienseket
+    private ArrayList<InetAddress> clientAddresses = new ArrayList<>();
+    private ArrayList<Integer>     clientPorts     = new ArrayList<>();
+    private HashSet<String>        existingClients = new HashSet<>();
+
     public class ClientThread implements Runnable
     {
         SocketIO socketIO;
@@ -22,6 +27,15 @@ public class Server implements Runnable
                 InetAddress clientAddress = socketIO.getAddress(); //cliens IP cím
                 int clientPort = socketIO.getPort(); // cliens Port
                 String input = socketIO.getData(); // A string amit küldött
+
+                // Ha elsőször csatlakozik hozzáadjuk //TODO: lecsatlakozottak kivétele a listáról.
+                String clientID = clientAddress.toString() + "," + clientPort;
+                if (!existingClients.contains(clientID)) 
+                {
+                    existingClients.add(clientID);
+                    clientPorts.add(clientPort);
+                    clientAddresses.add(clientAddress);
+                }
 
                 message.engineWrite(new Message.Packet(input,clientAddress,clientPort) );
 
@@ -36,7 +50,10 @@ public class Server implements Runnable
                     }
                     else // Broadcast
                     {
-                       
+                        for (int j=0; j < clientAddresses.size(); j++) 
+                        {
+                            socketIO.send(msgPacket.getMsg(),clientAddresses.get(j),clientPorts.get(j)); //Üzenet küldés
+                        }
                     }
                     
                 }

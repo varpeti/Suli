@@ -10,9 +10,17 @@ public class ServerEngine implements Runnable
 
     void handle(Message.Packet input)
     {
-        System.out.println("Server.handle: "+input.getMsg());
-        if (Objects.equals(input.getMsg(),"ping") ) message.socketWrite(new Message.Packet(new String("pong"),input.getAddress(),input.getPort()));
-    }
+        System.out.println("Server.handle: "+input.getMsg()); //LOG
+
+        ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
+
+        if (Objects.equals(cmd.get(0),"ping"))
+            message.socketWrite(new Message.Packet("pong",input.getAddress(),input.getPort()));
+        else if (Objects.equals(cmd.get(0),"hello"))
+            message.socketWrite(new Message.Packet("welcome "+cmd.get(4))); //Broadcast
+        else 
+            message.socketWrite(new Message.Packet("???",input.getAddress(),input.getPort()));
+    }       
 
     public void run() 
     {

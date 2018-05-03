@@ -37,7 +37,7 @@ public class ClientEngine implements Runnable
     public ClientEngine(Message _message)
     {
         message = _message;
-        message.socketWrite(new Message.Packet(new String("hello")));
+        message.socketWrite(new Message.Packet(new String("hello my name is Peter")));
         new Thread(this).start();
     }    
 }
