@@ -15,14 +15,14 @@ public class ClientEngine implements Runnable
         {
             try
             {
-                ArrayList<Message.DestMsg> input = message.engineRead();
+                ArrayList<Message.Packet> input = message.engineRead();
 
-                for (int i=0;i<input.size();i++) 
+                for (int i=0;i<input.size();i++)
                 {
                     System.out.println(input.get(i).getMsg());
                 }
 
-                message.socketWrite(new Message.DestMsg(new String("ping")));
+                message.socketWrite(new Message.Packet(new String("ping")));
 
                 Thread.sleep(1000); // Másodpercenként dolgozza fel.
             }
@@ -37,7 +37,7 @@ public class ClientEngine implements Runnable
     public ClientEngine(Message _message)
     {
         message = _message;
-        message.socketWrite(new Message.DestMsg(new String("hello")));
+        message.socketWrite(new Message.Packet(new String("hello")));
         new Thread(this).start();
     }    
 }

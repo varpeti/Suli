@@ -7,7 +7,7 @@ import java.net.*;
 public class Message 
 {   
 
-    static public class DestMsg 
+    static public class Packet 
     {
         private InetAddress address;
         private int port;
@@ -15,7 +15,7 @@ public class Message
         private boolean _isAddressed;
 
         //Üzenet címmel
-        public DestMsg(String _msg, InetAddress _address, int _port)
+        public Packet(String _msg, InetAddress _address, int _port)
         {
             address = _address;
             port = _port;
@@ -23,8 +23,8 @@ public class Message
             _isAddressed = true;
         }
 
-        //Üzenet cím nélkül
-        public DestMsg(String _msg)
+        //Üzenet cím nélkül, pl cliens->szerver, vagy broadcast server->cliensek
+        public Packet(String _msg)
         {
             msg = _msg;
             _isAddressed = false;
@@ -50,25 +50,25 @@ public class Message
 
     }
 
-    private ArrayList<DestMsg> socket = new ArrayList<>();
-    private ArrayList<DestMsg> engine = new ArrayList<>();
-    private ArrayList<DestMsg> gui    = new ArrayList<>();
+    private ArrayList<Packet> socket = new ArrayList<>();
+    private ArrayList<Packet> engine = new ArrayList<>();
+    private ArrayList<Packet> gui    = new ArrayList<>();
 
     private Object socketLock = new Object();
     private Object engineLock = new Object();
     private Object guiLock    = new Object();
 
-    public ArrayList<DestMsg> socketRead()
+    public ArrayList<Packet> socketRead()
     {
         synchronized (socketLock)
         {
-            ArrayList<DestMsg> ret = new ArrayList<DestMsg>(socket);
+            ArrayList<Packet> ret = new ArrayList<Packet>(socket);
             socket = new ArrayList<>();
             return ret;
         }
     }
 
-    public void socketWrite(DestMsg add)
+    public void socketWrite(Packet add)
     {
         synchronized (socketLock)
         {
@@ -76,17 +76,17 @@ public class Message
         }
     }
 
-    public ArrayList<DestMsg> engineRead()
+    public ArrayList<Packet> engineRead()
     {
         synchronized (engineLock)
         {
-            ArrayList<DestMsg> ret = new ArrayList<DestMsg>(engine);
+            ArrayList<Packet> ret = new ArrayList<Packet>(engine);
             engine = new ArrayList<>();
             return ret;
         }
     }
 
-    public void engineWrite(DestMsg add)
+    public void engineWrite(Packet add)
     {
         synchronized (engineLock)
         {
@@ -94,17 +94,17 @@ public class Message
         }
     }
 
-    public ArrayList<DestMsg> guiRead()
+    public ArrayList<Packet> guiRead()
     {
         synchronized (guiLock)
         {
-            ArrayList<DestMsg> ret = new ArrayList<DestMsg>(gui);
+            ArrayList<Packet> ret = new ArrayList<Packet>(gui);
             gui = new ArrayList<>();
             return ret;
         }
     }
 
-    public void guiWrite(DestMsg add)
+    public void guiWrite(Packet add)
     {
         synchronized (engineLock)
         {

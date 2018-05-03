@@ -8,10 +8,10 @@ public class ServerEngine implements Runnable
 {
     private Message message;
 
-    void handle(Message.DestMsg input)
+    void handle(Message.Packet input)
     {
         System.out.println("Server.handle: "+input.getMsg());
-        if (Objects.equals(input.getMsg(),"ping") ) message.socketWrite(new Message.DestMsg(new String("pong"),input.getAddress(),input.getPort()));
+        if (Objects.equals(input.getMsg(),"ping") ) message.socketWrite(new Message.Packet(new String("pong"),input.getAddress(),input.getPort()));
     }
 
     public void run() 
@@ -20,7 +20,7 @@ public class ServerEngine implements Runnable
         {
             try
             {
-                ArrayList<Message.DestMsg> input = message.engineRead();
+                ArrayList<Message.Packet> input = message.engineRead();
 
                 for (int i=0;i<input.size();i++) 
                 {

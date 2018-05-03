@@ -21,7 +21,7 @@ public class Client implements Runnable
         {
             try
             {
-                ArrayList<Message.DestMsg> output = message.socketRead();
+                ArrayList<Message.Packet> output = message.socketRead();
                 
                 for (int i=0;i<output.size();i++) 
                 {
@@ -29,8 +29,8 @@ public class Client implements Runnable
                 }
 
                 socketIO.receive(1000); //Válaszra várás
-                Message.DestMsg destMsg = new Message.DestMsg(socketIO.getData(),address,port);
-                message.engineWrite(destMsg);
+                Message.Packet Packet = new Message.Packet(socketIO.getData(),address,port);
+                message.engineWrite(Packet);
                 timeout=0;
             }
             catch (SocketTimeoutException e) 
