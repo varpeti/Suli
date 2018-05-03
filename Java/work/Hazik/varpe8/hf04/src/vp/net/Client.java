@@ -13,6 +13,7 @@ public class Client implements Runnable
     private int port;
     private DatagramSocket socket;
     private SocketIO socketIO;
+    private byte timeout;
 
     public void run() 
     {
@@ -20,37 +21,34 @@ public class Client implements Runnable
         {
             try
             {
-                ArrayList<String> toServer = message.socketRead();
+                ArrayList<Message.DestMsg> output = message.socketRead();
                 
-                for (int i=0;i<toServer.size();i++) 
+                for (int i=0;i<output.size();i++) 
                 {
-                     socketIO.send(toServer.get(i),address,port); //Üzenet küldés
+                     socketIO.send(output.get(i).getMsg(),address,port); //Üzenet küldés
                 }
 
                 socketIO.receive(1000); //Válaszra várás
-
-                String input = socketIO.getData();
-
-                System.out.println(input);
-
-                message.engineWrite(input);
-                
-                Thread.sleep(1000);
-
+                Message.DestMsg destMsg = new Message.DestMsg(socketIO.getData(),address,port);
+                message.engineWrite(destMsg);
+                timeout=0;
             }
             catch (SocketTimeoutException e) 
             {
-                System.err.println("A server nem érhető el!");
+                timeout++;
+                if (timeout<0)
+                {
+                    System.err.println("A server nem érhető el!");
+                    break;
+                }
             }
             catch (Exception e) // TODO: jobb Exception kezelés
             {
                 //System.err.println(e.getMessage());
                 e.printStackTrace();
-                if (false) break;
             }
         }
         socket.close();
-        
     }
 
     public Client(String _address, int _port, Message _message)

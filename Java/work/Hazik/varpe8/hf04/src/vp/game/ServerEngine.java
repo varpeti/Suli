@@ -6,15 +6,12 @@ import vp.net.*;
 
 public class ServerEngine implements Runnable
 {
-    Message message;
+    private Message message;
 
-    void handle(String input)
+    void handle(Message.DestMsg input)
     {
-        if (Objects.equals(input,"ping")) message.socketWrite("pong"); 
-        else if (Objects.equals(input,"hello")) message.socketWrite("Welcome!"); 
-        else message.socketWrite("???");
-
-        System.out.println("Server.handle: "+input);
+        System.out.println("Server.handle: "+input.getMsg());
+        if (Objects.equals(input.getMsg(),"ping") ) message.socketWrite(new Message.DestMsg(new String("pong"),input.getAddress(),input.getPort()));
     }
 
     public void run() 
@@ -23,14 +20,14 @@ public class ServerEngine implements Runnable
         {
             try
             {
-                ArrayList<String> input = message.engineRead();
+                ArrayList<Message.DestMsg> input = message.engineRead();
 
                 for (int i=0;i<input.size();i++) 
                 {
                     handle(input.get(i));
                 }
 
-                Thread.sleep(1000);
+                Thread.sleep(100); // 0.1 másodpercenként dolgozza fel.
             }
             catch (Exception e) // TODO: jobb Exception kezelés
             {

@@ -23,16 +23,14 @@ public class Server implements Runnable
                 int clientPort = socketIO.getPort(); // cliens Port
                 String input = socketIO.getData(); // A string amit küldött
 
-                message.engineWrite(input);
+                message.engineWrite(new Message.DestMsg(input,clientAddress,clientPort) );
 
-                ArrayList<String> toClient = message.socketRead();
-
-                for (int i=0;i<toClient.size();i++) 
-                {
-                    socketIO.send(toClient.get(i)); // Válasz küldés
-                }
-    
+                ArrayList<Message.DestMsg> output = message.socketRead();
                 
+                for (int i=0;i<output.size();i++) 
+                {
+                     socketIO.send(output.get(i).getMsg(),clientAddress,clientPort); //Üzenet küldés
+                }
             }
             catch (Exception e) // TODO: jobb Exception kezelés
             {

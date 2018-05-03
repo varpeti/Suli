@@ -7,7 +7,7 @@ import vp.game.*;
 
 public class ClientEngine implements Runnable
 {
-    Message message;
+    private Message message;
 
     public void run() 
     {
@@ -15,16 +15,16 @@ public class ClientEngine implements Runnable
         {
             try
             {
-                ArrayList<String> input = message.engineRead();
+                ArrayList<Message.DestMsg> input = message.engineRead();
 
                 for (int i=0;i<input.size();i++) 
                 {
-                    System.out.println(input.get(i));
+                    System.out.println(input.get(i).getMsg());
                 }
 
-                message.socketWrite("ping");
+                message.socketWrite(new Message.DestMsg(new String("ping")));
 
-                Thread.sleep(1000);
+                Thread.sleep(1000); // Másodpercenként dolgozza fel.
             }
             catch (Exception e) // TODO: jobb Exception kezelés
             {
@@ -37,7 +37,7 @@ public class ClientEngine implements Runnable
     public ClientEngine(Message _message)
     {
         message = _message;
-        message.socketWrite("hello");
+        message.socketWrite(new Message.DestMsg(new String("hello")));
         new Thread(this).start();
     }    
 }
