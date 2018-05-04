@@ -11,11 +11,6 @@ public class Server implements Runnable
     private Message message;
     static private DatagramSocket socket;
 
-    //Broadcasthoz tárolja az eddigi clienseket
-    private ArrayList<InetAddress> clientAddresses = new ArrayList<>();
-    private ArrayList<Integer>     clientPorts     = new ArrayList<>();
-    private HashSet<String>        existingClients = new HashSet<>();
-
     public class ClientThread implements Runnable
     {
         SocketIO socketIO;
@@ -28,15 +23,6 @@ public class Server implements Runnable
                 int clientPort = socketIO.getPort(); // cliens Port
                 String input = socketIO.getData(); // A string amit küldött
 
-                // Ha elsőször csatlakozik hozzáadjuk //TODO: lecsatlakozottak kivétele a listáról.
-                String clientID = clientAddress.toString() + "," + clientPort;
-                if (!existingClients.contains(clientID)) 
-                {
-                    existingClients.add(clientID);
-                    clientPorts.add(clientPort);
-                    clientAddresses.add(clientAddress);
-                }
-
                 message.engineWrite(new Message.Packet(input,clientAddress,clientPort) );
 
                 ArrayList<Message.Packet> output = message.socketRead();
@@ -44,18 +30,8 @@ public class Server implements Runnable
                 for (int i=0;i<output.size();i++) 
                 {
                     Message.Packet msgPacket = output.get(i);
-                    if (msgPacket.isAddressed() )
-                    {
-                        socketIO.send(msgPacket.getMsg(),msgPacket.getAddress(),msgPacket.getPort()); //Üzenet küldés
-                    }
-                    else // Broadcast
-                    {
-                        for (int j=0; j < clientAddresses.size(); j++) 
-                        {
-                            socketIO.send(msgPacket.getMsg(),clientAddresses.get(j),clientPorts.get(j)); //Üzenet küldés
-                        }
-                    }
-                    
+                    if (!msgPacket.isAddressed()) throw new Exception("Message.Packet: Missing client address:port!");
+                    socketIO.send(msgPacket.getMsg(),msgPacket.getAddress(),msgPacket.getPort()); //Üzenet küldés
                 }
             }
             catch (Exception e) // TODO: jobb Exception kezelés

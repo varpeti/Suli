@@ -13,21 +13,40 @@ public class Message
         private int port;
         private String msg;
         private boolean _isAddressed;
+        private int repeate;
 
-        //Üzenet címmel
+        //Üzenet címmel, pl szerver->cliens
         public Packet(String _msg, InetAddress _address, int _port)
         {
             address = _address;
             port = _port;
             msg = _msg;
             _isAddressed = true;
+            repeate = 1;
         }
 
-        //Üzenet cím nélkül, pl cliens->szerver, vagy broadcast server->cliensek
+        public Packet(String _msg, InetAddress _address, int _port, int _repeate)
+        {
+            address = _address;
+            port = _port;
+            msg = _msg;
+            _isAddressed = true;
+            repeate = _repeate;
+        }
+
+        //Üzenet cím nélkül, pl cliens->szerver, gui->engine
         public Packet(String _msg)
         {
             msg = _msg;
             _isAddressed = false;
+            repeate = 1;
+        }
+
+        public Packet(String _msg, int _repeate)
+        {
+            msg = _msg;
+            _isAddressed = false;
+            repeate = _repeate;
         }
 
         //Getterek
@@ -63,7 +82,16 @@ public class Message
         synchronized (socketLock)
         {
             ArrayList<Packet> ret = new ArrayList<Packet>(socket);
-            socket = new ArrayList<>();
+            Iterator<Packet> it = socket.iterator();
+            while(it.hasNext())
+            {
+                Packet cur = it.next();
+                cur.repeate--;
+                if (cur.repeate<1)
+                {
+                    it.remove();
+                }
+            }
             return ret;
         }
     }
@@ -81,7 +109,16 @@ public class Message
         synchronized (engineLock)
         {
             ArrayList<Packet> ret = new ArrayList<Packet>(engine);
-            engine = new ArrayList<>();
+            Iterator<Packet> it = engine.iterator();
+            while(it.hasNext())
+            {
+                Packet cur = it.next();
+                cur.repeate--;
+                if (cur.repeate<1)
+                {
+                    it.remove();
+                }
+            }
             return ret;
         }
     }
@@ -99,7 +136,16 @@ public class Message
         synchronized (guiLock)
         {
             ArrayList<Packet> ret = new ArrayList<Packet>(gui);
-            gui = new ArrayList<>();
+            Iterator<Packet> it = gui.iterator();
+            while(it.hasNext())
+            {
+                Packet cur = it.next();
+                cur.repeate--;
+                if (cur.repeate<1)
+                {
+                    it.remove();
+                }
+            }
             return ret;
         }
     }
@@ -112,6 +158,7 @@ public class Message
         }
     }
 
+    //Egyszerű szeparátoros splitter
     static public ArrayList<String> split(String str, String separator)
     {
         return new ArrayList<String>(Arrays.asList(str.split("\\s*"+separator+"\\s*")));

@@ -16,7 +16,9 @@ public class ClientEngine implements Runnable
         ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
 
         if (Objects.equals(cmd.get(0),"pong"))
+        {
             ;//Mivel gyakran jön, ezért ne nézze végig a többit.
+        }
         else if (Objects.equals(cmd.get(0),"setname"))
         {
             name = cmd.get(1);

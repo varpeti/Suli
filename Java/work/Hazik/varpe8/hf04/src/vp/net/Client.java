@@ -28,7 +28,7 @@ public class Client implements Runnable
                     socketIO.send(output.get(i).getMsg(),address,port); //Üzenet küldés
                 }
 
-                socketIO.receive(1000); //Válaszra várás
+                socketIO.receive(100); //Válaszra várás
                 Message.Packet Packet = new Message.Packet(socketIO.getData(),address,port);
                 message.engineWrite(Packet);
                 timeout=0;
@@ -36,7 +36,7 @@ public class Client implements Runnable
             catch (SocketTimeoutException e) 
             {
                 timeout++;
-                if (timeout<0)
+                if (timeout<0) //100*128 ms
                 {
                     System.err.println("A server nem érhető el!");
                     break;

@@ -29,6 +29,6 @@ else
 fi
 
 if [[ "$futtatas" = true ]]; then
-	gnome-terminal -x $futtato -cp bin $nev
+	gnome-terminal -x $futtato -cp bin:/usr/lib/jvm/java-8-oracle/jre/lib/ext/jfxrt.jar $nev
 fi
 ########################################################
