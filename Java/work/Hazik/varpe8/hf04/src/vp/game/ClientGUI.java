@@ -1,20 +1,27 @@
 package vp.game;
 
 import vp.net.Message;
-import vp.game.GUI.Stages;
+import vp.game.GUI.Scenes;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class ClientGUI extends Application
 {
-    static private Message message;
+    private Stage stage;
 
     @Override
     public void start(Stage primaryStage) 
     {
-        primaryStage.setTitle("Torpedo by Vp");
-        Stages.welcome(primaryStage);
+        stage = primaryStage;
+        Scenes.addStage(stage);
+
+        stage.setTitle("Torpedo by Vp");
+
+        stage.setScene(Scenes.welcome());
+        stage.show();
+
+        //TODO instant kilépés
     }
 
     public static void main(String[] args) 
@@ -22,9 +29,8 @@ public class ClientGUI extends Application
         launch(args);
     }
 
-    static public void addMessage(Message _message)
+    static public void addMessage(Message message)
     {
-        message = _message;
-        Stages.addMessage(message); //Tovább adja
+        Scenes.addMessage(message); //Tovább adja
     } 
 }

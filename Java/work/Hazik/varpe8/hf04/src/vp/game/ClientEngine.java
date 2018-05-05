@@ -9,6 +9,9 @@ public class ClientEngine implements Runnable
 {
     private Message message;
 
+    //private Server server;
+    //private ServerEngine serverEngine;
+
     void handle(Message.Packet input)
     {
         System.out.println("LOG.Client."+name+".handle: "+input.getMsg());
@@ -18,6 +21,17 @@ public class ClientEngine implements Runnable
         if (Objects.equals(cmd.get(0),"pong"))
         {
             ;//Mivel gyakran jön, ezért ne nézze végig a többit.
+        }
+        else if (Objects.equals(cmd.get(0),"startclient"))
+        {
+            Client client = new Client(cmd.get(1),Integer.parseInt(cmd.get(2)),message);
+        }
+        else if (Objects.equals(cmd.get(0),"startserver"))
+        {
+            Message server_message = new Message();
+            Server server = new Server(Integer.parseInt(cmd.get(6)),server_message);
+            ServerEngine serverEngine = new ServerEngine(server_message);
+            message.socketWrite(new Message.Packet("setserver "+cmd.get(1)+" "+cmd.get(2)+" "+cmd.get(3)+" "+cmd.get(4)+" "+cmd.get(5)));
         }
         else if (Objects.equals(cmd.get(0),"setname"))
         {

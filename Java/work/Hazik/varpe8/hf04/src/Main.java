@@ -9,7 +9,5 @@ public class Main
         ClientEngine client_engine = new ClientEngine(message);
         ClientGUI.addMessage(message); // Messaget elöbb kell átadni mint a GUI szálat indítani
         ClientGUI.main(args);
-
-        //Client client = new Client("localhost",3773,message);
     }
 }

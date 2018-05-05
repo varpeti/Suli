@@ -50,6 +50,10 @@ public class ServerEngine implements Runnable
         {
             message.socketWrite(new Message.Packet("pong",input.getAddress(),input.getPort()));
         }
+        else if (Objects.equals(cmd.get(0),"setserver"))
+        {
+            ;//TODO
+        }
         else if (Objects.equals(cmd.get(0),"hello"))
         {
             broadcast("welcome "+cmd.get(4));
