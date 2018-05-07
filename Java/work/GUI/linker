@@ -9,7 +9,7 @@ projectfileok=""
 findall=true        # ha false akkor csak az (elérési úttal) beírt projectfileokat fordítja
 parameterek=""
 futtato="java"
-nev="Main input.txt output.svg" # a --help argumentumot a java args array végére rakja akkor is ha a file nevek elött vannak
+nev="$2"
 futtatas=true
 ########################################################
 
@@ -29,6 +29,6 @@ else
 fi
 
 if [[ "$futtatas" = true ]]; then
-	gnome-terminal -x $futtato -cp bin $nev
+	gnome-terminal -x $futtato -cp bin:/usr/lib/jvm/java-8-oracle/jre/lib/ext/jfxrt.jar $nev
 fi
 ########################################################
