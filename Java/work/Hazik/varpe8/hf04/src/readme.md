@@ -42,10 +42,12 @@
     - **setServerInvaildInput [args]**
         - **players**
             - minimu 2 játékos kell
-        - **ship** 
+        - **ships** 
             - minimum 1 hajó kell
-        - **nil**
-            - egyéb hiba
+        - **bound**
+            - nem lehet boundolni, vagy az adott portra boundolni
+        - **port**
+            - hibás port
 
 
 ## Server

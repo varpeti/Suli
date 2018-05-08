@@ -26,7 +26,7 @@ public class ClientEngine implements Runnable
             }
             else if (Objects.equals(cmd.get(1),"game"))
             {
-                message.guiWrite(new Message.Packet(cmd.get(1)+" "+cmd.get(2))); // x. játékos
+                message.guiWrite(new Message.Packet(input.getMsg())); // x. játékos
             }
         }
         else if (Objects.equals(cmd.get(0),"startclient"))
@@ -38,7 +38,11 @@ public class ClientEngine implements Runnable
             Message server_message = new Message();
             try
             {
+                int port = Integer.parseInt(cmd.get(6));
+                if (port<1 || port>65535) throw new Exception("port");
+
                 server = new Server(Integer.parseInt(cmd.get(6)),server_message);
+                
                 serverEngine = new ServerEngine(server_message,
                     Integer.parseInt(cmd.get(1)),
                     Integer.parseInt(cmd.get(2)),
@@ -46,18 +50,33 @@ public class ClientEngine implements Runnable
                     Integer.parseInt(cmd.get(4)),
                     Integer.parseInt(cmd.get(5))
                 );
+
+                message.engineWrite(new Message.Packet("startclient"
+                + " " + "localhost"
+                + " " + port
+                ));
+                System.out.println(cmd.get(5));
             }
             catch (Exception e)
             {
-                message.guiWrite(new Message.Packet("setServerInvaildInput "+e.getMessage())); 
+                //Ha valami rossz leállítunk mindent
+                try
+                {
+                    server.stop();
+                    serverEngine.stop();
+                }
+                catch (Exception e2) 
+                {    
+                }
+                message.guiWrite(new Message.Packet("error setServerInvaildInput "+e.getMessage())); 
             }
             
         }
-        else if (Objects.equals(cmd.get(0),"stopserver"))
+        /*else if (Objects.equals(cmd.get(0),"stopserver"))
         {
             server.stop();
             serverEngine.stop();
-        }
+        }*/
         else if (Objects.equals(cmd.get(0),"setname"))
         {
             name = cmd.get(1);
@@ -98,9 +117,9 @@ public class ClientEngine implements Runnable
     public ClientEngine(Message _message)
     {
         message = _message;
-        message.socketWrite(new Message.Packet(new String("ping")));
+        message.socketWrite(new Message.Packet(new String("ping nil")));
         new Thread(this).start();
     }
 
-    String name = new String("nill");
+    String name = new String("nil");
 }

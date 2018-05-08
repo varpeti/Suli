@@ -33,7 +33,7 @@ public class ClientGUI extends Application
             {
                 stage.setScene(Scenes.mainmenu());
             }
-            else if (Objects.equals(cmd.get(0),"game"))
+            else if (Objects.equals(cmd.get(0),"pong") && Objects.equals(cmd.get(1),"game"))
             {
                 if (!Objects.equals(Scenes.scene_String,"game")) stage.setScene(Scenes.game());
             }
@@ -47,9 +47,13 @@ public class ClientGUI extends Application
                 if (Objects.equals(cmd.get(1),"gameisfull"))
                 {
                     message.socketWrite(new Message.Packet("stop"));
-                    //message.engineWrite(new Message.Packet("stopserver"));
+                    stage.setScene(Scenes.mainmenu());
                 }
-                stage.setScene(Scenes.mainmenu());
+                else if (Objects.equals(cmd.get(1),"setServerInvaildInput"))
+                {
+                    stage.setScene(Scenes.startserver());
+                }
+
             }
         }
 

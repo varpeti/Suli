@@ -151,18 +151,14 @@ public class Scenes
         @Override
         public void handle(ActionEvent e) 
         {
-            // TODO ellenőrzés!!! FIXME: Stupid user alert!!!
+            //Szerver oldalon és ClientEnginben történik az ellenőrzés
+            //Ha valaki 80-as porton akarja futtatni, tegye, nem tilos.
             message.engineWrite(new Message.Packet("startserver"
                 + " " + startserver_players_TextField.getText()
                 + " " + startserver_ship2_TextField.getText() 
                 + " " + startserver_ship3_TextField.getText() 
                 + " " + startserver_ship4_TextField.getText() 
                 + " " + startserver_ship5_TextField.getText()
-                + " " + startserver_port_TextField.getText()
-            ));
-
-            message.engineWrite(new Message.Packet("startclient"
-                + " " + "localhost"
                 + " " + startserver_port_TextField.getText()
             ));
 
@@ -231,6 +227,8 @@ public class Scenes
         start_hbox.getChildren().addAll(start_Button);
         grid.add(start_hbox,1,8);
 
+        //TODO: win mode
+
         HBox to_mainmenu_hbox = new HBox();
         to_mainmenu_hbox.setAlignment(Pos.CENTER);
         Button to_mainmenu_Button = new Button("Back");
@@ -251,7 +249,6 @@ public class Scenes
         @Override
         public void handle(ActionEvent e) 
         {
-            // TODO ellenőrzés!!! FIXME: Stupid user alert!!!
             message.engineWrite(new Message.Packet("startclient"
                 + " " + joingame_address_TextField.getText()
                 + " " + joingame_port_TextField.getText()

@@ -21,12 +21,46 @@ public class ServerEngine implements Runnable
     // Játék változók
     static public class Game
     {
+        static public class Coord
+        {
+            public int x;
+            public int y;
+
+            Coord()
+            {
+                x=0;
+                y=0;
+            }
+            Coord(int _x, int _y)
+            {
+                x=_x;
+                y=_y;
+            }
+        }
+
+        static public class Ship
+        {
+            ArrayList<Coord> coords = new ArrayList<>();
+        }
+
         static public int players = 2; //Ne nyomjon "error gameisfull"-t
         static public int ship2   = 0;
         static public int ship3   = 0;
         static public int ship4   = 0;
         static public int ship5   = 0;
         static public int round   = 0;
+        static public int size    = 0;
+        //static public ArrayList<ArrayList<String>> table = new ArrayList<>();
+        static public ArrayList<Ship> ships = new ArrayList<>(); 
+
+        static public void generate()
+        {
+            //TODO: Hajók rendes elhelyezése
+            for (int i=0;i<Game.players;i++) 
+            {
+                
+            }
+        }
     }
 
     private boolean clientinfo(Message.Packet input)
@@ -95,10 +129,9 @@ public class ServerEngine implements Runnable
                     //Size
                     + " " + 0
                     //Name                   
-                    + " " + existingClients.get(clientID)
+                    + " " + existingClients.get(clientID);
                     // Data 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
-                    + " "
-                ;
+                    
             }
 
             message.socketWrite(new Message.Packet("pong "+status,input.getAddress(),input.getPort()));
@@ -144,14 +177,19 @@ public class ServerEngine implements Runnable
         runing=false;
     }
     
-    public ServerEngine(Message _message, int players, int ship2, int ship3, int ship4, int ship5)
+    public ServerEngine(Message _message, int players, int ship2, int ship3, int ship4, int ship5) throws Exception
     {
         message      = _message;
         Game.players = players;
+        //if (players<2) throw new Exception("players"); TODO: visszatenni
         Game.ship2   = ship2;
         Game.ship3   = ship3;
         Game.ship4   = ship4;
         Game.ship5   = ship5;
+        if (ship2+ship3+ship4+ship5<4) throw new Exception("ships");
+        Game.size = (int)Math.ceil((double)( ((ship2*1)+(ship3*2)+(ship4*3)+(ship5*4))*(int)Math.ceil((double)players/2.0)+1 )/2.0);
+        System.out.println("LOG.ServerEngine.start: game size is "+Game.size);
+        Game.generate();
         new Thread(this).start();
     }    
 }

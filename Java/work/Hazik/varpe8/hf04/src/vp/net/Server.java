@@ -70,7 +70,7 @@ public class Server implements Runnable
         socket.close();
     }
 
-    public Server(int port, Message _message)
+    public Server(int port, Message _message) throws Exception
     {
         try
         {
@@ -78,10 +78,9 @@ public class Server implements Runnable
             socket = new DatagramSocket(port); //Socket foglalás
             new Thread(this).start();
         }
-        catch (Exception e) // TODO: jobb Exception kezelés
+        catch (Exception e)
         {
-            //System.err.println(e.getMessage());
-            e.printStackTrace();
+            throw new Exception("bound");
         }
     }
 
