@@ -9,8 +9,8 @@ public class ClientEngine implements Runnable
 {
     private Message message;
 
-    //private Server server;
-    //private ServerEngine serverEngine;
+    private Server server;
+    private ServerEngine serverEngine;
 
     private void handle(Message.Packet input)
     {
@@ -36,10 +36,10 @@ public class ClientEngine implements Runnable
         else if (Objects.equals(cmd.get(0),"startserver"))
         {
             Message server_message = new Message();
-            Server server = new Server(Integer.parseInt(cmd.get(6)),server_message);
             try
             {
-                ServerEngine serverEngine = new ServerEngine(server_message,
+                server = new Server(Integer.parseInt(cmd.get(6)),server_message);
+                serverEngine = new ServerEngine(server_message,
                     Integer.parseInt(cmd.get(1)),
                     Integer.parseInt(cmd.get(2)),
                     Integer.parseInt(cmd.get(3)),
@@ -49,9 +49,14 @@ public class ClientEngine implements Runnable
             }
             catch (Exception e)
             {
-                message.guiWrite(new Message.Packet("setServerInvaildInput nil")); 
+                message.guiWrite(new Message.Packet("setServerInvaildInput "+e.getMessage())); 
             }
             
+        }
+        else if (Objects.equals(cmd.get(0),"stopserver"))
+        {
+            server.stop();
+            serverEngine.stop();
         }
         else if (Objects.equals(cmd.get(0),"setname"))
         {
@@ -78,7 +83,7 @@ public class ClientEngine implements Runnable
                     handle(input.get(i));
                 }
 
-                message.socketWrite(new Message.Packet("ping")); // Pulzáló életjel a szervernek
+                message.socketWrite(new Message.Packet("ping "+name)); // Pulzáló életjel a szervernek
 
                 Thread.sleep(1000); // Másodpercenként dolgozza fel, küld fel adatot, pulzál.
             }

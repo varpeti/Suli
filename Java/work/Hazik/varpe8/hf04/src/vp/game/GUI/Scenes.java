@@ -2,6 +2,8 @@ package vp.game.GUI;
 
 import vp.net.Message;
 
+import java.util.*;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,6 +29,7 @@ public class Scenes
 {   
     static private Message message;
     static private Stage stage;
+    static public String scene_String;
 
       //------//
      //Sceens//
@@ -48,6 +51,8 @@ public class Scenes
 
     static public Scene welcome()
     {
+        scene_String = "welcome";
+        scene_String = "welcome";
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -94,6 +99,7 @@ public class Scenes
 
     static public Scene mainmenu()
     {
+        scene_String = "mainmenu";
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -166,6 +172,7 @@ public class Scenes
 
     static public Scene startserver()
     {
+        scene_String = "startserver";
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -256,6 +263,7 @@ public class Scenes
 
     static public Scene joingame()
     {
+        scene_String = "joingame";
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -296,8 +304,11 @@ public class Scenes
 
     // pleasewait sceen
 
+    static public Text pleasewait_str_Text;
+
     static public Scene pleasewait(String str)
     {
+        scene_String = "pleasewait "+str;
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -313,25 +324,27 @@ public class Scenes
 
         HBox str_hbox = new HBox();
         str_hbox.setAlignment(Pos.CENTER);
-        Text str_Text = new Text(str);
-        str_Text.setFont(Font.font("Tahoma", FontWeight.NORMAL, 16));
-        str_hbox.getChildren().addAll(str_Text);
+        pleasewait_str_Text = new Text(str);
+        pleasewait_str_Text.setFont(Font.font("Tahoma", FontWeight.NORMAL, 16));
+        str_hbox.getChildren().addAll(pleasewait_str_Text);
         grid.add(str_hbox, 0, 1);
 
-        HBox to_mainmenu_hbox = new HBox();
+        //TODO Cancel button (nem fontos)
+        /*HBox to_mainmenu_hbox = new HBox();
         to_mainmenu_hbox.setAlignment(Pos.CENTER);
         Button to_mainmenu_Button = new Button("Cancel");
         to_mainmenu_Button.setOnAction(new to_mainmenu_EventHandler());
         to_mainmenu_hbox.getChildren().addAll(to_mainmenu_Button);
-        grid.add(to_mainmenu_hbox,0,3);
+        grid.add(to_mainmenu_hbox,0,3);*/
 
         return new Scene(grid, 1024, 512);
     }
 
     // Game scene
 
-    static public Scene game(String str)
+    static public Scene game()
     {
+        scene_String = "game";
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -351,7 +364,7 @@ public class Scenes
     static private class to_mainmenu_EventHandler implements EventHandler<ActionEvent>
     {
         @Override
-        public void handle(ActionEvent e) 
+        public void handle(ActionEvent e)
         {
             stage.setScene(mainmenu());
         }

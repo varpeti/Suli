@@ -10,7 +10,8 @@
 - **pong [args]**
     - **wait4players**
         - tovább küldi a guinak
-    - **game**
+    - **game [args]**
+        - lásd lejjebb
 
 - **setname**
     - beállítja a kliens nevét 
@@ -54,8 +55,23 @@
 
 ### ServerEngine
 
-- **ping**
-    - válaszol egy **pong [lastcmd]**-vel
+- **ping [name]**
+    - válaszol egy **pong [args]**-al
 
 - **hello my name is [name]**
     - Mindenkinek bejelenti: **welcome [name]**
+
+
+# Game command
+
+### Le:
+
+- [1]: size
+- [2]: player name
+- [3]..[2+size]: 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
+
+### Fel:
+- [1]: x
+- [2]: y
+
+

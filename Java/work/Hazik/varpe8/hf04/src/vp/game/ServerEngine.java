@@ -8,11 +8,12 @@ import vp.net.*;
 public class ServerEngine implements Runnable
 {
     private Message message;
+    boolean runing = true;
 
     //Broadcasthoz tárolja az eddigi clienseket
     private ArrayList<InetAddress> clientAddresses = new ArrayList<>();
     private ArrayList<Integer>     clientPorts     = new ArrayList<>();
-    private HashSet<String>        existingClients = new HashSet<>();
+    private HashMap<String,String> existingClients = new HashMap<>();
 
     // pong-al folyamatosan streamelt message
     private String status = "wait4players 2 0";
@@ -28,24 +29,25 @@ public class ServerEngine implements Runnable
         static public int round   = 0;
     }
 
-    private void clientinfo(Message.Packet input)
+    private boolean clientinfo(Message.Packet input)
     {
         // Ha elsőször csatlakozik hozzáadjuk //TODO: lecsatlakozottak, régóta nem válaszolók kivétele a listáról.
 
         String clientID = input.getAddress().toString() + "," + input.getPort();
-        if (!existingClients.contains(clientID)) 
+        if (!existingClients.containsKey(clientID)) 
         {
 
             if (Game.players<=clientAddresses.size())
             {
                 message.socketWrite(new Message.Packet("error gameisfull",input.getAddress(),input.getPort()));
-                return; // Ha megvan az összes játékos.
+                return false; // Ha megvan az összes játékos.
             }
 
-            existingClients.add(clientID);
+            existingClients.put(clientID,"anon");
             clientAddresses.add(input.getAddress());
             clientPorts.add(input.getPort());
         }
+        return true;
     }
     private void broadcast(String msg)
     {
@@ -70,8 +72,9 @@ public class ServerEngine implements Runnable
 
         if (Objects.equals(cmd.get(0),"ping"))
         {
-            ArrayList<String> statusf = Message.split(status,"\\s");
+            existingClients.put(input.getAddress().toString() + "," + input.getPort(),cmd.get(1)); //Névfrissítés
 
+            ArrayList<String> statusf = Message.split(status,"\\s");
             if (Objects.equals(statusf.get(0),"wait4players"))
             {
                 if (Game.players==clientAddresses.size()) 
@@ -87,7 +90,15 @@ public class ServerEngine implements Runnable
             }
             else if (Objects.equals(statusf.get(0),"game"))
             {
-                status = "game "+Game.round;
+                String clientID = clientAddresses.get(Game.round).toString() + "," + clientPorts.get(Game.round);
+                status = "game"
+                    //Size
+                    + " " + 0
+                    //Name                   
+                    + " " + existingClients.get(clientID)
+                    // Data 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
+                    + " "
+                ;
             }
 
             message.socketWrite(new Message.Packet("pong "+status,input.getAddress(),input.getPort()));
@@ -105,7 +116,7 @@ public class ServerEngine implements Runnable
 
     public void run() 
     {
-        while (!(!(!(false))))
+        while (!(!(!(!(runing)))))
         {
             try
             {
@@ -113,7 +124,7 @@ public class ServerEngine implements Runnable
 
                 for (int i=0;i<input.size();i++) 
                 {
-                    clientinfo(input.get(i));
+                    if (!clientinfo(input.get(i))) continue;
                     handle(input.get(i));
                 }
 
@@ -125,6 +136,12 @@ public class ServerEngine implements Runnable
                 e.printStackTrace();
             }
         }
+    }
+
+    public void stop()
+    {
+        System.out.println("LOG.ServerEngine.stop");
+        runing=false;
     }
     
     public ServerEngine(Message _message, int players, int ship2, int ship3, int ship4, int ship5)

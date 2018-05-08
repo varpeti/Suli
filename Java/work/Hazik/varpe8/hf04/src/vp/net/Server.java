@@ -11,6 +11,8 @@ public class Server implements Runnable
     private Message message;
     static private DatagramSocket socket;
 
+    boolean runing = true;
+
     public class ClientThread implements Runnable
     {
         SocketIO socketIO;
@@ -49,7 +51,7 @@ public class Server implements Runnable
 
     public void run()
     {
-        while (!(!(!(false))))
+        while (!(!(!(!(runing)))))
         {
             try 
             {   
@@ -81,5 +83,11 @@ public class Server implements Runnable
             //System.err.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void stop()
+    {
+        System.out.println("LOG.Server.stop");
+        runing=false;
     }
 }

@@ -35,18 +35,19 @@ public class ClientGUI extends Application
             }
             else if (Objects.equals(cmd.get(0),"game"))
             {
-                stage.setScene(Scenes.game(cmd.get(1)));
+                if (!Objects.equals(Scenes.scene_String,"game")) stage.setScene(Scenes.game());
             }
             else if (Objects.equals(cmd.get(0),"wait4players"))
             {
-                stage.setScene(Scenes.pleasewait("Waiting for other players to connect ("+cmd.get(2)+"/"+cmd.get(1)+")"));
+                if (!Objects.equals(Scenes.scene_String,"pleasewait wait4players")) stage.setScene(Scenes.pleasewait("wait4players"));
+                Scenes.pleasewait_str_Text.setText("Waiting for other players to connect ("+cmd.get(2)+"/"+cmd.get(1)+")");
             }
             else if (Objects.equals(cmd.get(0),"error")) 
             {
-                if (Objects.equals(cmd.get(2),"gameisfull"))
+                if (Objects.equals(cmd.get(1),"gameisfull"))
                 {
-                    stage.setScene(Scenes.pleasewait("The game is full"));
                     message.socketWrite(new Message.Packet("stop"));
+                    //message.engineWrite(new Message.Packet("stopserver"));
                 }
                 stage.setScene(Scenes.mainmenu());
             }
