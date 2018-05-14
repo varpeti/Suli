@@ -337,6 +337,33 @@ public class Scenes
         return new Scene(grid, 1024, 512);
     }
 
+    // Game class
+
+    static public class Game
+    {
+        static public name = "";
+        static public int size = 0;
+        static public ArrayList<ArrayList<String>> table = new ArrayList<>();
+
+        static public void setTable(String input)
+        {
+            ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
+            size = Integer.parseInt(cmd.get(2));
+            name = cmd.get(3);
+            if (!Objects.equals(cmd.get(3),"t:")) return;
+            table = new ArrayList<>();
+            for (int x=0;x<size;x++) 
+            {
+                ArrayList<String> s = new ArrayList<>();
+                for (int y=0;y<size;y++) 
+                {
+                    s.add("w");
+                }
+                table.add(s);
+            }
+        }
+    }
+
     // Game scene
 
     static public Scene game()

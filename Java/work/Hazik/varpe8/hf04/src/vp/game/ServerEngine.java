@@ -18,31 +18,9 @@ public class ServerEngine implements Runnable
     // pong-al folyamatosan streamelt message
     private String status = "wait4players 2 0";
 
-    // Játék változók
+    // Játék változók, metódusok
     static public class Game
     {
-        static public class Coord
-        {
-            public int x;
-            public int y;
-
-            Coord()
-            {
-                x=0;
-                y=0;
-            }
-            Coord(int _x, int _y)
-            {
-                x=_x;
-                y=_y;
-            }
-        }
-
-        static public class Ship
-        {
-            ArrayList<Coord> coords = new ArrayList<>();
-        }
-
         static public int players = 2; //Ne nyomjon "error gameisfull"-t
         static public int ship2   = 0;
         static public int ship3   = 0;
@@ -50,16 +28,94 @@ public class ServerEngine implements Runnable
         static public int ship5   = 0;
         static public int round   = 0;
         static public int size    = 0;
-        //static public ArrayList<ArrayList<String>> table = new ArrayList<>();
-        static public ArrayList<Ship> ships = new ArrayList<>(); 
+        static public ArrayList<ArrayList<String>> table = new ArrayList<>();
 
-        static public void generate()
+        static private boolean addShipX(int x, int y, int len,String type)
         {
-            //TODO: Hajók rendes elhelyezése
+            if (!(x+len<size && y<size)) return false; //Out of index
+            for (int i=0;i<len;i++) 
+            {
+                if (!Objects.equals(table.get(x+i).get(y),"water")) return false; // Collide
+            }
+            for (int i=0;i<len;i++) 
+            {
+                table.get(x+i).set(y,type);
+            }
+            return true;
+        }
+
+        static private boolean addShipY(int x, int y, int len,String type)
+        {
+            if (!(y+len<size && x<size)) return false; //Out of index
+            for (int i=0;i<len;i++) 
+            {
+                if (!Objects.equals(table.get(x).get(y+i),"water")) return false; // Collide
+            }
+            for (int i=0;i<len;i++) 
+            {
+                table.get(x).set(y+i,type);
+            }
+            return true;
+        }
+
+        static public boolean generate() throws Exception
+        {
+            //Init
+            for (int x=0;x<size;x++) 
+            {
+                ArrayList<String> s = new ArrayList<>();
+                for (int y=0;y<size;y++) 
+                {
+                    s.add("water");
+                }
+                table.add(s);
+            }
+
+            //TODO: Hajók "random" elhelyezése
+            int x = 0;
+            int y = 0;
             for (int i=0;i<Game.players;i++) 
             {
-                
+                String clientID = ""+i;
+                for (int i5=0;i5<ship5;i5++) 
+                {
+                    while(true)
+                    {
+                        if ( addShipX(x,y,5,clientID+" 1") ) break;
+                        if ( addShipY(x,y,5,clientID+" 1") ) break;
+                        x++;if(x==Game.size){y++; x=0;}if(y==Game.size)throw new Exception("ships inc");
+                    }
+                }
+                for (int i4=0;i4<ship4;i4++) 
+                {
+                    while(true)
+                    {
+                        if ( addShipX(x,y,4,clientID+" 1") ) break;
+                        if ( addShipY(x,y,4,clientID+" 1") ) break;
+                        x++;if(x==Game.size){y++; x=0;}if(y==Game.size)throw new Exception("ships inc");
+                    }
+                }
+                for (int i3=0;i3<ship3;i3++) 
+                {
+                    while(true)
+                    {
+                        if ( addShipX(x,y,3,clientID+" 1") ) break;
+                        if ( addShipY(x,y,3,clientID+" 1") ) break;
+                        x++;if(x==Game.size){y++; x=0;}if(y==Game.size)throw new Exception("ships inc");
+                    }
+                }
+                for (int i2=0;i2<ship2;i2++) 
+                {
+                    while(true)
+                    {
+                        if ( addShipX(x,y,2,clientID+" 1") ) break;
+                        if ( addShipY(x,y,2,clientID+" 1") ) break;
+                        x++;if(x==Game.size){y++; x=0;}if(y==Game.size)throw new Exception("ships inc");
+                    }
+                }
             }
+
+            return true;
         }
     }
 
@@ -125,12 +181,29 @@ public class ServerEngine implements Runnable
             else if (Objects.equals(statusf.get(0),"game"))
             {
                 String clientID = clientAddresses.get(Game.round).toString() + "," + clientPorts.get(Game.round);
-                status = "game"
-                    //Size
-                    + " " + 0
-                    //Name                   
-                    + " " + existingClients.get(clientID);
+                    status = "game"
+                        //Size
+                        + " " + Game.size
+                        //Name                   
+                        + " " + existingClients.get(clientID);
+
+                for (int pID=0;pID<Game.players;pID++) //TODO: csak a kérőnek leküldeni a cuccot? Ez nem egy MMO max 20 játékost lazán elbír..
+                {
                     // Data 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int x=0;x<Game.size;x++) 
+                    {
+                        for (int y=0;y<Game.size;y++) 
+                        {
+                            ArrayList<String> pos = Message.split(Game.table.get(x).get(y),"\\s");
+                            if (Objects.equals(pos.get(0),""+pID)) stringBuilder.append(" 3");
+                            else stringBuilder.append(" 0");
+                            //TODO többi eset
+                        }
+                        stringBuilder.append("\n"); //TODO remove \n és a packetből is lentebb
+                    }
+                    message.socketWrite(new Message.Packet("pong "+status+"t:\n"+stringBuilder.toString(),clientAddresses.get(pID),clientPorts.get(pID)));
+                }
                     
             }
 
@@ -182,14 +255,18 @@ public class ServerEngine implements Runnable
         message      = _message;
         Game.players = players;
         //if (players<2) throw new Exception("players"); TODO: visszatenni
+
         Game.ship2   = ship2;
         Game.ship3   = ship3;
         Game.ship4   = ship4;
         Game.ship5   = ship5;
         if (ship2+ship3+ship4+ship5<4) throw new Exception("ships");
+
         Game.size = (int)Math.ceil((double)( ((ship2*1)+(ship3*2)+(ship4*3)+(ship5*4))*(int)Math.ceil((double)players/2.0)+1 )/2.0);
         System.out.println("LOG.ServerEngine.start: game size is "+Game.size);
-        Game.generate();
+
+        if (!Game.generate()) throw new Exception("ships");
+
         new Thread(this).start();
     }    
 }

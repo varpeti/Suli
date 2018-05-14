@@ -1,3 +1,24 @@
+--[[ 05.10 Saját Gyak
+]]
+
+R(a,b,c,d,e,g,h,i)
+F = {a->be, ab->de, ac->g}
+
+{a->b, a->e, ab->d, ab->e, ac->g}
+F- =  {a->b, a->e, a->d, ac->g} minimal cover
+
+T1(a,b,e,d)
+T2(a,c,g)
+T3(h,i)
+T4(a,c,h,i) mert candidate keys nincs benne egyik előzőbe se: ac, h, i
+
+1NF no composite or multivalued attribute in the schema
+2NF 1NF and there is no partial depedency on non primary attribute
+3NF 2NF and and non-prime attribute dose not depend tranzitievly on any candidate key 
+BCNF 3NF and for all Alpha->Beta FD, Alpha is a SK
+
+
+
 --[[ 04.19 Saját gyak
 ]]
 

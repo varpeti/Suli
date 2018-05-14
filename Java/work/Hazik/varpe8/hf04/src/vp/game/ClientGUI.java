@@ -36,6 +36,7 @@ public class ClientGUI extends Application
             else if (Objects.equals(cmd.get(0),"pong") && Objects.equals(cmd.get(1),"game"))
             {
                 if (!Objects.equals(Scenes.scene_String,"game")) stage.setScene(Scenes.game());
+                Scenes.Game.setTable(input.getMsg());
             }
             else if (Objects.equals(cmd.get(0),"wait4players"))
             {
