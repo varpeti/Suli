@@ -170,7 +170,7 @@ public class ServerEngine implements Runnable
                 if (Game.players==clientAddresses.size()) 
                 {
                     Game.round = 0;
-                    status = "game -1";
+                    status = "game -1 nil";
                 }
                 else
                 {
@@ -202,12 +202,12 @@ public class ServerEngine implements Runnable
                         }
                         stringBuilder.append("\n"); //TODO remove \n és a packetből is lentebb
                     }
-                    message.socketWrite(new Message.Packet("pong "+status+"t:\n"+stringBuilder.toString(),clientAddresses.get(pID),clientPorts.get(pID)));
+                    message.socketWrite(new Message.Packet("pong "+status+" t:\n"+stringBuilder.toString(),clientAddresses.get(pID),clientPorts.get(pID)));
                 }
                     
             }
 
-            message.socketWrite(new Message.Packet("pong "+status,input.getAddress(),input.getPort()));
+            message.socketWrite(new Message.Packet("pong "+status+" nil",input.getAddress(),input.getPort()));
         }
         else if (Objects.equals(cmd.get(0),"hello"))
         {
