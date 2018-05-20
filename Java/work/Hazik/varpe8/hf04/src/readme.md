@@ -68,12 +68,17 @@
 
 ### Le:
 
-- [1]: size
-- [2]: player name
-- [3]..[2+size]: 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
+- (1): size
+- (2): player name
+- (3)..(2+size): 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
 
 ### Fel:
-- [1]: x
-- [2]: y
+- (1): x
+- (2): y
 
 
+# TODO
+
+Játék implementálásának befelyezése, 
+és egy refaktor az enginekre, hogy a Game osztályból hívják a függvényeket amik most a ```else if (Objects.equals(cmd.get(0),"command")) ```blokkok között vannak.
+Meg az egyébb TODO-k amik a kódban vannak.
