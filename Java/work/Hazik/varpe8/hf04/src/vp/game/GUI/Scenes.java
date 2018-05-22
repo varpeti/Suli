@@ -341,42 +341,66 @@ public class Scenes
 
     static public class Game
     {
-        static public name = "";
+        static public String name = "";
         static public int size = 0;
-        static public ArrayList<ArrayList<String>> table = new ArrayList<>();
+        static public GridPane grid;
 
         static public void setTable(String input)
         {
-            ArrayList<String> cmd = Message.split(input.getMsg(),"\\s");
-            size = Integer.parseInt(cmd.get(2));
-            name = cmd.get(3);
-            if (!Objects.equals(cmd.get(3),"t:")) return;
-            table = new ArrayList<>();
-            for (int x=0;x<size;x++) 
+            try
             {
-                ArrayList<String> s = new ArrayList<>();
-                for (int y=0;y<size;y++) 
+                ArrayList<String> cmd = Message.split(input,"\\s");
+                Game.size = Integer.parseInt(cmd.get(2));
+                Game.name = cmd.get(3);
+                if (!Objects.equals(cmd.get(4),"t:")) return;
+                for (int x=0;x<Game.size;x++) 
                 {
-                    s.add("w");
+                    for (int y=0;y<Game.size;y++) 
+                    {
+                        int i = x*Game.size+y;
+                        // 0 water, 1 foo's ship, 2 foo's destoryed ship, 3 your ship, 4 your destroyed ship
+                        // TODO: kicserélni szimbólumokra
+                        Button button = new Button(cmd.get(i+5)); 
+                        button.setId(x+" "+y);
+                        button.setOnAction(new game_button_EventHandler());
+                        Game.grid.add(button,x,y);
+                    }
                 }
-                table.add(s);
+            }
+            catch (Exception e) // TODO: jobb Exception kezelés
+            {
+                //System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
     // Game scene
 
+    static private class game_button_EventHandler implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e) 
+        {
+            Object source = e.getSource();
+            if (source instanceof Button) { //should always be true
+                Button button = (Button) source;
+                System.out.println("LOG.Scenes.game_button_EventHandler: "+button.getId());
+            }
+        }
+    }
+
     static public Scene game()
     {
         scene_String = "game";
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        Game.grid = new GridPane();
+        Game.grid.setAlignment(Pos.CENTER);
+        Game.grid.setHgap(10);
+        Game.grid.setVgap(10);
+        Game.grid.setPadding(new Insets(25, 25, 25, 25));
 
 
-        return new Scene(grid, 1024, 512);
+        return new Scene(Game.grid, 1024, 512);
     }
 
       //------//
