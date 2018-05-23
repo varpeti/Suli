@@ -1,3 +1,14 @@
+--[[
+]]
+
+3NF:
+    A) is in 2NF and and non-prime attribute dose not depend tranzitievly on any candidate key 
+    or
+    B) Either of the left hand side is the super key or the right hand side is a prime attribute.
+
+    B)->A) 
+    2NF is voilated if there is a such depedency
+
 --[[ 05.10 Saját Gyak
 ]]
 
