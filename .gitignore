@@ -2,5 +2,6 @@ bin/
 *.run
 Honlap/tutuk/gittutu/*.png
 Honlap/tutuk/SQLcl/*.png
+Honlap/MathJax/
 .svn/
 *.class
