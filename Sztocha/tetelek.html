@@ -222,8 +222,128 @@ hamis|2. fajú    oke
         <h1 id='Nem_paraméteres_próbák'>Nem paraméteres próbák</h1>
     </p>
     <p>
+        <h2 id='Def_chi^2_próbák'>Def chi^2 próbák</h2>
+            `xi_{1}..xi_{n}` független N(0,1) valószínűségi változók<br>
+            Legyen `eta=xi_{1}^2+x_{2}^2+...+x_{n}^2`<br>
+            Ekkor `eta` eloszlását `n` szabadságfokú `chi^2` eloszlásnak nevezzük.<br>
+    </p>
+    <p>
+        <h3 id='Megjegyzés'>Megjegyzés</h3>
+                A CHT alapján a `chi^2` eloszlás normális eloszlással közelíthető. (nagy `n`-re)<br>
+    </p>
+    <p>
+        <h3 id='Def_`chi^2`_próba'>Def `chi^2` próba</h3>
+                Legyen `A_{1}...A_{r}` teljes eseményrendszer <br>
+                `sum_{i=1}^{r}(A_{i})=I` és `A_{i} cap A_{j} = emptyset` ahol `i != j` és `I` a teljes esemény halmaz.<br>
+                Vizsgáljuk `H_{0}`-t: `P(A_{i})=p_{i}` Ahol `szum_{i=1}^{r}(p_{i})=1`<br>
+                Ezt a hipotézis vizsgálatot nevezük `chi^2` próbának.<br>
+    </p>
+    <p>
+        <h3 id='Def_Polinomiális_eloszlás'>Def Polinomiális eloszlás</h3>
+                TFH n kisérlet során `A_{i}` esemény `mu_{i}`-szer következik be.<br>
+                `n` kimenetel van: `szum_{i=1}^{r}(mu_{i})=n`<br>
+                `mu_{i}` valószínűségi változók binomiális eloszlásúak: `E(A_{i})=n*p_{i}`<br>
+                függetlenek:<br>
+        <div class='math'>
+            `P(mu_{1}=k_{1}...mu_{r}=k_{r} | H_{0})`
+        </div>
+        <div class='math'>
+            `=`
+        </div>
+        <div class='math'>
+            `P(mu_{1}=k_{1})*...*P(mu_{r}=k_{r}) = {n!}/{k_{1}!*...*k_{r}!}*(p_{1}^{k_{1}}*...*p_{r}^{k_{r}})`
+        </div>
+    </p>
+    <p>
+        <h3 id='H₀_hipotézis'>H₀ hipotézis</h3>
+        <div class='math'>
+            `chi_{emp}^2= sum_{i=1}^{r}( {(mu_{i}-n*p_{i})^2}/{n*p_{i}} )`
+        </div>
+                `H_{0}` hipotézis akkor jó, ha `chi^2` kicsi. (`mu_{i}~~n*p_{i}`)<br>
+    </p>
+    <p>
+        <h3 id='Megjegyzés'>Megjegyzés</h3>
+                `chi^2` egyenlő `r` darab standarizált binomiális elsozlású valószínűségi változók négyzetének összegével.<br>
+    </p>
+    <p>
+        <h2 id='Illeszkedsé_vizsgálat'>Illeszkedsé vizsgálat</h2>
+            <i>Van egy megfigyelt adatunk, és ehhez felteszünk egy eloszlást.</i><br>
+    </p>
+    <p>
+            Megfigyelt valószínűségi változók eloszlása megegyezik-e az előre megadottal.<br>
+    </p>
+    <p>
+        <h3 id='Diszkrét'>Diszkrét</h3>
+                Adott `(xi_{i},p_{i})` diszkrét eloszlás `i=1...r`, valamint `xi_{i}`-k függetlenek és azonos eloszlásúak.<br>
+                `q_{i}` jelölje az eloszlásukat.<br>
+                `mu_{i}` Megadja hogy a megfigyelés során hányszor vette fel az `i`. értéket<br>
+                `n*p_{i}` Megadja hogy elméletileg mennyiszer veszi fel az `i`. értéket <br>
+        <div class='math'>
+            `H_{0}: p_{i}=q_{i} AA i`
+        </div>
+        <div class='math'>
+            `H_{1}: p_{i}!=q_{i} EE i`
+        </div>
+    </p>
+    <p>
+        <div class='math'>
+            `q_{xi_{1}..xi_{r}) = {sum(k=1}^{r}( (mu_{i}-n*p_{i})^2 )}/{n*p_{i}}`
+        </div>
+    </p>
+    <p>
+                szabadság fok: `(r-1)`<br>
+                szignifikancia szint: `alpha`<br>
+    </p>
+    <p>
+                Ha `xi_{emp}&gtxi_{krit}` akkor `H_{0}`-t elfogajuk.<br>
+    </p>
+    <p>
+        <h3 id='Folytonos'>Folytonos</h3>
+                Felosztjuk `r darab` részintervallumokra és ezeken nézzük a `m_{i}`-t és az `n*p_{i}`-t.<br>
+    </p>
+    <p>
+        <h2 id='Homogenitás_vizsgálat'>Homogenitás vizsgálat</h2>
+            ` underbrace(x_{i}...x_{n} y_{i}...y_{m})`<br>
+            minták függetlenek és azonos eloszlásúak<br>
+    </p>
+    <p>
+            `r` darab részintervallumok van<br>
+    </p>
+    <p>
+            `mu_{i}` és `nu_{i}` az `i`. intervallumba eső elemek száma<br>
+    </p>
+    <p>
+        <div class='math'>
+            `chi^2 = n*m * sum_{i=1}^{r}( { ( {mu_{i}}/{n} - {nu_{i}}/{m} )^2 }/{mu_{i}+nu_{i}} )`
+        </div>
+    </p>
+    <p>
+            szabadság fok: `(r-1)`<br>
+            szignifikancia szint: `alpha`<br>
+    </p>
+    <p>
+        <h2 id='Függetlenség_vizsgálat'>Függetlenség vizsgálat</h2>
+            2 teljes eseméynrendszert vizsgál hogy van e köztük kapcsolat.<br>
+    </p>
+    <p>
+    </p>
+    <p>
+            `A_{1}..A_{r}` és `B_{1}..B_{s}` teljes eseményredszerek<br>
+    </p>
+    <p>
+            `H_{0}: P(A_{i} cup B_{i}) = P(A_{i}) * P(B_{i})` azaz függetlenek<br>
+            `H_{1}:` nem függetlenek<br>
+    </p>
+    <p>
+        <h3 id='Próbafüggvény'>Próbafüggvény</h3>
+                TODO<br>
+    </p>
+    <p>
         <hr style='border-top: 5px double;'>
         <h1 id='Sztochasztikus_folyamatok,_stacionaritás_fogalmai'>Sztochasztikus folyamatok, stacionaritás fogalmai</h1>
+    </p>
+    <p>
+        <h2 id=''></h2>
     </p>
     <p>
         <hr style='border-top: 5px double;'>
@@ -309,7 +429,20 @@ hamis|2. fajú    oke
 <a href='#f_próba' style='color:black;' >3.3...........................f próba</a>
 <a href='#Próba_statisztikai' style='color:black;' >3.3.1.........................Próba statisztikai</a>
 <a href='#Nem_paraméteres_próbák' style='color:black;' >4.............................Nem paraméteres próbák</a>
+<a href='#Def_chi^2_próbák' style='color:black;' >4.1...........................Def chi^2 próbák</a>
+<a href='#Megjegyzés' style='color:black;' >4.1.1.........................Megjegyzés</a>
+<a href='#Def_`chi^2`_próba' style='color:black;' >4.1.2.........................Def `chi^2` próba</a>
+<a href='#Def_Polinomiális_eloszlás' style='color:black;' >4.1.3.........................Def Polinomiális eloszlás</a>
+<a href='#H₀_hipotézis' style='color:black;' >4.1.4.........................H₀ hipotézis</a>
+<a href='#Megjegyzés' style='color:black;' >4.1.5.........................Megjegyzés</a>
+<a href='#Illeszkedsé_vizsgálat' style='color:black;' >4.2...........................Illeszkedsé vizsgálat</a>
+<a href='#Diszkrét' style='color:black;' >4.2.1.........................Diszkrét</a>
+<a href='#Folytonos' style='color:black;' >4.2.2.........................Folytonos</a>
+<a href='#Homogenitás_vizsgálat' style='color:black;' >4.3...........................Homogenitás vizsgálat</a>
+<a href='#Függetlenség_vizsgálat' style='color:black;' >4.4...........................Függetlenség vizsgálat</a>
+<a href='#Próbafüggvény' style='color:black;' >4.4.1.........................Próbafüggvény</a>
 <a href='#Sztochasztikus_folyamatok,_stacionaritás_fogalmai' style='color:black;' >5.............................Sztochasztikus folyamatok, stacionaritás fogalmai</a>
+<a href='#' style='color:black;' >5.1...........................</a>
 <a href='#Mozgó_átlag_folyamatok' style='color:black;' >6.............................Mozgó átlag folyamatok</a>
 <a href='#AR,_MA,_ARMA_folyamatok' style='color:black;' >7.............................AR, MA, ARMA folyamatok</a>
 <a href='#Előrejelzés' style='color:black;' >8.............................Előrejelzés</a>

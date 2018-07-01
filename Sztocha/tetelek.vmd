@@ -138,8 +138,88 @@ hamis|2. fajú    oke
 ==
 # Nem paraméteres próbák
 
+    ## Def `chi^2` próbák
+    @@xi[1]..xi[n]@ független N(0,1) valószínűségi változók
+    Legyen @@eta=xi[1]^2+xi[2]^2+...+xi[n]^2@
+    Ekkor @@eta@ eloszlását @@n@ szabadságfokú @@chi^2@ eloszlásnak nevezzük.
+
+        ### Megjegyzés
+        A CHT alapján a @@chi^2@ eloszlás normális eloszlással közelíthető. (nagy @@n@-re)
+
+        ### Def `chi^2` próba
+        Legyen @@A[1]...A[r]@ teljes eseményrendszer 
+        @@sum(i=1;r;A[i])=I@ és @@A[i] cap A[j] = emptyset@ ahol @@i != j@ és @@I@ a teljes esemény halmaz.
+        Vizsgáljuk @@H[0]@-t: @@P(A[i])=p[i]@ Ahol @@szum(i=1;r;p[i])=1@
+        Ezt a hipotézis vizsgálatot nevezük @@chi^2@ próbának.
+
+        ### Def Polinomiális eloszlás
+        TFH n kisérlet során @@A[i]@ esemény @@mu[i]@-szer következik be.
+        @@n@ kimenetel van: @@szum(i=1;r;mu[i])=n@
+        @@mu[i]@ valószínűségi változók binomiális eloszlásúak: @@E(A[i])=n*p[i]@
+        függetlenek:
+        @@P(mu[1]=k[1]...mu[r]=k[r] | H[0])
+        @@=
+        @@P(mu[1]=k[1])*...*P(mu[r]=k[r]) = {n!}/{k[1]!*...*k[r]!}*(p[1]^{k[1]}*...*p[r]^{k[r]})
+
+        ### H₀ hipotézis
+        @@chi[emp]^2= sum(i=1;r; {(mu[i]-n*p[i])^2}/{n*p[i]} )
+        @@H[0]@ hipotézis akkor jó, ha @@chi^2@ kicsi. (@@mu[i]~~n*p[i]@)
+
+        ### Megjegyzés
+        @@chi^2@ egyenlő @@r@ darab standarizált binomiális elsozlású valószínűségi változók négyzetének összegével.
+
+    ## Illeszkedsé vizsgálat
+    //Van egy megfigyelt adatunk, és ehhez felteszünk egy eloszlást.//
+
+    Megfigyelt valószínűségi változók eloszlása megegyezik-e az előre megadottal.
+
+        ### Diszkrét
+        Adott @@(xi[i],p[i])@ diszkrét eloszlás @@i=1...r@, valamint @@xi[i]@-k függetlenek és azonos eloszlásúak.
+        @@q[i]@ jelölje az eloszlásukat.
+        @@mu[i]@ Megadja hogy a megfigyelés során hányszor vette fel az @@i@. értéket
+        @@n*p[i]@ Megadja hogy elméletileg mennyiszer veszi fel az @@i@. értéket 
+        @@H[0]: p[i]=q[i] AA i
+        @@H[1]: p[i]!=q[i] EE i
+
+        @@q(xi[1]..xi[r]) = {sum(k=1;r; (mu[i]-n*p[i])^2 )}/{n*p[i]}
+
+        szabadság fok: @@(r-1)@
+        szignifikancia szint: @@alpha@
+
+        Ha @@xi[emp]>xi[krit]@ akkor @@H[0]@-t elfogajuk.
+
+        ### Folytonos
+        Felosztjuk @@r darab@ részintervallumokra és ezeken nézzük a @@m[i]@-t és az @@n*p[i]@-t.
+
+    ## Homogenitás vizsgálat
+    @@ underbrace(x[i]...x[n] y[i]...y[m])@
+    minták függetlenek és azonos eloszlásúak
+
+    @@r@ darab részintervallumok van
+
+    @@mu[i]@ és @@nu[i]@ az @@i@. intervallumba eső elemek száma
+
+    @@chi^2 = n*m * sum(i=1;r; { ( {mu[i]}/{n} - {nu[i]}/{m} )^2 }/{mu[i]+nu[i]} )
+
+    szabadság fok: @@(r-1)@
+    szignifikancia szint: @@alpha@
+
+    ## Függetlenség vizsgálat
+    2 teljes eseméynrendszert vizsgál hogy van e köztük kapcsolat.
+
+
+    @@A[1]..A[r]@ és @@B[1]..B[s]@ teljes eseményredszerek
+
+    @@H[0]: P(A[i] cup B[i]) = P(A[i]) * P(B[i])@ azaz függetlenek
+    @@H[1]:@ nem függetlenek
+
+        ### Próbafüggvény
+        TODO
+
 ==
 # Sztochasztikus folyamatok, stacionaritás fogalmai
+
+    ## 
 
 ==
 # Mozgó átlag folyamatok
