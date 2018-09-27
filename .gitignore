@@ -3,3 +3,4 @@ bin/
 suliHonlap/
 .svn/
 *.class
+*sublime*
