@@ -7,7 +7,7 @@ FROM AD18___DB.groups g
 group by g.name
 ;
 
-#1.2
+#2
 
 SELECT name1 as name, S_count, sumdur, avgdur, M_count
 FROM
@@ -24,12 +24,10 @@ FROM
     ON name1 = name2
 ;
 
-#2
+#3
 
 SELECT to_char(u.created_at, 'yyyy-mm') as reg_ym, count(u.id) as reg_count
 FROM AD18___DB.users u
 GROUP BY to_char(u.created_at, 'yyyy-mm')
 ;
-
-#3
 
