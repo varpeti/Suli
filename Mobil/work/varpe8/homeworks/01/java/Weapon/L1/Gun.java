@@ -3,7 +3,7 @@ import Weapon.Ranged;
 
 public interface Gun extends Ranged 
 {
-    public Integer shoot()
+    default public Integer shoot()
     {
         return new Integer(9);
     }    

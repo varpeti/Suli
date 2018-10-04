@@ -17,4 +17,9 @@ public class BayonettRifle implements Gun, Sword
     {
         return new Integer(12);
     }
+
+    public Integer attack()
+    {
+        return swing() + shoot();
+    }
 }

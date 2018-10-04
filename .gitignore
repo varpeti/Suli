@@ -4,3 +4,4 @@ suliHonlap/
 .svn/
 *.class
 *sublime*
+.~*

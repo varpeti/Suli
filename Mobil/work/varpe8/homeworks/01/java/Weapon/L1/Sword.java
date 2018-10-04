@@ -3,8 +3,7 @@ import Weapon.Meele;
 
 public interface Sword extends Meele 
 {
-    default:
-    public Integer swing()
+    default public Integer swing()
     {
         return new Integer(13);
     }    
