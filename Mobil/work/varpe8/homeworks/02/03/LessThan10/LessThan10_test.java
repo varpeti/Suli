@@ -30,19 +30,22 @@ public class LessThan10_test
         (
             new Object[][] 
             {
-                {+00,   true    },
-                {+03,   true    },
-                {+11,   false   },
-                {-11,   true    },
-                {999,   false   },
-                {+10,   false   },
+                {0,   true    },
+                {3,   true    },
+                {11,  false   },
+                {-11, true    },
+                {999, false   },
+                {9,   true    },
+                {10,  false   }
             }
         );
-   }
+    }
 
+    // annyiszor fut le ahány paramétert soroltunk fel
     @Test
-    public void testPrimeNumberChecker() 
+    public void test() 
     {
+        System.out.println("# "+input+" islessthan10?");
         assertEquals( expcectedOutput, LessThan10.islessthan10(input) );
     }
 }

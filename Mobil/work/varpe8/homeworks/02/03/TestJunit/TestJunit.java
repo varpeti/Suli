@@ -29,7 +29,7 @@ public class TestJunit
         int b = 1/a;
    }
 
-   @Ignore //Tudjuk hogy hibás, majd kijavítja valaki ha kell használni
+   @Ignore //Tudjuk hogy hibás, majd kijavítja valaki de most nem kell
    @Test(timeout = 1000)
    public void test03()
    {
