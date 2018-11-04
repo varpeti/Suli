@@ -18,6 +18,8 @@ public class BayonettRifle implements Gun, Sword
         return new Integer(12);
     }
 
+	// How to use the implementationn of superclass? (interface)
+	
     public Integer attack()
     {
         return swing() + shoot();
