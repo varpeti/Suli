@@ -9,7 +9,7 @@ var input =
 //print(type(of: input))
 
 //*///
-
+// Bool (?)
 func kiir1(input : Array<Array<Int>>, fun : (Array<Int>) -> Int )
 {
   var overall = [Int]()
