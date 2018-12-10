@@ -6,7 +6,10 @@ LogMacska:
     regex:
         [\\][|][/]
 
+// Azt hiszem, hogy többet láttál a feladatban, mint ami.
 Megjegyzések:
+// A listaelemen belüli elrendezésre vonatkozott, hogy más legyen a layout - a görgetés irányára nem volt megköztés.
     Görgethető, elforgatható, elforgatva máshogy rendező máshogy görgethető actyvity. x óra
+// Ez automatikus
     Dinamikusan többnyelvű xml-ben tárolt stringekből generált gombok. 10*x perc
     InstanceState mentés. x perc
