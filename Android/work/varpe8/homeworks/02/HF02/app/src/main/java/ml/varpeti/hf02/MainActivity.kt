@@ -42,26 +42,34 @@ class MainActivity : AppCompatActivity() {
             val int = Intent(this@MainActivity, UUIDService::class.java)
             startService(int)
             time[0] = System.currentTimeMillis()
+            // Elindít a háttérben egy Servicet,
+            // aminek az élete nem függ a Main Activitytől,
+            // még egy indítás esetén felstackeleődik (utánna indul el)
         }
 
         //AsyncTask
         buttons[1].setOnClickListener {
             UUIDAsyncTask().execute(99999)
-
             time[1] = System.currentTimeMillis()
+            // Elindít a háttérben egy AsyncTaskot,
+            // aminek az élete nem függ a Main Activitytől,
+            // de a progresst és az eredményt az eredetinek küldi vissza
+            // még egy indítás esetén felstackeleődik (utánna indul el)
+            // Le lehet lőni (cancel),
+            // le lehet lérdezi a státuszát (status),
+            // lehet várni a végeredményre (get), akár timeouttal
         }
 
         //AsyncTaskLoader
         buttons[2].setOnClickListener {
-            //TODO
+            val atlic = UUIDAsyncTaskLoaderIC(this)
+            atlic.startLoading()
             time[2] = System.currentTimeMillis()
-        }
-
-        //Service
-        buttons[0].setOnClickListener {
-            val int = Intent(this@MainActivity, UUIDService::class.java)
-            startService(int)
-            time[0] = System.currentTimeMillis()
+            // Elindít a háttérben egy "AsyncTaskot",
+            // aminek az élete nem függ a Main Activitytől,
+            // még egy indítás esetén elindul még egy
+            // le lehet lérdezi a státuszát (hasResult),
+            // és a végeredményét (result)
         }
 
         //Thread
@@ -69,7 +77,12 @@ class MainActivity : AppCompatActivity() {
             var thread = Thread(UUIDThread(), "UUIDThread")
             thread.start()
             time[3] = System.currentTimeMillis()
+            // Elindít a háttérben egy Threadet,
+            // aminek az élete nem függ a Main Activitytől,
+            // még egy indítás esetén elindul még egy
         }
+
+
         //Broadcast üzenetek elkapása
         val filter = IntentFilter("ml.varpeti.hf02.MainActivity")
         this.registerReceiver(Receiver(), filter)
@@ -140,6 +153,27 @@ class MainActivity : AppCompatActivity() {
         {
             buttons[1].setOnClickListener {}
             super.onPreExecute()
+        }
+    }
+
+    //AsyncTaskLoader
+    private class UUIDAsyncTaskLoaderIC(context: Context) : UUIDAsyncTaskLoader<Int>(context)
+    {
+        override fun loadInBackground(): Int
+        {
+            for (p in 1..100)
+            {
+                for (i in 0..99999)
+                {
+                    UUID.randomUUID()
+                }
+                val data = Intent()
+                data.putExtra("name", 2)
+                data.putExtra("progress", p)
+                data.action = "ml.varpeti.hf02.MainActivity"
+                context.sendBroadcast(data)
+            }
+            return 100
         }
     }
 
