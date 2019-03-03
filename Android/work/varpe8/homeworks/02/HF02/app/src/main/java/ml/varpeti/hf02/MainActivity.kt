@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             // Elindít a háttérben egy Servicet,
             // aminek az élete nem függ a Main Activitytől,
             // még egy indítás esetén felstackeleődik (utánna indul el)
+            // hozzá lehet bindelni egy activityhez
         }
 
         //AsyncTask
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             // Elindít a háttérben egy Threadet,
             // aminek az élete nem függ a Main Activitytől,
             // még egy indítás esetén elindul még egy
+            // Nem lehet elérni a vieweket
         }
 
 
