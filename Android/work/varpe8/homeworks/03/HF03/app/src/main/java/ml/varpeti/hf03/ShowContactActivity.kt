@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.content.Intent
-import java.lang.Long.getLong
 
 
 class ShowContactActivity : AppCompatActivity()

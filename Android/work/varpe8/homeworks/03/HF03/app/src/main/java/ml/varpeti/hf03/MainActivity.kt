@@ -1,10 +1,14 @@
 package ml.varpeti.hf03
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.widget.Button
 import android.widget.LinearLayout
 
@@ -17,8 +21,24 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Szerintem ez a legszebb, legegyszerübb út.
-        Thread(Runnable(function = {loadContacts()}), "loadContactsAsync").start()
+        //Kérjünk jogokat
+        checkPermission()
+
+    }
+
+    private fun checkPermission()
+    {
+        //Ha nincs jogunk olvasni a CONTACT táblát
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)  != PackageManager.PERMISSION_GRANTED)
+        {
+            //Kérünk
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS),0)
+        }
+        else // Ha van
+        {
+            // Szerintem ez a legszebb, legegyszerübb út.
+            Thread(Runnable(function = {loadContacts()}), "loadContactsAsync").start()
+        }
     }
 
     @Suppress("NAME_SHADOWING")
@@ -67,4 +87,33 @@ class MainActivity : AppCompatActivity()
             cursor.close()
         }
     }
+
+    // Ha kértünk jogot:
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray)
+    {
+        when (requestCode)
+        {
+            0 ->
+            {
+                //Ha üres a grantResults akkor nem kaptuk meg
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
+                {
+                    // YEAH van jogunk, recreate() hogy megjelenjen minden.
+                    recreate()
+                }
+                else
+                {
+                    // Végül is az egész program erre épül... Nem kell jog, minek az? Az app se kell:
+                    finish()
+                }
+                return
+            }
+            // Egyéb requestek
+            else ->
+            {
+                // Ignoráljuk őket
+            }
+        }
+    }
+
 }
