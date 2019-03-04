@@ -15,27 +15,36 @@ import java.lang.Long.getLong
 class ShowContactActivity : AppCompatActivity()
 {
     var id : String? = null
+    var lookUpKey : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.show_contact)
 
-        //Lekérjük az ID-t
+        //Lekérjük az ID-t és a LookUpKey-t
         val extras = intent.extras ?: return
         id = extras.getString("id")
+        lookUpKey = extras.getString("lookUpKey")
 
-        if (id==null) finish() //Ha nincs ID baj van.
+        if (id==null || lookUpKey==null) finish() //Ha nincs ID, lookUpKey baj van.
 
         //<3 Thread
         Thread(Runnable(function = {loadAContact(id!!)}), "loadAContactAsync").start()
 
-        // TODO Edit
+        // Edit gomb
         findViewById<Button>(R.id.edit).setOnClickListener{
+
+            //Ezzel az intentel hívjuk meg a jelenlegi contactot editálásra
             val editIntent = Intent(Intent.ACTION_EDIT).apply {
-                setDataAndType(ContactsContract.Contacts.getLookupUri(id!!.toLong(),id!!), ContactsContract.Contacts.CONTENT_ITEM_TYPE)
+                setDataAndType(ContactsContract.Contacts.getLookupUri(id!!.toLong(),lookUpKey!!), ContactsContract.Contacts.CONTENT_ITEM_TYPE)
             }
-            startActivity(editIntent)
+            //Workaround az ismert hibára:
+            //When your app sends an edit intent to the contacts app, and users edit and save a contact, when they click Back they see the contacts list screen. To navigate back to your app, they have to click Recents and choose your app.
+            editIntent.putExtra("finishActivityOnSaveCompleted", true)
+
+            //AAAAAAAAAAND OPEEEEEENNNNNNN! - Claptrap //https://youtu.be/CCwP2oERPtc?t=173
+            startActivityForResult(editIntent,0)
         }
 
     }
@@ -125,5 +134,12 @@ class ShowContactActivity : AppCompatActivity()
             phoneCursor.close()
             emailCursor.close()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        //Ha visszatér az editből refresheli az magát.
+        //resultCode = 0 canceled | = -1 saved
+        this.recreate()
     }
 }

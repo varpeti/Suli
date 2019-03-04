@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity()
                 //Adatok lekérése
                 val id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
                 val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                val lookUpKey = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
 
 
                 //Mivel nem lehet elérni innen Postol
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity()
 
                         val int = Intent(this, ShowContactActivity::class.java)
                         int.putExtra("id", id)
+                        int.putExtra("lookUpKey",lookUpKey)
                         startActivityForResult(int,0)
                         // Kattintás esetén az ID-vel átmegy a ShowContactActivity-re.
                     }
