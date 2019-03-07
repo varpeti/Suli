@@ -37,8 +37,10 @@ class ItemViewActivity : AppCompatActivity()
 
     override fun finish()
     {
+	
         Log.i("\\|/", "fin: "+id+" "+status)
         val data = Intent()
+		// Extras should be defined as constants
         data.putExtra("id",id)
         data.putExtra("status",status)
         setResult(Activity.RESULT_OK, data)
