@@ -6,6 +6,7 @@
 - Név
 - Ez tartalmazza a billentyűzeteket
 - Ezt lehet kiexportálni illetve importálni
+> (Ki) kell találni egy leíró formátumot!
 
 #### Billentyűzet
 - billentyűzet ID
@@ -43,8 +44,11 @@
 - intent hívás (böngésző, e-mail, billentyűzt beállítások)
 - fentebbi dolgok kombinálása: pl egy gombnyomásra kiír egy '(' majd egy ')' és visszalép a két zárójel közé
 
+
 #### Egy kis tech:
 - A gombokat egy másik billentyűzettel lehet mapelni. - /ha nem túl nehéz megoldani/ fizikai billentyűzettel is lehessen mapeleni.
+> Nem értem, hogy mire gondolsz
+
 - A billentyűzeteket lehessen kiexportálni, valami hunam-readable formátumba, és lehessen importálni is.
 - Nem kell fedni egy adott opciónak a definíciós fileban az Acytivitiyken való beállításokat: pl a shift gomb egy másik billentyűzetet hív meg (2.) amin minden karakter nagy és bármely gomb megnyomása után visszadobja az 1-re kivéve a shift újboli megnyomására, mely átdob egy 3. billenytűzetre ahol minden billentyű nagy de nem dob vissza az 1re csak a shift.
 - Egy billentyűt elég 1x létrehozni, gomb ID-val helyezük el, így ha megváltoztatjuk a gomb viselkedését, mindenhol máshol is meg fog vátozni.
