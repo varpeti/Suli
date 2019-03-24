@@ -7,7 +7,7 @@
 - Ez tartalmazza a billentyűzeteket
 - Ezt lehet kiexportálni illetve importálni
 > (Ki) kell találni egy leíró formátumot!
-> vagy Json, vagy egy saját human readable formátum: 1 sor egy key/value, a behúzás határozza meg hogy mi hova tartozik. Példa a form fileban.
+> vagy Json, vagy egy saját human readable formátum (ton): 1 sor egy key/value, a behúzás határozza meg hogy mi hova tartozik. Példa: [varpeti/ton](https://github.com/varpeti/ton)
 
 #### Billentyűzet
 - billentyűzet ID
