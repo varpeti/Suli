@@ -58,7 +58,7 @@
 #### Activity plan:
 - Minnél jobban csoportosítva, minnél egyszerűbben egy átlag user számára, minnél több beálítási lehetőség biztosítása, azonban NE korlátozza a szabadságot semmiben. pl: nincs előre definiálva hogy van kicsiabc, nagyabc1, nagyabc2 billentyűzet még is ha a user a shift gombot létrehozza, kínálja fel a lehetőséget, vagy legyen rá opció hogy autómatán hozza létre a kisabc-hez a másik 2-őt.
 
-#### /optional/
+#### /optional/ - jó volna!
 - különböző inputokon különböző billentyűzet (pl mail, url, numeric)
 - hangok, vibrációk
 - gestures, telefon elforgatás
