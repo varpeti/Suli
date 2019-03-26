@@ -6,41 +6,39 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 
-class MainActivity : AppCompatActivity()
-{
+class MainActivity : AppCompatActivity() {
 
     val bincalc = BinaryCalc()
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+
+    fun b2tw(tw: TextView, s: CharSequence)
+    {
+        when (s)
+        {
+            "0"      -> if (tw.text.length<31) tw.text = "${tw.text}0"
+            "1"      -> if (tw.text.length<31) tw.text = "${tw.text}1"
+            "\u232b" -> if (tw.text.isNotEmpty()) tw.text = tw.text.substring(0, tw.text.length - 1)
+            "DEL"    -> tw.text = ""
+        }
+    }
+
 
     fun onClickB0(view : View)
     {
         val v = view as Button
         val tw = findViewById<TextView>(R.id.b0)
-        when (v.text)
-        {
-            "0"      -> tw.text = "${tw.text}0"
-            "1"      -> tw.text = "${tw.text}1"
-            "\u232b" -> if (tw.text.isNotEmpty()) tw.text = tw.text.substring(0, tw.text.length - 1)
-            "DEL"    -> tw.text = ""
-        }
+        b2tw(tw,v.text)
     }
 
     fun onClickB1(view : View)
     {
         val v = view as Button
         val tw = findViewById<TextView>(R.id.b1)
-        when (v.text)
-        {
-            "0"      -> tw.text = "${tw.text}0"
-            "1"      -> tw.text = "${tw.text}1"
-            "\u232b" -> if (tw.text.isNotEmpty()) tw.text = tw.text.substring(0, tw.text.length - 1)
-            "DEL"    -> tw.text = ""
-        }
+        b2tw(tw,v.text)
     }
 
     fun onClickB2(view : View)
@@ -50,8 +48,18 @@ class MainActivity : AppCompatActivity()
         val b1 = findViewById<TextView>(R.id.b1)
         val b2 = findViewById<TextView>(R.id.b2)
 
-        val b0t = if(b0.text.isEmpty()) "0" else b0.text
-        val b1t = if(b1.text.isEmpty()) "0" else b1.text
+        val b0t = when
+        {
+            b0.text.isEmpty()   -> "0"
+            b0.text=="-"        -> "0"
+            else                -> b0.text
+        }
+        val b1t = when
+        {
+            b1.text.isEmpty()   -> "0"
+            b1.text=="-"        -> "0"
+            else                -> b1.text
+        }
 
         when (v.text)
         {
