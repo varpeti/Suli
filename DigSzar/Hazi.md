@@ -208,7 +208,7 @@ Kimenet:
 ```
 
 Lua kód:
-```
+```lua
 function algo(minterms)
     local ret = {}
     for i,m1 in ipairs(minterms) do
