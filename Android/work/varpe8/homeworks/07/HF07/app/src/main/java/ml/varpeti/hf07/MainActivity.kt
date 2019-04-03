@@ -3,8 +3,7 @@ package ml.varpeti.hf07
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.SurfaceTexture
+import android.graphics.*
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.os.Environment
@@ -22,6 +21,8 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity()
 {
+
+    var myCamera : MyCamera? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity()
 
     }
 
-    fun startPreview()
+    private fun startPreview()
     {
         //findViewById<>() a gyengéknek való :D
         preview.surfaceTextureListener = object : TextureView.SurfaceTextureListener
@@ -63,11 +64,25 @@ class MainActivity : AppCompatActivity()
                 // Ha elérhető kisterameljük a preview viewra
                 val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 val cameraId = cameraManager.cameraIdList.first()
-                cameraManager.openCamera(cameraId, MyCamera(preview, width, height), null)
+                myCamera = MyCamera(preview, width, height)
+                cameraManager.openCamera(cameraId, myCamera, null)
             }
 
         }
 
+    }
+
+
+    override fun onPause()
+    {
+        super.onPause()
+
+        // Bezárjuk a kamerát ha nem kell
+        if (myCamera != null)
+        {
+            myCamera!!.close()
+        }
+        finish()
     }
 
     // Tapintásra lementi a képet
@@ -82,17 +97,13 @@ class MainActivity : AppCompatActivity()
         location.mkdir()
         val dest = File(location, System.currentTimeMillis().toString() + ".png") //png lesz
 
-        /* Paid version:
+        /*
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(dest))
         startActivityForResult(takePictureIntent, 0)
         */
 
-        // Ez a free verzió, ahhoz hogy rendes méretű képet kapjon a felhasználó, meg kell vennie a teljes verziót!
-        // TODO reklámok elhelyezése
-        // TODO mikro tranzakciók
-        // Egyébként itt lehet pontosan állítani a felbontást (=TextureView felbontása), és a onSurfaceTextureUpdated() metódusban pedig Bitmap manipulálással lehet "filtereket" rárakni egyből
-
+        // Lehet pontosan állítani a felbontást (=TextureView felbontása), és a onSurfaceTextureUpdated() metódusban pedig Bitmap manipulálással lehet "filtereket" rárakni egyből
         try
         {
             val fos = FileOutputStream(dest)
@@ -109,6 +120,12 @@ class MainActivity : AppCompatActivity()
 
         //Előző kép beállítása
         prev.setImageBitmap(myBitmap)
+        /*
+            (csak 1-et specifikált a feladat)
+            Ha kéne több is meghívnám rá a kép lementésekor az Intent.ACTION_MEDIA_SCANNER_SCAN_FILE intentet.
+            És meghívnám a galériát/filemanagert a HF07 albumba/mappába ha a prev-re kattintanak.
+            Vagy egy külön activity-t ahol beolvasom a mappa összes képét.
+         */
 
     }
 

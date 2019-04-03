@@ -8,8 +8,11 @@ import android.view.TextureView
 
 class MyCamera(private val textureView: TextureView, private val width: Int, private val height: Int) : CameraDevice.StateCallback()
 {
+    var myCameraDevice : CameraDevice? = null
+
     override fun onOpened(camera: CameraDevice)
     {
+        myCameraDevice = camera // Lementem hogy le tudjam zárni egy függvény hívással
         val surfaceTexture = textureView.surfaceTexture
         surfaceTexture.setDefaultBufferSize(width, height)
         val surface = Surface(surfaceTexture)
@@ -46,6 +49,16 @@ class MyCamera(private val textureView: TextureView, private val width: Int, pri
     {
         camera.close()
         Log.i("|||", "onError")
+    }
+
+    // onPause fogja hívni.
+    fun close()
+    {
+        if  (myCameraDevice!=  null)
+        {
+            myCameraDevice!!.close()
+            myCameraDevice = null
+        }
     }
 
 }
