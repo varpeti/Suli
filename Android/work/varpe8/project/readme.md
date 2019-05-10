@@ -18,4 +18,8 @@ TODO belerakni a projektbe
 - Óvatosan, mivel jelenleg nem lehet visszaváltani az eredeti billentyűzetre.
 
 #### TK:
+- Haha. Oké. De a végső verziót kérem ide is a "jegyzőkönyv" kedvéért.
+- Hát jó, akkor ezt nem próbálom ki élesben.
 
+#### VP:
+- Woops ezt elfelejtettem kivenni, már rég használható, ezt a main billentyűzetem. :)
